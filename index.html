@@ -88,7 +88,7 @@
     };
 
     let abaAtual = "ResumoSemanal";
-    let indexSemanaSelecionada = 0; // 0 = Mais recente
+    let indexSemanaSelecionada = 0;
 
     function formatarMoedaBR(valor) {
       if (valor === null || valor === undefined || valor === "") return null;
@@ -157,21 +157,21 @@
     // ==========================================
     function renderizarResumoSemanal() {
       const container = document.getElementById('news-container');
-      container.className = "flex flex-col gap-8 col-span-full max-w-4xl mx-auto w-full";
+      // Gap reduzido de 8 para 5
+      container.className = "flex flex-col gap-5 col-span-full max-w-4xl mx-auto w-full";
       container.innerHTML = '';
 
       if (!bancoDados.resumosSemanais || bancoDados.resumosSemanais.length === 0) {
         container.innerHTML = `
-          <div class="bg-white border border-outline-variant rounded-2xl p-10 text-center shadow-sm">
-            <span class="material-symbols-outlined text-5xl text-emerald-600 mb-3">auto_stories</span>
-            <h2 class="text-gray-900 font-bold text-lg mb-1">Briefing Executivo em Geração</h2>
-            <p class="text-sm text-gray-500 max-w-md mx-auto">O Resumo Semanal consolida os fatos mais relevantes a cada encerramento de rotina diária.</p>
+          <div class="bg-white border border-gray-200 rounded-xl p-10 text-center">
+            <span class="material-symbols-outlined text-4xl text-emerald-600 mb-2">auto_stories</span>
+            <h2 class="text-gray-900 font-bold text-base mb-1">Briefing Executivo em Geração</h2>
+            <p class="text-xs text-gray-500 max-w-md mx-auto">O Resumo Semanal consolida os fatos mais relevantes a cada encerramento de rotina diária.</p>
           </div>
         `;
         return;
       }
 
-      // Ordena resumos por data decrescente (mais recente primeiro)
       const resumosOrdenados = [...bancoDados.resumosSemanais].sort((a, b) => b.idSemana.localeCompare(a.idSemana));
       
       if (indexSemanaSelecionada >= resumosOrdenados.length) indexSemanaSelecionada = 0;
@@ -181,35 +181,36 @@
       const temAnterior = indexSemanaSelecionada < resumosOrdenados.length - 1;
       const temProxima = indexSemanaSelecionada > 0;
 
+      // Tag de status redimensionada
       const statusTag = semana.status === "EM_ANDAMENTO" 
-        ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Semana em andamento</span>`
-        : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Semana concluída</span>`;
+        ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200"><span class="w-1 h-1 rounded-full bg-amber-500 animate-pulse"></span> Em andamento</span>`
+        : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1 h-1 rounded-full bg-emerald-600"></span> Concluída</span>`;
 
       let html = `
-        <!-- Seletor e Navegação Semanal -->
-        <div class="flex items-center justify-between bg-white border border-outline-variant p-4 rounded-2xl shadow-sm">
-          <button onclick="mudarSemana(1)" ${!temAnterior ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-sm font-semibold text-gray-500"' : 'class="flex items-center text-sm font-semibold text-primary hover:underline"'}>
-            <span class="material-symbols-outlined text-lg mr-1">arrow_back</span> Semana anterior
+        <!-- Seletor e Navegação Semanal Redimensionado -->
+        <div class="flex items-center justify-between bg-white border border-gray-200 py-3 px-4 rounded-xl">
+          <button onclick="mudarSemana(1)" ${!temAnterior ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-xs font-semibold text-gray-500"' : 'class="flex items-center text-xs font-semibold text-primary hover:underline"'}>
+            <span class="material-symbols-outlined text-[16px] mr-1">arrow_back</span> Anterior
           </button>
           
-          <div class="text-center">
-            <span class="text-base font-extrabold text-gray-900 tracking-tight block">${semana.rotuloVisual || semana.idSemana}</span>
-            <span class="text-xs text-gray-400 font-medium">${semana.dataInicial} a ${semana.dataFinal}</span>
-            <div class="mt-1">${statusTag}</div>
+          <div class="text-center flex flex-col items-center">
+            <span class="text-sm font-extrabold text-gray-900 tracking-tight">${semana.rotuloVisual || semana.idSemana}</span>
+            <span class="text-[10px] text-gray-400 font-medium mt-0.5">${semana.dataInicial} a ${semana.dataFinal}</span>
+            <div class="mt-1.5">${statusTag}</div>
           </div>
 
-          <button onclick="mudarSemana(-1)" ${!temProxima ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-sm font-semibold text-gray-500"' : 'class="flex items-center text-sm font-semibold text-primary hover:underline"'}>
-            Próxima semana <span class="material-symbols-outlined text-lg ml-1">arrow_forward</span>
+          <button onclick="mudarSemana(-1)" ${!temProxima ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-xs font-semibold text-gray-500"' : 'class="flex items-center text-xs font-semibold text-primary hover:underline"'}>
+            Próxima <span class="material-symbols-outlined text-[16px] ml-1">arrow_forward</span>
           </button>
         </div>
 
-        <!-- Nível 1: A semana em 30 segundos -->
-        <section class="bg-gradient-to-br from-emerald-900 to-emerald-950 text-white p-6 md:p-8 rounded-2xl shadow-md">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-amber-400 text-xl">timer</span>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-emerald-200">A semana em 30 segundos</h3>
+        <!-- Nível 1: A semana em 30 segundos Ajustado -->
+        <section class="bg-emerald-50/60 border border-emerald-100 p-5 rounded-xl">
+          <div class="flex items-center gap-1.5 mb-2">
+            <span class="material-symbols-outlined text-emerald-600 text-[18px]">timer</span>
+            <h3 class="text-[11px] font-bold uppercase tracking-widest text-emerald-800">A semana em 30 segundos</h3>
           </div>
-          <p class="text-sm md:text-base leading-relaxed text-emerald-50 font-normal">
+          <p class="text-sm leading-relaxed text-gray-800 font-medium">
             ${semana.resumoExecutivo || 'Síntese executiva dos principais acontecimentos estruturados da semana.'}
           </p>
         </section>
@@ -228,13 +229,13 @@
           const badge = getBadgeInfo(cat);
 
           html += `
-            <section class="space-y-4">
+            <section class="space-y-3 mt-2">
               <div class="flex items-center justify-between border-b border-gray-200 pb-2">
                 <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-gray-700 text-xl">${badge.icn}</span>
-                  <h3 class="text-base font-bold text-gray-900 uppercase tracking-wider">${cat}</h3>
+                  <span class="material-symbols-outlined text-gray-700 text-[20px]">${badge.icn}</span>
+                  <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider">${cat}</h3>
                 </div>
-                <span class="text-xs text-gray-400 font-medium">${lista.length} principal(is) acontecimento(s)</span>
+                <span class="text-[11px] text-gray-400 font-medium">${lista.length} destaque(s)</span>
               </div>
 
               <div class="grid grid-cols-1 gap-4">
@@ -242,37 +243,39 @@
 
           lista.forEach(item => {
             const tagsHTML = (item.tags && item.tags.length > 0) 
-              ? item.tags.map(t => `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[11px] font-medium">#${t}</span>`).join(' ')
+              ? item.tags.map(t => `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-medium">#${t}</span>`).join(' ')
               : '';
 
             const badgeFontes = (item.fontesRelacionadas && item.fontesRelacionadas > 1)
-              ? `<span class="text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-semibold">${item.fontesRelacionadas} fontes relacionadas</span>`
+              ? `<span class="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-semibold">${item.fontesRelacionadas} fontes relacionadas</span>`
               : '';
 
+            const boxPorqueImporta = (item.porqueImporta && typeof item.porqueImporta === 'string' && item.porqueImporta.trim().length > 10) ? `
+              <div class="bg-emerald-50/80 border-l-4 border-primary p-3 rounded-r-xl mb-3">
+                <span class="text-[11px] font-bold text-emerald-900 block mb-0.5 uppercase tracking-wide">Por que isso importa</span>
+                <p class="text-xs text-emerald-950 leading-relaxed">${item.porqueImporta}</p>
+              </div>
+            ` : '';
+
             html += `
-              <article class="bg-white border border-outline-variant rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+              <article class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex justify-between items-start gap-2 mb-2">
-                  <h4 class="text-base font-bold text-gray-900 leading-snug">
+                  <h4 class="text-sm font-bold text-gray-900 leading-snug">
                     <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">${item.titulo}</a>
                   </h4>
                   ${badgeFontes}
                 </div>
 
-                <p class="text-sm text-gray-700 leading-relaxed mb-3">${item.resumo}</p>
-
-                <!-- Box: Por que importa -->
-                <div class="bg-emerald-50/70 border-l-4 border-primary p-3 rounded-r-xl mb-3">
-                  <span class="text-xs font-bold text-emerald-900 block mb-0.5 uppercase tracking-wide">Por que isso importa</span>
-                  <p class="text-xs text-emerald-950 leading-relaxed">${item.porqueImporta}</p>
-                </div>
+                <p class="text-xs text-gray-700 leading-relaxed mb-3">${item.resumo}</p>
+                ${boxPorqueImporta}
 
                 <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-100 text-xs">
-                  <div class="flex items-center gap-2 text-gray-500 font-medium">
-                    <span class="uppercase font-semibold">${item.fonte || 'Google News'}</span>
+                  <div class="flex items-center gap-1.5 text-gray-500 font-medium">
+                    <span class="uppercase text-[10px] font-semibold">${item.fonte || 'Google News'}</span>
                     <span>•</span>
-                    <span>${formatarDataVisual(item.data) || item.data}</span>
+                    <span class="text-[10px]">${formatarDataVisual(item.data) || item.data}</span>
                   </div>
-                  <div class="flex items-center gap-1.5">${tagsHTML}</div>
+                  <div class="flex items-center gap-1">${tagsHTML}</div>
                 </div>
               </article>
             `;
@@ -287,7 +290,7 @@
 
       if (!encontrouAlgumDestaque) {
         html += `
-          <div class="bg-white border border-outline-variant rounded-2xl p-8 text-center text-gray-500">
+          <div class="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 text-sm">
             Nenhum destaque categorizado disponível para este período semanal.
           </div>
         `;
@@ -326,7 +329,7 @@
           ? item.tags.map(t => `<span class="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-medium">#${t}</span>`).join(' ')
           : '';
 
-        const boxPorqueImporta = item.porqueImporta ? `
+        const boxPorqueImporta = (item.porqueImporta && typeof item.porqueImporta === 'string' && item.porqueImporta.trim().length > 10) ? `
           <div class="bg-gray-50 border-l-2 border-primary p-2.5 rounded-r-lg mb-4 text-xs text-gray-700">
             <strong class="text-emerald-900 block text-[11px] uppercase tracking-wider mb-0.5">Impacto Prático:</strong>
             ${item.porqueImporta}
