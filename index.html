@@ -1,908 +1,615 @@
-// ==========================================
-// 1. CONFIGURAÇÕES E UTILITÁRIOS DE DATA
-// ==========================================
-
-function getGeminiApiKey() {
-  const key = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
-  if (!key) {
-    Logger.log("AVISO: GEMINI_API_KEY não configurada em Propriedades do Script.");
-  }
-  return key;
-}
-
-function formatarDataBR(dataObj) {
-  if (!dataObj) return null;
-  const str = String(dataObj).trim();
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>SorghumIntel - Inteligência de Mercado</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
-    const partes = str.split(' ')[0].split('/');
-    return `${partes[0].padStart(2, '0')}/${partes[1].padStart(2, '0')}/${partes[2]}`;
-  }
-  
-  if (str.includes('-')) {
-    const partesData = str.split('T')[0].split('-');
-    if (partesData.length === 3 && partesData[0].length === 4) {
-      return `${partesData[2].padStart(2, '0')}/${partesData[1].padStart(2, '0')}/${partesData[0]}`;
-    }
-  }
-
-  try {
-    const d = new Date(dataObj);
-    if (!isNaN(d.getTime())) {
-      const dia = String(d.getUTCDate()).padStart(2, '0');
-      const mes = String(d.getUTCMonth() + 1).padStart(2, '0');
-      const ano = d.getUTCFullYear();
-      return `${dia}/${mes}/${ano}`;
-    }
-  } catch (e) {}
-
-  return null;
-}
-
-function formatarDataHoraBR(dataObj) {
-  const d = dataObj instanceof Date ? dataObj : new Date();
-  const dia = String(d.getDate()).padStart(2, '0');
-  const mes = String(d.getMonth() + 1).padStart(2, '0');
-  const ano = d.getFullYear();
-  const hora = String(d.getHours()).padStart(2, '0');
-  const min = String(d.getMinutes()).padStart(2, '0');
-  return `${dia}/${mes}/${ano} ${hora}:${min}`;
-}
-
-function parseDataBR(dataStr) {
-  if (!dataStr) return null;
-  if (typeof dataStr === 'string' && dataStr.includes('/')) {
-    const partes = dataStr.split('/');
-    if (partes.length === 3) {
-      return new Date(partes[2], partes[1] - 1, partes[0]);
-    }
-  }
-  const d = new Date(dataStr);
-  return isNaN(d.getTime()) ? null : d;
-}
-
-function calcularDiasDesdeAtualizacao(dataStr) {
-  if (!dataStr) return 999;
-  const dataCot = parseDataBR(dataStr);
-  if (!dataCot) return 999;
-  const hoje = new Date();
-  hoje.setHours(0, 0, 0, 0);
-  dataCot.setHours(0, 0, 0, 0);
-  const diffTime = hoje.getTime() - dataCot.getTime();
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays >= 0 ? diffDays : 0;
-}
-
-function removerAcentos(texto) {
-  if (!texto) return "";
-  return String(texto).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
-}
-
-// ==========================================
-// 2. DEDUPLICAÇÃO DE NOTÍCIAS E IA
-// ==========================================
-
-function obterCacheUrlsExistentes() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const urlsSet = new Set();
-  const abas = ['Noticias_Aprovadas', 'Eventos_Aprovados', 'Embeddings_Cache'];
-
-  abas.forEach(nomeAba => {
-    const sheet = ss.getSheetByName(nomeAba);
-    if (sheet) {
-      const dados = sheet.getDataRange().getValues();
-      const colIndex = (nomeAba === 'Embeddings_Cache') ? 0 : 2; 
-      for (let i = 1; i < dados.length; i++) {
-        if (dados[i][colIndex]) {
-          urlsSet.add(String(dados[i][colIndex]).trim());
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: "#f4faff", primary: "#0d631b", "surface-container-lowest": "#ffffff",
+            "outline-variant": "#bfcaba", "on-surface": "#0d1e25", "on-surface-variant": "#40493d",
+            "surface-variant": "#d4e5ef", "secondary-container": "#f89c00"
+          },
+          fontFamily: { "body-md": ["Inter"], "data-mono": ["Inter"], "title-md": ["Inter"], "label-sm": ["Inter"] }
         }
       }
     }
-  });
+  </script>
+  <style>
+    body { background-color: theme('colors.background'); color: theme('colors.on-background'); -webkit-font-smoothing: antialiased; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .badge-regulatório { background-color: #334155; color: white; }
+    .badge-ciência-técnico { background-color: #e0f2fe; color: #0369a1; }
+    .badge-mercado { background-color: #0d631b; color: white; }
+    .badge-comercial { background-color: #fef3c7; color: #92400e; }
+    .badge-evento { background-color: #059669; color: white; }
+  </style>
+</head>
+<body class="font-body-md bg-background pb-24 md:pb-0 pt-16">
 
-  return urlsSet;
-}
+  <!-- Header -->
+  <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white border-b border-outline-variant shadow-sm">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary text-2xl">agriculture</span>
+      <h1 class="text-xl font-bold text-primary tracking-tight">SorghumIntel</h1>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="carregarDadosIniciais(true)" class="material-symbols-outlined text-primary p-2 hover:bg-emerald-50 rounded-full transition-colors" title="Atualizar dados">refresh</button>
+    </div>
+  </header>
 
-function ehPotencialmenteRelevante(titulo, snippet) {
-  const apiKey = getGeminiApiKey();
-  if (!apiKey) return false;
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Barra de Busca -->
+    <div id="search-bar-container" class="mb-6 relative">
+      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">search</span>
+      <input id="search-input" class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-xl focus:outline-none focus:border-primary shadow-sm text-sm" placeholder="Buscar no SorghumIntel..." type="text">
+    </div>
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-  const prompt = `Você é um filtro de relevância agrícola. Avalie se o título/snippet abaixo possui potencial utilidade agronômica, comercial, de mercado ou técnica sobre a cultura do SORGO (Sorghum).
-  
-  Título: "${titulo}"
-  Snippet: "${snippet}"
-  
-  Responda EXCLUSIVAMENTE em JSON: {"relevante": true} ou {"relevante": false}`;
+    <!-- Navegação de Abas -->
+    <div class="overflow-x-auto no-scrollbar mb-8">
+      <div class="flex space-x-2">
+        <button data-tab="ResumoSemanal" class="px-4 py-2 bg-primary text-white font-bold rounded-full text-sm whitespace-nowrap flex items-center gap-1.5 shadow-sm active-tab">
+          <span class="material-symbols-outlined text-[18px]">auto_stories</span> Resumo Semanal
+        </button>
+        <button data-tab="Tudo" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Tudo</button>
+        <button data-tab="Regulatório" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Regulatório</button>
+        <button data-tab="Ciência/Técnico" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Ciência/Técnico</button>
+        <button data-tab="Mercado" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Mercado</button>
+        <button data-tab="Comercial" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Comercial</button>
+        <button data-tab="Eventos" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Eventos</button>
+        <button data-tab="Cotacao" class="px-4 py-2 bg-white border border-emerald-600 text-emerald-800 font-bold rounded-full text-sm whitespace-nowrap flex items-center gap-1">
+          <span class="material-symbols-outlined text-[18px]">payments</span> Cotação
+        </button>
+      </div>
+    </div>
 
-  const options = {
-    method: "post",
-    contentType: "application/json",
-    muteHttpExceptions: true,
-    payload: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-  };
+    <!-- Container Principal Dinâmico -->
+    <div id="main-content-container">
+      <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </main>
 
-  try {
-    const response = UrlFetchApp.fetch(url, options);
-    if (response.getResponseCode() !== 200) return false;
-    const jsonStr = JSON.parse(response.getContentText()).candidates[0].content.parts[0].text;
-    const match = jsonStr.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]).relevante === true;
-  } catch (e) {}
-  return false;
-}
-
-function extrairConteudoArtigo(url) {
-  try {
-    const options = {
-      method: "get",
-      muteHttpExceptions: true,
-      followRedirects: true,
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-      }
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbz-xQ31zO2zy5slgOlp-fWrWBw47xjwu017Oh9YLMjxQ18bilqjCOdOcWMEoE7shFoEhg/exec";
+    
+    let bancoDados = {
+      noticias: [],
+      eventos: [],
+      precos: [],
+      resumosSemanais: []
     };
-    
-    const response = UrlFetchApp.fetch(url, options);
-    if (response.getResponseCode() !== 200) return "";
-    
-    const html = response.getContentText();
-    const htmlLimpo = html
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
-      .replace(/<nav\b[^<]*(?:(?!<\/nav>)<[^<]*)*<\/nav>/gi, '')
-      .replace(/<header\b[^<]*(?:(?!<\/header>)<[^<]*)*<\/header>/gi, '')
-      .replace(/<footer\b[^<]*(?:(?!<\/footer>)<[^<]*)*<\/footer>/gi, '');
 
-    const pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
-    let paragrafos = [];
-    let match;
-    while ((match = pRegex.exec(htmlLimpo)) !== null) {
-      let textoP = match[1].replace(/<[^>]+>/g, '').trim();
-      if (textoP.length > 40) paragrafos.push(textoP);
+    let abaAtual = "ResumoSemanal";
+    let indexSemanaSelecionada = 0;
+
+    function formatarMoedaBR(valor) {
+      if (valor === null || valor === undefined || valor === "") return null;
+      const num = typeof valor === 'number' ? valor : parseFloat(String(valor).replace(',', '.'));
+      if (isNaN(num)) return null;
+      return "R$ " + num.toFixed(2).replace('.', ',');
     }
 
-    return paragrafos.join('\n\n').substring(0, 4000);
-  } catch (e) {
-    return "";
-  }
-}
-
-function analisarMateriaCompleta(titulo, conteudoCompleto, snippetFallback) {
-  const apiKey = getGeminiApiKey();
-  if (!apiKey) return null;
-
-  const textoBase = (conteudoCompleto && conteudoCompleto.length > 200) ? conteudoCompleto : snippetFallback;
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-  const prompt = `Você é um analista de inteligência de mercado focado em sorgo.
-  Analise a matéria:
-  TÍTULO: ${titulo}
-  CORPO: ${textoBase}
-  
-  Classifique rigorosamente em UMA das 5 categorias:
-  - Regulatório
-  - Ciência/Técnico
-  - Mercado
-  - Comercial
-  - Eventos
-
-  Retorne EXCLUSIVAMENTE em formato JSON:
-  {
-    "rejeitado": false,
-    "titulo": "Título objetivo",
-    "resumo": "Resumo analítico de 2 a 3 linhas destacando números concretos, contexto agronômico/comercial e impacto prático",
-    "categoria": "Escolha exatamente: Regulatório OU Ciência/Técnico OU Mercado OU Comercial OU Eventos"
-  }`;
-
-  const options = {
-    method: "post", 
-    contentType: "application/json", 
-    muteHttpExceptions: true,
-    payload: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-  };
-
-  try {
-    const response = UrlFetchApp.fetch(url, options);
-    if (response.getResponseCode() !== 200) return null;
-    const jsonStr = JSON.parse(response.getContentText()).candidates[0].content.parts[0].text;
-    const matchJSON = jsonStr.match(/\{[\s\S]*\}/);
-    return matchJSON ? JSON.parse(matchJSON[0]) : null;
-  } catch(e) { return null; }
-}
-
-function gerarEmbedding(texto) {
-  const apiKey = getGeminiApiKey();
-  if (!apiKey) return null;
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`;
-  const options = {
-    method: "post", 
-    contentType: "application/json", 
-    muteHttpExceptions: true,
-    payload: JSON.stringify({ model: "models/text-embedding-004", content: { parts: [{ text: texto }] } })
-  };
-  try {
-    const response = UrlFetchApp.fetch(url, options);
-    return (response.getResponseCode() === 200) ? JSON.parse(response.getContentText()).embedding.values : null;
-  } catch(e) { return null; }
-}
-
-function calcularCosseno(vecA, vecB) {
-  let dotProduct = 0, normA = 0, normB = 0;
-  for (let i = 0; i < vecA.length; i++) { 
-    dotProduct += vecA[i] * vecB[i]; 
-    normA += vecA[i] * vecA[i]; 
-    normB += vecB[i] * vecB[i]; 
-  }
-  if (normA === 0 || normB === 0) return 0;
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-}
-
-function arbitrarDuplicidadeComIA(resumoExistente, resumoNovo) {
-  const apiKey = getGeminiApiKey();
-  if (!apiKey) return false;
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-  const prompt = `Compare os resumos:
-  A: "${resumoExistente}"
-  B: "${resumoNovo}"
-  É exatamente o mesmo fato sem novidades? Responda em JSON: {"eh_duplicata": true} ou {"eh_duplicata": false}`;
-
-  const options = {
-    method: "post", 
-    contentType: "application/json", 
-    muteHttpExceptions: true,
-    payload: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-  };
-
-  try {
-    const response = UrlFetchApp.fetch(url, options);
-    if (response.getResponseCode() !== 200) return false;
-    const match = JSON.parse(response.getContentText()).candidates[0].content.parts[0].text.match(/\{[\s\S]*\}/);
-    return match ? JSON.parse(match[0]).eh_duplicata === true : false;
-  } catch(e) { return false; }
-}
-
-function verificarDuplicidadeInteligente(vetorNovo, resumoNovo, dataNoticiaNova) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName('Embeddings_Cache');
-  if (!sheet) return false;
-  
-  const dados = sheet.getDataRange().getValues();
-  const dataRef = parseDataBR(dataNoticiaNova) ? parseDataBR(dataNoticiaNova).getTime() : new Date().getTime();
-  const JANELA_DIAS_MS = 10 * 24 * 60 * 60 * 1000; 
-
-  for (let i = 1; i < dados.length; i++) {
-    const vetorStr = dados[i][1];
-    const dataItemStr = dados[i][2];
-    const resumoItem = dados[i][3] || "";
-
-    if (!vetorStr || vetorStr === "VETOR_FALHOU") continue;
-    const dataItem = parseDataBR(dataItemStr);
-    if (dataItem && Math.abs(dataRef - dataItem.getTime()) > JANELA_DIAS_MS) continue;
-
-    try {
-      const similaridade = calcularCosseno(vetorNovo, JSON.parse(vetorStr));
-      if (similaridade >= 0.92) return true; 
-      if (similaridade >= 0.84 && similaridade < 0.92) {
-        if (arbitrarDuplicidadeComIA(resumoItem, resumoNovo)) return true;
+    function formatarDataVisual(dataInput) {
+      if (!dataInput) return null;
+      const str = String(dataInput).trim();
+      if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
+        const partes = str.split(' ')[0].split('/');
+        return `${partes[0].padStart(2, '0')}/${partes[1].padStart(2, '0')}/${partes[2]}`;
       }
-    } catch(e) {}
-  }
-  return false;
-}
-
-function processarNovaNoticia(tituloBruto, snippetBruto, urlOriginal, fonteOriginal, dataPublicacao, cacheUrls) {
-  const urlLimpa = String(urlOriginal).trim();
-  if (cacheUrls.has(urlLimpa)) return;
-
-  if (!ehPotencialmenteRelevante(tituloBruto, snippetBruto)) return;
-
-  const conteudoArtigo = extrairConteudoArtigo(urlLimpa);
-  const avaliacaoJSON = analisarMateriaCompleta(tituloBruto, conteudoArtigo, snippetBruto);
-  if (!avaliacaoJSON || avaliacaoJSON.rejeitado) return;
-
-  const vetorNovo = gerarEmbedding(avaliacaoJSON.resumo);
-  if (vetorNovo && verificarDuplicidadeInteligente(vetorNovo, avaliacaoJSON.resumo, dataPublicacao)) return;
-
-  const ehEvento = avaliacaoJSON.categoria.toLowerCase().includes('evento') || 
-                   tituloBruto.toLowerCase().includes('dia de campo') || 
-                   tituloBruto.toLowerCase().includes('seminário') || 
-                   tituloBruto.toLowerCase().includes('congresso');
-
-  salvarNoticia(dataPublicacao, avaliacaoJSON.titulo, urlLimpa, avaliacaoJSON.resumo, fonteOriginal, avaliacaoJSON.categoria, vetorNovo ? vetorNovo : "VETOR_FALHOU", ehEvento);
-  cacheUrls.add(urlLimpa);
-}
-
-function salvarNoticia(data, titulo, url, resumo, fonte, categoria, vetor, ehEvento) {
-  const nomeAba = ehEvento ? 'Eventos_Aprovados' : 'Noticias_Aprovadas';
-  let sheetDestino = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nomeAba) || SpreadsheetApp.getActiveSpreadsheet().insertSheet(nomeAba);
-  sheetDestino.appendRow([data, titulo, url, resumo, fonte, categoria]);
-  
-  let sheetVetor = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Embeddings_Cache');
-  if (!sheetVetor) {
-    sheetVetor = SpreadsheetApp.getActiveSpreadsheet().insertSheet('Embeddings_Cache');
-    sheetVetor.appendRow(["URL", "Embedding_JSON", "Data", "Resumo"]);
-  }
-  sheetVetor.appendRow([url, typeof vetor === 'string' ? vetor : JSON.stringify(vetor), data, resumo]);
-}
-
-// ==========================================
-// 3. COLETORES DETERMINÍSTICOS DAS FONTES
-// ==========================================
-
-function extrairDataPaginaHtml(html) {
-  if (!html) return null;
-  const timeRegex = /<time[^>]*datetime=["']?(\d{4}-\d{2}-\d{2})[^"']*["']?/i;
-  const matchTime = timeRegex.exec(html);
-  if (matchTime && matchTime[1]) return formatarDataBR(matchTime[1]);
-
-  const textoDataRegex = /(?:fechamento|atualizado|cotaç(?:ão|ões)|data)[\s\w]*?(?:de|em|:)?\s*(\d{1,2}\/\d{1,2}\/\d{4})/i;
-  const matchTexto = textoDataRegex.exec(html);
-  if (matchTexto && matchTexto[1]) return formatarDataBR(matchTexto[1]);
-
-  return null;
-}
-
-function coletarSorgoUberlandiaMilhoSoja() {
-  const url = "https://www.milhosoja.com.br/minas-gerais/preco-do-sorgo-em-uberlandia-mg-cotacao-do-dia/";
-  const agoraStr = formatarDataHoraBR(new Date());
-  let resultado = null;
-
-  try {
-    const res = UrlFetchApp.fetch(url, {
-      method: "get",
-      muteHttpExceptions: true,
-      headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" }
-    });
-    
-    if (res.getResponseCode() === 200) {
-      const html = res.getContentText();
-      const dataReal = extrairDataPaginaHtml(html);
-      const precoRegex = /sorgo[\s\S]{0,150}?R\$\s*(\d{1,3}(?:[.,]\d{2}))/i;
-      const match = precoRegex.exec(html);
-
-      let precoNum = null;
-      if (match && match[1]) {
-        precoNum = parseFloat(match[1].replace(/\./g, '').replace(',', '.'));
-      }
-
-      if (precoNum !== null && precoNum >= 15 && precoNum <= 200) {
-        resultado = {
-          produto: "Sorgo",
-          praca: "Uberlândia",
-          regiao: "Triângulo Mineiro",
-          uf: "MG",
-          preco: precoNum,
-          unidade: "R$/sc 60kg",
-          tipo: "observado",
-          fonte: "MilhoSoja.com.br",
-          urlFonte: url,
-          dataCotacao: dataReal,
-          dataColeta: agoraStr,
-          status: dataReal ? "COTACAO_VERIFICADA" : "DATA_NAO_IDENTIFICADA"
-        };
-      }
-    }
-  } catch (e) {}
-
-  return resultado;
-}
-
-function coletarCotacoesAgrolinkCristalina() {
-  const url = "https://www.agrolink.com.br/regional/go/cristalina/cotacoes";
-  const agoraStr = formatarDataHoraBR(new Date());
-  const itens = [];
-
-  try {
-    const res = UrlFetchApp.fetch(url, {
-      method: "get",
-      muteHttpExceptions: true,
-      headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" }
-    });
-
-    if (res.getResponseCode() === 200) {
-      const html = res.getContentText();
-      const dataReal = extrairDataPaginaHtml(html);
-      const linhas = extrairLinhasTabelaAgrolink(html);
-
-      linhas.forEach(linha => {
-        const prodLower = linha.produto.toLowerCase();
-        let prodOficial = null;
-
-        if (prodLower.includes("sorgo")) prodOficial = "Sorgo";
-        else if (prodLower.includes("milho")) prodOficial = "Milho";
-
-        if (prodOficial && linha.preco >= 15 && linha.preco <= 200) {
-          itens.push({
-            produto: prodOficial,
-            praca: "Cristalina",
-            regiao: "Entorno DF",
-            uf: "GO",
-            preco: linha.preco,
-            unidade: "R$/sc 60kg",
-            tipo: "REFERENCIAL",
-            fonte: "Agrolink",
-            urlFonte: url,
-            dataCotacao: linha.dataLinha || dataReal,
-            dataColeta: agoraStr,
-            status: dataReal ? "COTACAO_VERIFICADA" : "DATA_NAO_IDENTIFICADA"
-          });
+      if (str.includes('-')) {
+        const partesData = str.split('T')[0].split('-');
+        if (partesData.length === 3 && partesData[0].length === 4) {
+          return `${partesData[2].padStart(2, '0')}/${partesData[1].padStart(2, '0')}/${partesData[0]}`;
         }
-      });
-    }
-  } catch (e) {}
-
-  return itens;
-}
-
-function coletarCotacoesAgrolinkDourados() {
-  const url = "https://www.agrolink.com.br/regional/ms/dourados/cotacoes";
-  const agoraStr = formatarDataHoraBR(new Date());
-  const itens = [];
-
-  try {
-    const res = UrlFetchApp.fetch(url, {
-      method: "get",
-      muteHttpExceptions: true,
-      headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" }
-    });
-
-    if (res.getResponseCode() === 200) {
-      const html = res.getContentText();
-      const dataReal = extrairDataPaginaHtml(html);
-      const linhas = extrairLinhasTabelaAgrolink(html);
-
-      linhas.forEach(linha => {
-        const prodLower = linha.produto.toLowerCase();
-        let prodOficial = null;
-
-        if (prodLower.includes("sorgo")) prodOficial = "Sorgo";
-        else if (prodLower.includes("milho")) prodOficial = "Milho";
-
-        if (prodOficial && linha.preco >= 15 && linha.preco <= 200) {
-          itens.push({
-            produto: prodOficial,
-            praca: "Dourados",
-            regiao: "Mato Grosso do Sul",
-            uf: "MS",
-            preco: linha.preco,
-            unidade: "R$/sc 60kg",
-            tipo: "REFERENCIAL",
-            fonte: "Agrolink",
-            urlFonte: url,
-            dataCotacao: linha.dataLinha || dataReal,
-            dataColeta: agoraStr,
-            status: dataReal ? "COTACAO_VERIFICADA" : "DATA_NAO_IDENTIFICADA"
-          });
-        }
-      });
-    }
-  } catch (e) {}
-
-  return itens;
-}
-
-function extrairLinhasTabelaAgrolink(html) {
-  const resultados = [];
-  const trRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
-  let trMatch;
-
-  while ((trMatch = trRegex.exec(html)) !== null) {
-    const tdRegex = /<td[^>]*>([\s\S]*?)<\/td>/gi;
-    let tdMatch;
-    let colunas = [];
-
-    while ((tdMatch = tdRegex.exec(trMatch[1])) !== null) {
-      colunas.push(tdMatch[1].replace(/<[^>]+>/g, '').trim());
-    }
-
-    if (colunas.length >= 2) {
-      const nomeProduto = colunas[0];
-      const precoLimpo = String(colunas[1]).replace('R$', '').replace(/\./g, '').replace(',', '.').trim();
-      const precoNum = parseFloat(precoLimpo);
-      const dataCol = colunas.length >= 3 ? formatarDataBR(colunas[2]) : null;
-
-      if (!isNaN(precoNum) && precoNum > 0) {
-        resultados.push({ produto: nomeProduto, preco: precoNum, dataLinha: dataCol });
       }
-    }
-  }
-  return resultados;
-}
-
-function normalizarPracaNoticiasAgricolas(textoCelula) {
-  if (!textoCelula) return null;
-  const limpo = textoCelula.replace(/<[^>]+>/g, '').trim();
-  const termosInvalidos = ["sep", "set", "nov", "jan", "mar", "mai", "jul", "ago", "out", "dez", "2026", "2027", "2028", "soja", "café", "boi", "algodão", "açúcar", "suco", "b3", "cbot"];
-  
-  if (termosInvalidos.some(t => limpo.toLowerCase().includes(t))) return null;
-
-  const regex = /^(.*?)(?:\/([A-Z]{2}))?\s*(?:\((.*?)\))?$/i;
-  const match = regex.exec(limpo);
-  if (!match) return null;
-
-  const rawNome = removerAcentos(match[1]);
-  const rawUf = (match[2] || "").trim().toUpperCase();
-  const entidade = (match[3] || "").trim();
-
-  let praca = null;
-  let regiao = null;
-  let uf = null;
-
-  if (rawNome.includes("rio verde")) { praca = "Rio Verde"; uf = "GO"; }
-  else if (rawNome.includes("jatai")) { praca = "Jataí"; uf = "GO"; }
-  else if (rawNome.includes("oeste da bahia") || rawNome.includes("luis eduardo") || rawNome.includes("lem")) {
-    praca = "Luís Eduardo Magalhães"; regiao = "Oeste da Bahia"; uf = "BA";
-  }
-  else if (rawNome.includes("candido mota")) { praca = "Cândido Mota"; uf = "SP"; }
-  else if (rawNome.includes("rio do sul")) { praca = "Rio do Sul"; uf = "SC"; }
-
-  if (!praca) return null;
-
-  let fonte = "Notícias Agrícolas";
-  if (entidade) fonte = `${entidade} / Notícias Agrícolas`;
-
-  return { praca: praca, regiao: regiao, uf: uf, fonte: fonte };
-}
-
-function coletarCotacoesMercadoFisico() {
-  const cotacoes = [];
-  const agoraStr = formatarDataHoraBR(new Date());
-
-  // 1. Notícias Agrícolas (Sorgo)
-  const urlSorgoNA = "https://www.noticiasagricolas.com.br/cotacoes/sorgo/sorgo-mercado-fisico-media";
-  try {
-    const res = UrlFetchApp.fetch(urlSorgoNA, { method: "get", muteHttpExceptions: true });
-    if (res.getResponseCode() === 200) {
-      const html = res.getContentText();
-      const dataReal = extrairDataPaginaHtml(html);
-      const linhas = extrairLinhasTabelaGenerica(html);
-      linhas.forEach(l => {
-        const norm = normalizarPracaNoticiasAgricolas(l.praca);
-        if (norm && l.preco >= 15 && l.preco <= 200) {
-          cotacoes.push({
-            produto: "Sorgo", praca: norm.praca, regiao: norm.regiao, uf: norm.uf,
-            preco: l.preco, unidade: "R$/sc 60kg", tipo: "observado", fonte: norm.fonte,
-            urlFonte: urlSorgoNA, dataCotacao: dataReal, dataColeta: agoraStr,
-            status: dataReal ? "COTACAO_VERIFICADA" : "DATA_NAO_IDENTIFICADA"
-          });
+      try {
+        const d = new Date(str);
+        if (!isNaN(d.getTime())) {
+          return `${String(d.getUTCDate()).padStart(2, '0')}/${String(d.getUTCMonth() + 1).padStart(2, '0')}/${d.getUTCFullYear()}`;
         }
-      });
+      } catch (e) {}
+      return null;
     }
-  } catch(e) {}
 
-  // 2. Notícias Agrícolas (Milho)
-  const urlMilhoNA = "https://www.noticiasagricolas.com.br/cotacoes/milho/milho-mercado-fisico-sindicatos-e-cooperativas";
-  try {
-    const res = UrlFetchApp.fetch(urlMilhoNA, { method: "get", muteHttpExceptions: true });
-    if (res.getResponseCode() === 200) {
-      const html = res.getContentText();
-      const dataReal = extrairDataPaginaHtml(html);
-      const linhas = extrairLinhasTabelaGenerica(html);
-      linhas.forEach(l => {
-        const norm = normalizarPracaNoticiasAgricolas(l.praca);
-        if (norm && l.preco >= 15 && l.preco <= 200) {
-          cotacoes.push({
-            produto: "Milho", praca: norm.praca, regiao: norm.regiao, uf: norm.uf,
-            preco: l.preco, unidade: "R$/sc 60kg", tipo: "observado", fonte: norm.fonte,
-            urlFonte: urlMilhoNA, dataCotacao: dataReal, dataColeta: agoraStr,
-            status: dataReal ? "COTACAO_VERIFICADA" : "DATA_NAO_IDENTIFICADA"
-          });
-        }
-      });
-    }
-  } catch(e) {}
-
-  // 3. MilhoSoja.com.br (Uberlândia/MG)
-  const cotaUberlandia = coletarSorgoUberlandiaMilhoSoja();
-  if (cotaUberlandia) cotacoes.push(cotaUberlandia);
-
-  // 4. Agrolink Cristalina (GO)
-  const cotaCristalina = coletarCotacoesAgrolinkCristalina();
-  if (cotaCristalina.length > 0) cotacoes.push(...cotaCristalina);
-
-  // 5. Agrolink Dourados (MS)
-  const cotaDourados = coletarCotacoesAgrolinkDourados();
-  if (cotaDourados.length > 0) cotacoes.push(...cotaDourados);
-
-  return cotacoes;
-}
-
-function extrairLinhasTabelaGenerica(html) {
-  const resultados = [];
-  const trRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
-  let trMatch;
-  while ((trMatch = trRegex.exec(html)) !== null) {
-    const tdRegex = /<td[^>]*>([\s\S]*?)<\/td>/gi;
-    let tdMatch;
-    let colunas = [];
-    while ((tdMatch = tdRegex.exec(trMatch[1])) !== null) {
-      colunas.push(tdMatch[1].replace(/<[^>]+>/g, '').trim());
-    }
-    if (colunas.length >= 2) {
-      const praca = colunas[0];
-      const preco = parseFloat(String(colunas[1]).replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
-      if (!isNaN(preco) && preco > 0) resultados.push({ praca: praca, preco: preco });
-    }
-  }
-  return resultados;
-}
-
-function salvarHistoricoCotacoes(cotacoesNovas) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName('Historico_Cotacoes') || ss.getSheetByName('Histórico_Cotações');
-  
-  if (!sheet) {
-    sheet = ss.insertSheet('Historico_Cotacoes');
-    sheet.appendRow([
-      "Data Coleta", "Data Cotação", "Produto", "Praça", "UF", 
-      "Preço (R$)", "Unidade", "Tipo Cotação", "Fonte", "URL Fonte", "Chave Única"
-    ]);
-  }
-
-  const dados = sheet.getDataRange().getValues();
-  const chavesExistentes = new Set();
-  const colChave = 10; // Coluna K
-
-  for (let i = 1; i < dados.length; i++) {
-    if (dados[i][colChave]) chavesExistentes.add(String(dados[i][colChave]).trim());
-  }
-
-  let inseridas = 0;
-  cotacoesNovas.forEach(c => {
-    if (typeof c.preco === 'number' && c.preco >= 15 && c.preco <= 200 && c.fonte && c.produto && c.praca) {
-      const dataChave = c.dataCotacao ? c.dataCotacao : "SEM_DATA";
-      const chave = `${c.produto}_${c.praca}_${dataChave}_${c.preco.toFixed(2)}_${c.tipo || 'observado'}_${c.fonte}`;
-
-      if (!chavesExistentes.has(chave)) {
-        sheet.appendRow([
-          c.dataColeta,
-          c.dataCotacao || "Não identificada",
-          c.produto,
-          c.praca,
-          c.uf || "",
-          c.preco,
-          c.unidade || "R$/sc 60kg",
-          c.tipo || "observado",
-          c.fonte,
-          c.urlFonte || "",
-          chave
-        ]);
-        chavesExistentes.add(chave);
-        inseridas++;
+    function parseDataParaTimestamp(dataStr) {
+      if (!dataStr) return 0;
+      const formatada = formatarDataVisual(dataStr);
+      if (formatada && formatada.includes('/')) {
+        const partes = formatada.split('/');
+        if (partes.length === 3) return new Date(partes[2], partes[1] - 1, partes[0]).getTime();
       }
+      return new Date(dataStr).getTime() || 0;
     }
-  });
 
-  Logger.log(`Histórico atualizado: ${inseridas} novas cotações gravadas.`);
-}
+    function getBadgeInfo(categoria) {
+      if (!categoria) categoria = "";
+      const cat = categoria.toLowerCase();
 
-function atualizarCotacoesDiarias() {
-  Logger.log("Iniciando coleta nos 8 polos oficiais...");
-  const cotacoes = coletarCotacoesMercadoFisico();
-  salvarHistoricoCotacoes(cotacoes);
-}
+      if (cat.includes("regulatório") || cat.includes("regulatorio")) {
+        return { cls: "badge-regulatório", icn: "policy", tag: "Regulatório" };
+      }
+      if (cat.includes("ciência") || cat.includes("ciencia") || cat.includes("técnico") || cat.includes("tecnico")) {
+        return { cls: "badge-ciência-técnico", icn: "biotech", tag: "Ciência/Técnico" };
+      }
+      if (cat.includes("mercado")) {
+        return { cls: "badge-mercado", icn: "monitoring", tag: "Mercado" };
+      }
+      if (cat.includes("comercial")) {
+        return { cls: "badge-comercial", icn: "domain", tag: "Comercial" };
+      }
+      if (cat.includes("evento") || cat.includes("campo")) {
+        return { cls: "badge-evento", icn: "event", tag: "Eventos" };
+      }
 
-// ==========================================
-// 4. INGESTÃO DIÁRIA PRINCIPAL
-// ==========================================
+      return { cls: "bg-gray-700 text-white", icn: "article", tag: "Geral" };
+    }
 
-function rodarIngestaoDiaria() {
-  Logger.log("Iniciando ingestão diária completa do SorghumIntel...");
-  atualizarCotacoesDiarias();
-  
-  const cacheUrls = obterCacheUrlsExistentes();
-  const urlsBusca = [
-    { idioma: "PT-BR", url: "https://news.google.com/rss/search?q=sorgo+when:30d&hl=pt-BR&gl=BR&ceid=BR:pt-419" },
-    { idioma: "EN-US", url: "https://news.google.com/rss/search?q=sorghum+when:30d&hl=en-US&gl=US&ceid=US:en" }
-  ];
+    // ==========================================
+    // RENDERIZADOR 1: RESUMO SEMANAL EXECUTIVO
+    // ==========================================
+    function renderizarResumoSemanal() {
+      const container = document.getElementById('news-container');
+      container.className = "flex flex-col gap-8 col-span-full max-w-4xl mx-auto w-full";
+      container.innerHTML = '';
 
-  for (let i = 0; i < urlsBusca.length; i++) {
-    buscarNoGoogleNews(urlsBusca[i].url, cacheUrls);
-  }
-  
-  Logger.log("Rotina diária finalizada com sucesso!");
-}
+      if (!bancoDados.resumosSemanais || bancoDados.resumosSemanais.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white border border-outline-variant rounded-2xl p-10 text-center shadow-sm">
+            <span class="material-symbols-outlined text-5xl text-emerald-600 mb-3">auto_stories</span>
+            <h2 class="text-gray-900 font-bold text-lg mb-1">Briefing Executivo em Geração</h2>
+            <p class="text-sm text-gray-500 max-w-md mx-auto">O Resumo Semanal consolida os fatos mais relevantes a cada encerramento de rotina diária.</p>
+          </div>
+        `;
+        return;
+      }
 
-function buscarNoGoogleNews(urlBusca, cacheUrls) {
-  try {
-    const resposta = UrlFetchApp.fetch(urlBusca, { method: "get", muteHttpExceptions: true });
-    if (resposta.getResponseCode() !== 200) return;
-
-    const textoBruto = resposta.getContentText();
-    const itemRegex = /<item>([\s\S]*?)<\/item>/gi;
-    let match;
-    let countNovas = 0;
-
-    while ((match = itemRegex.exec(textoBruto)) !== null && countNovas < 10) {
-      let itemStr = match[1];
-      const extrairTag = (tag) => {
-        let tagRegex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\/${tag}>`, 'i');
-        let res = (itemStr.match(tagRegex) || [])[1] || "";
-        return res.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').replace(/<[^>]+>/g, '').trim(); 
-      };
+      const resumosOrdenados = [...bancoDados.resumosSemanais].sort((a, b) => b.idSemana.localeCompare(a.idSemana));
       
-      let link = extrairTag('link');
-      if (cacheUrls.has(link)) continue;
+      if (indexSemanaSelecionada >= resumosOrdenados.length) indexSemanaSelecionada = 0;
+      if (indexSemanaSelecionada < 0) indexSemanaSelecionada = 0;
 
-      let titulo = extrairTag('title');
-      let descricao = extrairTag('description');
-      let fonte = extrairTag('source') || "Google News"; 
-      let pubDate = extrairTag('pubDate');
-      let data = pubDate ? formatarDataBR(new Date(pubDate)) : formatarDataBR(new Date());
-      
-      processarNovaNoticia(titulo, descricao, link, fonte, data, cacheUrls);
-      countNovas++;
-      Utilities.sleep(2000); 
+      const semana = resumosOrdenados[indexSemanaSelecionada];
+      const temAnterior = indexSemanaSelecionada < resumosOrdenados.length - 1;
+      const temProxima = indexSemanaSelecionada > 0;
+
+      const statusTag = semana.status === "EM_ANDAMENTO" 
+        ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Semana em andamento</span>`
+        : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Semana concluída</span>`;
+
+      let html = `
+        <!-- Seletor e Navegação Semanal -->
+        <div class="flex items-center justify-between bg-white border border-outline-variant p-4 rounded-2xl shadow-sm">
+          <button onclick="mudarSemana(1)" ${!temAnterior ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-sm font-semibold text-gray-500"' : 'class="flex items-center text-sm font-semibold text-primary hover:underline"'}>
+            <span class="material-symbols-outlined text-lg mr-1">arrow_back</span> Semana anterior
+          </button>
+          
+          <div class="text-center">
+            <span class="text-base font-extrabold text-gray-900 tracking-tight block">${semana.rotuloVisual || semana.idSemana}</span>
+            <span class="text-xs text-gray-400 font-medium">${semana.dataInicial} a ${semana.dataFinal}</span>
+            <div class="mt-1">${statusTag}</div>
+          </div>
+
+          <button onclick="mudarSemana(-1)" ${!temProxima ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-sm font-semibold text-gray-500"' : 'class="flex items-center text-sm font-semibold text-primary hover:underline"'}>
+            Próxima semana <span class="material-symbols-outlined text-lg ml-1">arrow_forward</span>
+          </button>
+        </div>
+
+        <!-- Nível 1: A semana em 30 segundos -->
+        <section class="bg-gradient-to-br from-emerald-900 to-emerald-950 text-white p-6 md:p-8 rounded-2xl shadow-md">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-amber-400 text-xl">timer</span>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-emerald-200">A semana em 30 segundos</h3>
+          </div>
+          <p class="text-sm md:text-base leading-relaxed text-emerald-50 font-normal">
+            ${semana.resumoExecutivo || 'Síntese executiva dos principais acontecimentos estruturados da semana.'}
+          </p>
+        </section>
+      `;
+
+      // Nível 2: Destaques por Categoria
+      const categoriasOrdem = ["Mercado", "Comercial", "Regulatório", "Ciência/Técnico", "Eventos"];
+      const destaquesObj = semana.destaques || {};
+
+      let encontrouAlgumDestaque = false;
+
+      categoriasOrdem.forEach(cat => {
+        const lista = destaquesObj[cat] || [];
+        if (lista.length > 0) {
+          encontrouAlgumDestaque = true;
+          const badge = getBadgeInfo(cat);
+
+          html += `
+            <section class="space-y-4">
+              <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-gray-700 text-xl">${badge.icn}</span>
+                  <h3 class="text-base font-bold text-gray-900 uppercase tracking-wider">${cat}</h3>
+                </div>
+                <span class="text-xs text-gray-400 font-medium">${lista.length} principal(is) acontecimento(s)</span>
+              </div>
+
+              <div class="grid grid-cols-1 gap-4">
+          `;
+
+          lista.forEach(item => {
+            const tagsHTML = (item.tags && item.tags.length > 0) 
+              ? item.tags.map(t => `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[11px] font-medium">#${t}</span>`).join(' ')
+              : '';
+
+            const badgeFontes = (item.fontesRelacionadas && item.fontesRelacionadas > 1)
+              ? `<span class="text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-semibold">${item.fontesRelacionadas} fontes relacionadas</span>`
+              : '';
+
+            // O box só é renderizado se houver uma análise específica válida
+            const boxPorqueImporta = (item.porqueImporta && typeof item.porqueImporta === 'string' && item.porqueImporta.trim().length > 10) ? `
+              <div class="bg-emerald-50/80 border-l-4 border-primary p-3 rounded-r-xl mb-3">
+                <span class="text-xs font-bold text-emerald-900 block mb-0.5 uppercase tracking-wide">Por que isso importa</span>
+                <p class="text-xs text-emerald-950 leading-relaxed">${item.porqueImporta}</p>
+              </div>
+            ` : '';
+
+            html += `
+              <article class="bg-white border border-outline-variant rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex justify-between items-start gap-2 mb-2">
+                  <h4 class="text-base font-bold text-gray-900 leading-snug">
+                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">${item.titulo}</a>
+                  </h4>
+                  ${badgeFontes}
+                </div>
+
+                <p class="text-sm text-gray-700 leading-relaxed mb-3">${item.resumo}</p>
+                ${boxPorqueImporta}
+
+                <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-100 text-xs">
+                  <div class="flex items-center gap-2 text-gray-500 font-medium">
+                    <span class="uppercase font-semibold">${item.fonte || 'Google News'}</span>
+                    <span>•</span>
+                    <span>${formatarDataVisual(item.data) || item.data}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">${tagsHTML}</div>
+                </div>
+              </article>
+            `;
+          });
+
+          html += `
+              </div>
+            </section>
+          `;
+        }
+      });
+
+      if (!encontrouAlgumDestaque) {
+        html += `
+          <div class="bg-white border border-outline-variant rounded-2xl p-8 text-center text-gray-500">
+            Nenhum destaque categorizado disponível para este período semanal.
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
     }
-  } catch (erro) {
-    Logger.log(`Erro na busca: ${erro.toString()}`);
-  }
-}
 
-// ==========================================
-// 5. ENDPOINT DA API (doGet) - DIRETO POR ÍNDICES DA PLANILHA
-// ==========================================
+    function mudarSemana(delta) {
+      indexSemanaSelecionada += delta;
+      renderizarResumoSemanal();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-function doGet(e) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  
-  // 1. Notícias
-  let listaNoticias = [];
-  const sheetNoticias = ss.getSheetByName('Noticias_Aprovadas');
-  if (sheetNoticias) {
-    const rows = sheetNoticias.getDataRange().getValues();
-    for (let i = rows.length - 1; i >= 1; i--) {
-      if (!rows[i][1]) continue;
-      listaNoticias.push({ 
-        data: formatarDataBR(rows[i][0]), 
-        titulo: rows[i][1], 
-        url: rows[i][2], 
-        resumo: rows[i][3], 
-        fonte: rows[i][4], 
-        categoria: rows[i][5] 
+    // ==========================================
+    // RENDERIZADOR 2: FEED DE NOTÍCIAS / EVENTOS
+    // ==========================================
+    function renderizarCards(itens) {
+      const container = document.getElementById('news-container');
+      container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 col-span-full";
+      container.innerHTML = ''; 
+      
+      if (!itens || itens.length === 0) {
+        container.innerHTML = '<p class="text-center w-full text-gray-500 col-span-full pt-8">Nenhuma inteligência encontrada nesta categoria.</p>';
+        return;
+      }
+
+      const ordenados = [...itens].sort((a, b) => parseDataParaTimestamp(b.data) - parseDataParaTimestamp(a.data));
+
+      ordenados.forEach((item) => {
+        const catTexto = item.categoria || "";
+        const badge = getBadgeInfo(catTexto);
+        const dataExibicao = formatarDataVisual(item.data) || item.data || '';
+
+        const tagsHTML = (item.tags && item.tags.length > 0) 
+          ? item.tags.map(t => `<span class="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-medium">#${t}</span>`).join(' ')
+          : '';
+
+        const boxPorqueImporta = (item.porqueImporta && typeof item.porqueImporta === 'string' && item.porqueImporta.trim().length > 10) ? `
+          <div class="bg-gray-50 border-l-2 border-primary p-2.5 rounded-r-lg mb-4 text-xs text-gray-700">
+            <strong class="text-emerald-900 block text-[11px] uppercase tracking-wider mb-0.5">Impacto Prático:</strong>
+            ${item.porqueImporta}
+          </div>
+        ` : '';
+
+        const cardHTML = `
+          <article class="bg-white border border-outline-variant rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between h-full">
+            <div>
+              <div class="flex justify-between items-center mb-4">
+                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${badge.cls}">${badge.tag}</span>
+                <div class="flex items-center gap-1.5 text-gray-500 text-xs font-semibold">
+                  <span class="material-symbols-outlined text-[16px] text-gray-400">calendar_today</span>
+                  <span>${dataExibicao}</span>
+                </div>
+              </div>
+
+              <h2 class="text-base font-bold text-gray-900 mb-2 leading-snug hover:text-primary transition-colors">
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.titulo}</a>
+              </h2>
+
+              <div class="text-xs text-gray-500 font-semibold mb-3 flex items-center gap-1.5 uppercase">
+                <span class="material-symbols-outlined text-[16px] text-gray-400">${badge.icn}</span>
+                FONTE: ${item.fonte || 'Google News'}
+              </div>
+
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">${item.resumo}</p>
+              ${boxPorqueImporta}
+            </div>
+
+            <div>
+              <div class="flex flex-wrap gap-1 mb-3">${tagsHTML}</div>
+              <div class="pt-3 border-t border-outline-variant flex justify-start items-center text-xs font-bold">
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline flex items-center gap-1">
+                  Acessar fonte original &rarr;
+                </a>
+              </div>
+            </div>
+          </article>
+        `;
+        container.innerHTML += cardHTML;
       });
     }
-  }
 
-  // 2. Eventos
-  let listaEventos = [];
-  const sheetEventos = ss.getSheetByName('Eventos_Aprovados') || ss.getSheetByName('Eventos');
-  if (sheetEventos) {
-    const rows = sheetEventos.getDataRange().getValues();
-    for (let i = rows.length - 1; i >= 1; i--) {
-      if (!rows[i][1]) continue;
-      listaEventos.push({ 
-        data: formatarDataBR(rows[i][0]), 
-        titulo: rows[i][1], 
-        url: rows[i][2], 
-        resumo: rows[i][3], 
-        fonte: rows[i][4], 
-        categoria: rows[i][5] || "Eventos"
+    // ==========================================
+    // RENDERIZADOR 3: MONITOR DE COTAÇÕES
+    // ==========================================
+    function renderizarTabelaPrecos(precos) {
+      const container = document.getElementById('news-container');
+      container.className = "flex flex-col gap-6 col-span-full max-w-5xl mx-auto w-full";
+      container.innerHTML = '';
+
+      if (!precos || precos.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white border border-outline-variant rounded-2xl p-8 text-center shadow-sm">
+            <span class="material-symbols-outlined text-4xl text-emerald-600 mb-2">payments</span>
+            <p class="text-gray-800 font-bold text-base mb-1">Monitor de cotações</p>
+            <p class="text-xs text-gray-500 max-w-md mx-auto">Nenhuma cotação verificável foi encontrada no momento.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let htmlPrecos = `
+        <div class="bg-white border border-outline-variant rounded-2xl p-6 shadow-sm">
+          <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 mb-6 border-b border-gray-100 pb-4">
+            <div>
+              <h2 class="text-lg font-bold text-gray-900">Monitor de cotações</h2>
+              <p class="text-xs text-gray-500">Apresenta apenas cotações com fonte auditável e relação real observada em datas compatíveis (saca 60kg disponível)</p>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+                <span class="w-2 h-2 rounded-full bg-emerald-600"></span> Cotação Verificada
+              </span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-gray-50 text-gray-600 border border-gray-200 font-medium">
+                <span class="w-2 h-2 rounded-full bg-gray-400"></span> Sem cotação disponível
+              </span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead>
+                <tr class="border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  <th class="pb-3 px-4">Praça / Polo</th>
+                  <th class="pb-3 px-4 text-right">Sorgo (R$/sc 60kg)</th>
+                  <th class="pb-3 px-4 text-right">Milho (R$/sc 60kg)</th>
+                  <th class="pb-3 px-4 text-center">Relação Observada</th>
+                  <th class="pb-3 px-4">Fonte dos Dados</th>
+                  <th class="pb-3 px-4 text-right">Data Cotação</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 font-medium">
+      `;
+
+      precos.forEach(p => {
+        let sorgoHTML = `<span class="text-xs text-gray-400 italic">Sem cotação verificada disponível</span>`;
+        if (p.precoSorgo && p.precoSorgo !== "null") {
+          const precoFormatado = formatarMoedaBR(p.precoSorgo);
+          let tagDefasagem = "";
+          if (p.statusAtualidadeSorgo === "ATENCAO_DEFASAGEM") {
+            tagDefasagem = `<span class="block text-[10px] text-amber-600 font-normal">Atualizado há ${p.diasDesdeAtualizacaoSorgo} dias</span>`;
+          } else if (p.statusAtualidadeSorgo === "COTACAO_DESATUALIZADA") {
+            tagDefasagem = `<span class="block text-[10px] text-red-500 font-normal">Desatualizado</span>`;
+          }
+          sorgoHTML = `<span class="text-primary font-bold text-base">${precoFormatado}</span>${tagDefasagem}`;
+        }
+
+        let milhoHTML = `<span class="text-xs text-gray-400 italic">Sem cotação</span>`;
+        if (p.precoMilho && p.precoMilho !== "null") {
+          const precoFormatado = formatarMoedaBR(p.precoMilho);
+          milhoHTML = `<span class="text-gray-700 font-semibold text-base">${precoFormatado}</span>`;
+        }
+
+        let relacaoHTML = `<span class="text-xs text-gray-400" title="Exige cotações verificadas na mesma data">—</span>`;
+        if (p.relacaoMilho && p.relacaoMilho !== "null") {
+          const relacaoBR = String(p.relacaoMilho).replace('.', ',');
+          relacaoHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">${relacaoBR}%</span>`;
+        }
+
+        let fonteHTML = `<span class="text-xs text-gray-400 italic">Aguardando integração</span>`;
+        const fonteExibir = p.fonteSorgo || p.fonte || p.fonteMilho;
+        const urlExibir = p.urlFonteSorgo || p.urlFonte || p.urlFonteMilho;
+
+        if (fonteExibir) {
+          if (urlExibir) {
+            fonteHTML = `<a href="${urlExibir}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-primary hover:underline bg-gray-50 px-2 py-1 rounded border border-gray-200">
+              ${fonteExibir} <span class="material-symbols-outlined text-[13px]">open_in_new</span>
+            </a>`;
+          } else {
+            fonteHTML = `<span class="text-xs font-semibold text-gray-600 bg-gray-50 px-2 py-1 rounded border border-gray-200">${fonteExibir}</span>`;
+          }
+        }
+
+        const dataOriginal = p.dataSorgo || p.data || p.dataMilho;
+        const dataFormatada = dataOriginal ? formatarDataVisual(dataOriginal) : null;
+        const dataAtualizacao = dataFormatada ? dataFormatada : `<span class="text-xs text-gray-400 italic">Não identificada</span>`;
+
+        htmlPrecos += `
+          <tr class="hover:bg-gray-50/80 transition-colors">
+            <td class="py-4 px-4 font-bold text-gray-900 flex items-center gap-2">
+              <span class="material-symbols-outlined text-gray-400 text-base">location_on</span>
+              ${p.praca} <span class="text-xs text-gray-400 font-normal">(${p.uf || '-'})</span>
+            </td>
+            <td class="py-4 px-4 text-right">${sorgoHTML}</td>
+            <td class="py-4 px-4 text-right">${milhoHTML}</td>
+            <td class="py-4 px-4 text-center">${relacaoHTML}</td>
+            <td class="py-4 px-4">${fonteHTML}</td>
+            <td class="py-4 px-4 text-right text-xs text-gray-500">${dataAtualizacao}</td>
+          </tr>
+        `;
       });
+
+      htmlPrecos += `
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = htmlPrecos;
     }
-  }
 
-  // 3. Os 8 Polos Oficiais
-  const polosPrioritarios = [
-    { id: "rio_verde", pracaExibicao: "Rio Verde", uf: "GO", chaves: ["rio verde"] },
-    { id: "jatai", pracaExibicao: "Jataí", uf: "GO", chaves: ["jatai"] },
-    { id: "lem", pracaExibicao: "Oeste da Bahia / LEM", uf: "BA", chaves: ["luis eduardo", "oeste da bahia", "lem"] },
-    { id: "cristalina", pracaExibicao: "Cristalina", uf: "GO", chaves: ["cristalina"] },
-    { id: "uberlandia", pracaExibicao: "Triângulo Mineiro / Uberlândia", uf: "MG", chaves: ["uberlandia", "triangulo", "machado"] },
-    { id: "candido_mota", pracaExibicao: "Cândido Mota", uf: "SP", chaves: ["candido mota"] },
-    { id: "dourados", pracaExibicao: "Dourados", uf: "MS", chaves: ["dourados", "campo grande", "maracaju", "sao gabriel", "eldorado", "mato grosso do sul"] },
-    { id: "rio_do_sul", pracaExibicao: "Rio do Sul", uf: "SC", chaves: ["rio do sul", "cravil"] }
-  ];
+    // ==========================================
+    // CONTROLADOR PRINCIPAL DE NAVEGAÇÃO
+    // ==========================================
+    async function aplicarFiltro(nomeAba) {
+      abaAtual = nomeAba;
+      const inputBusca = document.getElementById('search-input');
+      const termo = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
 
-  let listaPrecosConsolidada = [];
-  let sheetHist = ss.getSheetByName('Historico_Cotacoes') || 
-                  ss.getSheetByName('Histórico_Cotações') || 
-                  ss.getSheetByName('Cotacoes_Polos') || 
-                  ss.getSheetByName('Cotações_Polos');
+      if (abaAtual === "ResumoSemanal") {
+        renderizarResumoSemanal();
+        return;
+      }
 
-  if (sheetHist) {
-    const rows = sheetHist.getDataRange().getValues();
-    
-    // Mapeamento direto das colunas da planilha (A=0 ... K=10)
-    // A(0): Data Coleta, B(1): Data Cotação, C(2): Produto, D(3): Praça, E(4): UF, F(5): Preço, H(7): Tipo, I(8): Fonte, J(9): URL Fonte
-    const mapaSorgo = new Map();
-    const mapaMilho = new Map();
+      if (abaAtual === "Cotacao") {
+        if (!bancoDados.precos || bancoDados.precos.length === 0) {
+          const container = document.getElementById('news-container');
+          container.className = "flex flex-col gap-6 col-span-full";
+          container.innerHTML = '<p class="text-center w-full py-8 text-gray-500">Consultando cotações verificadas...</p>';
+          await carregarDadosIniciais();
+        }
+        renderizarTabelaPrecos(bancoDados.precos);
+        return;
+      }
 
-    for (let i = 1; i < rows.length; i++) {
-      const pracaLimpa = removerAcentos(rows[i][3]);
-      const produtoLimpo = removerAcentos(rows[i][2]);
+      let listaOrigem = [];
       
-      const precoRaw = rows[i][5]; // Coluna F
-      let precoNum = 0;
-      if (typeof precoRaw === 'number') {
-        precoNum = precoRaw;
+      if (abaAtual === "Eventos") {
+        const mapUnicos = new Map();
+        (bancoDados.eventos || []).forEach(e => {
+          if (e.url) mapUnicos.set(e.url, e);
+          else mapUnicos.set(e.titulo, e);
+        });
+
+        (bancoDados.noticias || []).forEach(n => {
+          const cat = (n.categoria || "").toLowerCase();
+          const tit = (n.titulo || "").toLowerCase();
+          if (cat.includes("evento") || cat.includes("campo") || tit.includes("dia de campo") || tit.includes("congresso") || tit.includes("seminário") || tit.includes("encontro")) {
+            const chave = n.url || n.titulo;
+            if (!mapUnicos.has(chave)) {
+              mapUnicos.set(chave, { ...n, categoria: "Eventos" });
+            }
+          }
+        });
+        listaOrigem = Array.from(mapUnicos.values());
+      } else if (abaAtual === "Tudo") {
+        listaOrigem = [...bancoDados.noticias, ...bancoDados.eventos];
       } else {
-        precoNum = parseFloat(String(precoRaw || "").replace('R$', '').replace(/\./g, '').replace(',', '.').trim()) || 0;
+        const termoBuscaAba = abaAtual.toLowerCase().split('/')[0].trim();
+        listaOrigem = bancoDados.noticias.filter(n => (n.categoria || "").toLowerCase().includes(termoBuscaAba));
       }
 
-      if (precoNum < 15 || precoNum > 200) continue;
+      if (termo) {
+        listaOrigem = listaOrigem.filter(n => 
+          (n.titulo && n.titulo.toLowerCase().includes(termo)) || 
+          (n.resumo && n.resumo.toLowerCase().includes(termo)) ||
+          (n.porqueImporta && n.porqueImporta.toLowerCase().includes(termo)) ||
+          (n.fonte && n.fonte.toLowerCase().includes(termo))
+        );
+      }
 
-      const dataCot = (rows[i][1] && String(rows[i][1]).toLowerCase() !== "não identificada") 
-        ? formatarDataBR(rows[i][1]) 
-        : null;
+      renderizarCards(listaOrigem);
+    }
 
-      const registro = {
-        preco: precoNum,
-        dataCotacao: dataCot,
-        tipo: String(rows[i][7] || "observado").trim(),
-        fonte: String(rows[i][8] || "Notícias Agrícolas").trim(),
-        urlFonte: String(rows[i][9] || "").trim(),
-        status: dataCot ? "COTACAO_VERIFICADA" : "DATA_NAO_IDENTIFICADA"
-      };
+    async function carregarDadosIniciais(forcarAtualizacao = false) {
+      try {
+        const resposta = await fetch(`${API_URL}?_t=${Date.now()}`);
+        const dados = await resposta.json();
 
-      polosPrioritarios.forEach(polo => {
-        const bateu = polo.chaves.some(k => pracaLimpa.includes(k));
-        if (bateu) {
-          if (produtoLimpo.includes("sorgo")) mapaSorgo.set(polo.id, registro);
-          else if (produtoLimpo.includes("milho")) mapaMilho.set(polo.id, registro);
+        if (dados && typeof dados === 'object') {
+          bancoDados.noticias = dados.noticias || [];
+          bancoDados.eventos = dados.eventos || [];
+          bancoDados.precos = dados.precos || [];
+          bancoDados.resumosSemanais = dados.resumosSemanais || [];
+        }
+
+        if (forcarAtualizacao) {
+          aplicarFiltro(abaAtual);
+        }
+      } catch (erro) {
+        console.error("Erro ao carregar dados:", erro);
+      }
+    }
+
+    function configurarBotoes() {
+      const botoes = document.querySelectorAll('.overflow-x-auto button');
+      botoes.forEach(botao => {
+        botao.addEventListener('click', () => {
+          botoes.forEach(b => {
+            b.classList.remove('bg-primary', 'text-white', 'border-emerald-600', 'font-bold');
+            b.classList.add('bg-white', 'text-gray-600');
+          });
+          botao.classList.remove('bg-white', 'text-gray-600');
+          botao.classList.add('bg-primary', 'text-white', 'font-bold');
+          
+          const tab = botao.getAttribute('data-tab');
+          aplicarFiltro(tab);
+        });
+      });
+    }
+
+    function configurarBusca() {
+      const inputBusca = document.getElementById('search-input');
+      inputBusca.addEventListener('input', () => {
+        if (abaAtual !== "ResumoSemanal" && abaAtual !== "Cotacao") {
+          aplicarFiltro(abaAtual);
         }
       });
     }
 
-    polosPrioritarios.forEach(polo => {
-      const sorgo = mapaSorgo.get(polo.id);
-      const milho = mapaMilho.get(polo.id);
-
-      const diasSorgo = sorgo ? calcularDiasDesdeAtualizacao(sorgo.dataCotacao) : 999;
-      const diasMilho = milho ? calcularDiasDesdeAtualizacao(milho.dataCotacao) : 999;
-
-      let statusAtualidadeSorgo = "SEM_COTACAO_VERIFICADA";
-      if (sorgo) {
-        if (diasSorgo <= 3) statusAtualidadeSorgo = "ATUALIZADA";
-        else if (diasSorgo <= 7) statusAtualidadeSorgo = "ATENCAO_DEFASAGEM";
-        else statusAtualidadeSorgo = "COTACAO_DESATUALIZADA";
-      }
-
-      let relacao = null;
-      if (
-        sorgo && milho && 
-        sorgo.preco > 0 && milho.preco > 0 && 
-        sorgo.dataCotacao && milho.dataCotacao && 
-        sorgo.dataCotacao === milho.dataCotacao
-      ) {
-        relacao = ((sorgo.preco / milho.preco) * 100).toFixed(1);
-      }
-
-      const fonteGeral = (sorgo && sorgo.fonte) || (milho && milho.fonte) || null;
-      const urlFonteGeral = (sorgo && sorgo.urlFonte) || (milho && milho.urlFonte) || null;
-      const dataGeral = (sorgo && sorgo.dataCotacao) || (milho && milho.dataCotacao) || null;
-
-      listaPrecosConsolidada.push({
-        praca: polo.pracaExibicao,
-        uf: polo.uf,
-        // Sorgo
-        precoSorgo: sorgo ? sorgo.preco.toFixed(2) : null,
-        fonteSorgo: sorgo ? sorgo.fonte : null,
-        urlFonteSorgo: sorgo ? sorgo.urlFonte : null,
-        dataSorgo: sorgo ? sorgo.dataCotacao : null,
-        statusSorgo: sorgo ? sorgo.status : "SEM_COTACAO_VERIFICADA",
-        diasDesdeAtualizacaoSorgo: diasSorgo,
-        statusAtualidadeSorgo: statusAtualidadeSorgo,
-        // Milho
-        precoMilho: milho ? milho.preco.toFixed(2) : null,
-        fonteMilho: milho ? milho.fonte : null,
-        urlFonteMilho: milho ? milho.urlFonte : null,
-        dataMilho: milho ? milho.dataCotacao : null,
-        statusMilho: milho ? milho.status : "SEM_COTACAO_VERIFICADA",
-        // Relação e Compatibilidade
-        relacaoMilho: relacao,
-        fonte: fonteGeral,
-        urlFonte: urlFonteGeral,
-        data: dataGeral
-      });
-    });
-  }
-
-  return ContentService.createTextOutput(JSON.stringify({
-    noticias: listaNoticias,
-    eventos: listaEventos,
-    precos: listaPrecosConsolidada
-  })).setMimeType(ContentService.MimeType.JSON);
-}
+    window.onload = async () => {
+      const container = document.getElementById('news-container');
+      container.innerHTML = '<p class="text-center w-full col-span-full pt-8 text-gray-500">Sintetizando inteligência executiva de mercado...</p>';
+      
+      await carregarDadosIniciais();
+      aplicarFiltro("ResumoSemanal");
+      configurarBotoes();
+      configurarBusca();
+    };
+  </script>
+</body>
+</html>
