@@ -73,7 +73,7 @@
   </main>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwx2llCKKEJBuLsQ9EIfL1FdwVOWhFMAjpG9eaxG4YghzUUMPd6_oW5idcbSCYzQW3eJw/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbz-xQ31zO2zy5slgOlp-fWrWBw47xjwu017Oh9YLMjxQ18bilqjCOdOcWMEoE7shFoEhg/exec";
     
     let bancoDados = {
       noticias: [],
@@ -199,7 +199,7 @@
           <div class="bg-white border border-outline-variant rounded-2xl p-8 text-center shadow-sm">
             <span class="material-symbols-outlined text-4xl text-emerald-600 mb-2">payments</span>
             <p class="text-gray-800 font-bold text-base mb-1">Painel de Cotações</p>
-            <p class="text-xs text-gray-500 max-w-md mx-auto">Execute a rotina diária no Google Apps Script para consolidar os preços reais verificáveis.</p>
+            <p class="text-xs text-gray-500 max-w-md mx-auto">Nenhuma cotação verificável foi encontrada no momento.</p>
           </div>
         `;
         return;
@@ -292,12 +292,18 @@
       container.innerHTML = htmlPrecos;
     }
 
-    function aplicarFiltro(nomeAba) {
+    async function aplicarFiltro(nomeAba) {
       abaAtual = nomeAba;
       const inputBusca = document.getElementById('search-input');
       const termo = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
 
       if (abaAtual === "Cotacao") {
+        if (!bancoDados.precos || bancoDados.precos.length === 0) {
+          const container = document.getElementById('news-container');
+          container.className = "flex flex-col gap-6 col-span-full";
+          container.innerHTML = '<p class="text-center w-full py-8 text-gray-500">Consultando cotações verificadas...</p>';
+          await carregarDadosIniciais();
+        }
         renderizarTabelaPrecos(bancoDados.precos);
         return;
       }
@@ -341,9 +347,6 @@
     }
 
     async function carregarDadosIniciais() {
-      const container = document.getElementById('news-container');
-      container.innerHTML = '<p class="text-center w-full col-span-full pt-8">Sintetizando inteligência de mercado...</p>';
-
       try {
         const resposta = await fetch(`${API_URL}?_t=${Date.now()}`);
         const dados = await resposta.json();
@@ -357,10 +360,8 @@
           bancoDados.eventos = dados.eventos || [];
           bancoDados.precos = dados.precos || [];
         }
-
-        aplicarFiltro("Tudo");
       } catch (erro) {
-        container.innerHTML = '<p class="text-center w-full text-red-500 col-span-full pt-8">Erro ao carregar dados do servidor.</p>';
+        console.error("Erro ao carregar dados:", erro);
       }
     }
 
@@ -388,8 +389,12 @@
       });
     }
 
-    window.onload = () => {
-      carregarDadosIniciais();
+    window.onload = async () => {
+      const container = document.getElementById('news-container');
+      container.innerHTML = '<p class="text-center w-full col-span-full pt-8">Sintetizando inteligência de mercado...</p>';
+      
+      await carregarDadosIniciais();
+      aplicarFiltro("Tudo");
       configurarBotoes();
       configurarBusca();
     };
