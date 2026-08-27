@@ -83,6 +83,13 @@
 
     let abaAtual = "Tudo";
 
+    function formatarMoedaBR(valor) {
+      if (valor === null || valor === undefined || valor === "") return null;
+      const num = typeof valor === 'number' ? valor : parseFloat(String(valor).replace(',', '.'));
+      if (isNaN(num)) return null;
+      return "R$ " + num.toFixed(2).replace('.', ',');
+    }
+
     function formatarDataVisual(dataInput) {
       if (!dataInput) return null;
       const str = String(dataInput).trim();
@@ -238,33 +245,51 @@
       `;
 
       precos.forEach(p => {
+        // Preço do Sorgo formatado em Real Brasileiro (R$ 48,00)
         let sorgoHTML = `<span class="text-xs text-gray-400 italic">Sem cotação verificada disponível</span>`;
-        if (p.statusSorgo === "COTACAO_VERIFICADA" && p.precoSorgo) {
-          sorgoHTML = `<span class="text-primary font-bold text-base">R$ ${p.precoSorgo}</span>`;
+        if (p.precoSorgo && p.precoSorgo !== "null") {
+          const precoFormatado = formatarMoedaBR(p.precoSorgo);
+          let tagDefasagem = "";
+          if (p.statusAtualidadeSorgo === "ATENCAO_DEFASAGEM") {
+            tagDefasagem = `<span class="block text-[10px] text-amber-600 font-normal">Atualizado há ${p.diasDesdeAtualizacaoSorgo} dias</span>`;
+          } else if (p.statusAtualidadeSorgo === "COTACAO_DESATUALIZADA") {
+            tagDefasagem = `<span class="block text-[10px] text-red-500 font-normal">Desatualizado</span>`;
+          }
+          sorgoHTML = `<span class="text-primary font-bold text-base">${precoFormatado}</span>${tagDefasagem}`;
         }
 
+        // Preço do Milho formatado em Real Brasileiro
         let milhoHTML = `<span class="text-xs text-gray-400 italic">Sem cotação</span>`;
-        if (p.statusMilho === "COTACAO_VERIFICADA" && p.precoMilho) {
-          milhoHTML = `<span class="text-gray-700 font-semibold text-base">R$ ${p.precoMilho}</span>`;
+        if (p.precoMilho && p.precoMilho !== "null") {
+          const precoFormatado = formatarMoedaBR(p.precoMilho);
+          milhoHTML = `<span class="text-gray-700 font-semibold text-base">${precoFormatado}</span>`;
         }
 
-        let relacaoHTML = `<span class="text-xs text-gray-400" title="Exige cotações verificadas na mesma data">-</span>`;
-        if (p.relacaoMilho) {
-          relacaoHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">${p.relacaoMilho}%</span>`;
+        // Relação Observada (90,6%)
+        let relacaoHTML = `<span class="text-xs text-gray-400" title="Exige cotações verificadas na mesma data">—</span>`;
+        if (p.relacaoMilho && p.relacaoMilho !== "null") {
+          const relacaoBR = String(p.relacaoMilho).replace('.', ',');
+          relacaoHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">${relacaoBR}%</span>`;
         }
 
+        // Fonte com Link Verificável
         let fonteHTML = `<span class="text-xs text-gray-400 italic">Aguardando integração</span>`;
-        if (p.fonte) {
-          if (p.urlFonte) {
-            fonteHTML = `<a href="${p.urlFonte}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-primary hover:underline bg-gray-50 px-2 py-1 rounded border border-gray-200">
-              ${p.fonte} <span class="material-symbols-outlined text-[13px]">open_in_new</span>
+        const fonteExibir = p.fonteSorgo || p.fonte || p.fonteMilho;
+        const urlExibir = p.urlFonteSorgo || p.urlFonte || p.urlFonteMilho;
+
+        if (fonteExibir) {
+          if (urlExibir) {
+            fonteHTML = `<a href="${urlExibir}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-primary hover:underline bg-gray-50 px-2 py-1 rounded border border-gray-200">
+              ${fonteExibir} <span class="material-symbols-outlined text-[13px]">open_in_new</span>
             </a>`;
           } else {
-            fonteHTML = `<span class="text-xs font-semibold text-gray-600 bg-gray-50 px-2 py-1 rounded border border-gray-200">${p.fonte}</span>`;
+            fonteHTML = `<span class="text-xs font-semibold text-gray-600 bg-gray-50 px-2 py-1 rounded border border-gray-200">${fonteExibir}</span>`;
           }
         }
 
-        const dataFormatada = p.data ? formatarDataVisual(p.data) : null;
+        // Data da Cotação
+        const dataOriginal = p.dataSorgo || p.data || p.dataMilho;
+        const dataFormatada = dataOriginal ? formatarDataVisual(dataOriginal) : null;
         const dataAtualizacao = dataFormatada ? dataFormatada : `<span class="text-xs text-gray-400 italic">Não identificada</span>`;
 
         htmlPrecos += `
