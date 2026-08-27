@@ -1,85 +1,216 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>SorghumIntel - Inteligência de Mercado</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>SorghumIntel - Inteligência de Mercado de Sorgo</title>
   
+  <!-- Tailwind CSS com plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Fontes e Ícones -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
           colors: {
-            background: "#f4faff", primary: "#0d631b", "surface-container-lowest": "#ffffff",
-            "outline-variant": "#bfcaba", "on-surface": "#0d1e25", "on-surface-variant": "#40493d",
-            "surface-variant": "#d4e5ef", "secondary-container": "#f89c00"
+            brand: {
+              50: "#f0fdf4",
+              100: "#dcfce7",
+              500: "#22c55e",
+              600: "#16a34a",
+              700: "#15803d",
+              800: "#0d631b",
+              900: "#0b4d15",
+              950: "#052e0b"
+            }
           },
-          fontFamily: { "body-md": ["Inter"], "data-mono": ["Inter"], "title-md": ["Inter"], "label-sm": ["Inter"] }
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
         }
       }
     }
   </script>
+
   <style>
-    body { background-color: theme('colors.background'); color: theme('colors.on-background'); -webkit-font-smoothing: antialiased; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
-    .badge-regulatório { background-color: #334155; color: white; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Badges de Categoria Customizados */
+    .badge-regulatório { background-color: #334155; color: #ffffff; }
     .badge-ciência-técnico { background-color: #e0f2fe; color: #0369a1; }
-    .badge-mercado { background-color: #0d631b; color: white; }
+    .badge-mercado { background-color: #0d631b; color: #ffffff; }
     .badge-comercial { background-color: #fef3c7; color: #92400e; }
-    .badge-evento { background-color: #059669; color: white; }
+    .badge-evento { background-color: #059669; color: #ffffff; }
+
+    .dark .badge-regulatório { background-color: #475569; color: #f8fafc; }
+    .dark .badge-ciência-técnico { background-color: #0c4a6e; color: #bae6fd; }
+    .dark .badge-mercado { background-color: #15803d; color: #ffffff; }
+    .dark .badge-comercial { background-color: #78350f; color: #fef3c7; }
+    .dark .badge-evento { background-color: #047857; color: #ecfdf5; }
+
+    /* Shimmer de carregamento */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .skeleton-shimmer {
+      background: linear-gradient(90deg, rgba(229, 231, 235, 0.6) 25%, rgba(243, 244, 246, 0.9) 50%, rgba(229, 231, 235, 0.6) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    .dark .skeleton-shimmer {
+      background: linear-gradient(90deg, rgba(55, 65, 81, 0.6) 25%, rgba(75, 85, 99, 0.9) 50%, rgba(55, 65, 81, 0.6) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
   </style>
 </head>
-<body class="font-body-md bg-background pb-24 md:pb-0 pt-16">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-200">
 
-  <!-- Header -->
-  <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white border-b border-outline-variant shadow-sm">
-    <div class="flex items-center gap-2">
-      <span class="material-symbols-outlined text-primary text-2xl">agriculture</span>
-      <h1 class="text-xl font-bold text-primary tracking-tight">SorghumIntel</h1>
-    </div>
-    <div class="flex items-center gap-2">
-      <button onclick="carregarDadosIniciais(true)" class="material-symbols-outlined text-primary p-2 hover:bg-emerald-50 rounded-full transition-colors" title="Atualizar dados">refresh</button>
+  <!-- Header Superior Fixo -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      
+      <!-- Marca & Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-brand-800 flex items-center justify-center text-white shadow-sm shadow-brand-800/30">
+          <span class="material-symbols-outlined text-2xl">agriculture</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-extrabold tracking-tight text-brand-800 dark:text-brand-500">SorghumIntel</h1>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">BR 2.0</span>
+          </div>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">Inteligência & Cotações Estruturadas de Sorgo</p>
+        </div>
+      </div>
+
+      <!-- Ações do Cabeçalho -->
+      <div class="flex items-center gap-2">
+        <!-- Indicador de Status da API -->
+        <div id="status-pill" class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="status-dot"></span>
+          <span id="status-text">Conectado</span>
+        </div>
+
+        <!-- Botão Atualizar Dados -->
+        <button onclick="carregarDadosIniciais(true)" id="btn-refresh" class="p-2 text-slate-600 dark:text-slate-300 hover:text-brand-800 dark:hover:text-brand-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" title="Atualizar dados">
+          <span class="material-symbols-outlined text-[20px]">refresh</span>
+        </button>
+
+        <!-- Alternador Tema Claro/Escuro -->
+        <button onclick="alternarTema()" id="btn-theme" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" title="Alternar tema">
+          <span class="material-symbols-outlined text-[20px]" id="theme-icon">dark_mode</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 py-6">
-    <!-- Barra de Busca -->
+  <!-- Conteúdo Principal -->
+  <main class="max-w-7xl mx-auto px-4 pt-20 pb-16">
+    
+    <!-- Barra de Métricas Rápidas / Resumo do Mercado -->
+    <div id="metrics-bar" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
+          <span>Sorgo Médio (Polos)</span>
+          <span class="material-symbols-outlined text-[16px] text-emerald-600">payments</span>
+        </div>
+        <div class="text-lg font-bold text-brand-800 dark:text-emerald-400" id="metric-sorgo-medio">R$ 53,80</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400">saca 60kg disponível</div>
+      </div>
+
+      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
+          <span>Milho Médio (Polos)</span>
+          <span class="material-symbols-outlined text-[16px] text-amber-500">grain</span>
+        </div>
+        <div class="text-lg font-bold text-slate-800 dark:text-slate-200" id="metric-milho-medio">R$ 67,40</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400">saca 60kg disponível</div>
+      </div>
+
+      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
+          <span>Relação Média Sorgo/Milho</span>
+          <span class="material-symbols-outlined text-[16px] text-brand-600">percent</span>
+        </div>
+        <div class="text-lg font-bold text-slate-800 dark:text-slate-100" id="metric-relacao-media">79,8%</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400">paridade média apurada</div>
+      </div>
+
+      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
+          <span>Inteligências Indexadas</span>
+          <span class="material-symbols-outlined text-[16px] text-blue-500">analytics</span>
+        </div>
+        <div class="text-lg font-bold text-slate-800 dark:text-slate-200" id="metric-total-noticias">--</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400">8 polos em tempo real</div>
+      </div>
+    </div>
+
+    <!-- Barra de Busca Universal Inteligente -->
     <div id="search-bar-container" class="mb-6 relative">
-      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">search</span>
-      <input id="search-input" class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-xl focus:outline-none focus:border-primary shadow-sm text-sm" placeholder="Buscar no SorghumIntel..." type="text">
+      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+      <input 
+        id="search-input" 
+        class="w-full pl-11 pr-10 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-sm text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500" 
+        placeholder="Buscar por títulos, cidades (ex: Rio Verde, Cristalina, LEM), empresas ou temas..." 
+        type="text"
+      >
+      <button 
+        id="btn-clear-search" 
+        onclick="limparBusca()" 
+        class="hidden absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+      >
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
     </div>
 
     <!-- Navegação de Abas -->
-    <div class="overflow-x-auto no-scrollbar mb-8">
-      <div class="flex space-x-2">
-        <button data-tab="ResumoSemanal" class="px-4 py-2 bg-primary text-white font-bold rounded-full text-sm whitespace-nowrap flex items-center gap-1.5 shadow-sm active-tab">
+    <div class="overflow-x-auto no-scrollbar mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div class="flex space-x-2 min-w-max pb-1" id="tabs-container">
+        <button data-tab="ResumoSemanal" class="tab-button active px-4 py-2 bg-brand-800 text-white font-bold rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors">
           <span class="material-symbols-outlined text-[18px]">auto_stories</span> Resumo Semanal
         </button>
-        <button data-tab="Tudo" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Tudo</button>
-        <button data-tab="Regulatório" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Regulatório</button>
-        <button data-tab="Ciência/Técnico" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Ciência/Técnico</button>
-        <button data-tab="Mercado" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Mercado</button>
-        <button data-tab="Comercial" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Comercial</button>
-        <button data-tab="Eventos" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Eventos</button>
-        <button data-tab="Cotacao" class="px-4 py-2 bg-white border border-emerald-600 text-emerald-800 font-bold rounded-full text-sm whitespace-nowrap flex items-center gap-1">
-          <span class="material-symbols-outlined text-[18px]">payments</span> Cotação
+        <button data-tab="Tudo" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Tudo</button>
+        <button data-tab="Mercado" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Mercado</button>
+        <button data-tab="Comercial" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Comercial</button>
+        <button data-tab="Regulatório" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Regulatório</button>
+        <button data-tab="Ciência/Técnico" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Ciência/Técnico</button>
+        <button data-tab="Eventos" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Eventos</button>
+        <button data-tab="Cotacao" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-600/70 text-emerald-800 dark:text-emerald-400 font-bold rounded-full text-xs sm:text-sm flex items-center gap-1 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors">
+          <span class="material-symbols-outlined text-[18px]">payments</span> Cotações dos Polos
         </button>
       </div>
     </div>
 
-    <!-- Container Principal Dinâmico -->
+    <!-- Container Principal de Conteúdo -->
     <div id="main-content-container">
       <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </div>
+
   </main>
 
+  <!-- Toast de Notificação -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white dark:bg-emerald-600 px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 text-xs font-semibold">
+    <span class="material-symbols-outlined text-[18px]">check_circle</span>
+    <span id="toast-message">Copiado para a área de transferência!</span>
+  </div>
+
+  <!-- Scripts da Aplicação -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbz-xQ31zO2zy5slgOlp-fWrWBw47xjwu017Oh9YLMjxQ18bilqjCOdOcWMEoE7shFoEhg/exec";
     
+    // Banco de dados em memória
     let bancoDados = {
       noticias: [],
       eventos: [],
@@ -89,6 +220,128 @@
 
     let abaAtual = "ResumoSemanal";
     let indexSemanaSelecionada = 0;
+    let filtroEstadoAtual = "TODOS";
+
+    // ==========================================
+    // DADOS DE DEMONSTRAÇÃO / FALLBACK OFFLINE
+    // ==========================================
+    const DEMO_DATA = {
+      resumosSemanais: [
+        {
+          idSemana: "2026-W09",
+          rotuloVisual: "23 a 29 de FEV",
+          dataInicial: "23/02/2026",
+          dataFinal: "29/02/2026",
+          status: "EM_ANDAMENTO",
+          resumoExecutivo: "A semana consolida a aceleração do plantio da safrinha de sorgo no Centro-Oeste e Oeste da Bahia, motivada pelo fechamento da janela ideal para o milho e menores exigências hídricas do cereal. No mercado físico, a paridade média sorgo/milho manteve-se em patamar estável (78% a 81%), estimulando contratos antecipados por indústrias de rações e confinamentos.",
+          destaques: {
+            "Mercado": [
+              {
+                titulo: "Paridade de preços entre sorgo e milho sustenta compras antecipadas em Goiás",
+                resumo: "Com a cotação do sorgo em Rio Verde oscilando a R$ 52,00/sc contra R$ 66,00/sc do milho (relação de 78,8%), indústrias de nutrição animal ampliam contratos futuros de sorgo para entrega no segundo semestre.",
+                porqueImporta: "A relação favorável inferior a 80% reforça o posicionamento do sorgo como matéria-prima prioritária na redução do custo da ração para avicultura e suinocultura regional.",
+                fonte: "Notícias Agrícolas",
+                data: "26/02/2026",
+                url: "https://www.noticiasagricolas.com.br",
+                tags: ["Preços", "Goiás", "Rações"],
+                fontesRelacionadas: 2
+              }
+            ],
+            "Comercial": [
+              {
+                titulo: "Produtores do Oeste da Bahia intensificam aquisição de híbridos tolerantes à seca",
+                resumo: "Revendas e cooperativas em Luís Eduardo Magalhães reportam crescimento de 14% na demanda por sementes de sorgo granífero e forrageiro para plantio de safrinha após a colheita precoce da soja.",
+                porqueImporta: "Confirma a expansão da área plantada de sorgo em áreas marginais e amplia a liquidez comercial de híbridos de alta densidade no Matopiba.",
+                fonte: "Agrolink",
+                data: "25/02/2026",
+                url: "https://www.agrolink.com.br",
+                tags: ["Sementes", "LEM", "Safrinha"]
+              }
+            ],
+            "Ciência/Técnico": [
+              {
+                titulo: "Embrapa Milho e Sorgo apresenta resultados de manejo para controle de pulgão-da-cana",
+                resumo: "Boletim técnico destaca eficácia de híbridos geneticamente tolerantes aliada a rotação com biológicos para manutenção da sanidade foliar e teto produtivo do sorgo.",
+                porqueImporta: "Reduz o custo operacional com inseticidas químicos e diminui o risco de perdas de rendimento na fase reprodutiva da lavoura.",
+                fonte: "Embrapa",
+                data: "24/02/2026",
+                url: "https://www.embrapa.br",
+                tags: ["Embrapa", "Pulgão", "Manejo"]
+              }
+            ],
+            "Eventos": [
+              {
+                titulo: "Dia de Campo Tecnológico de Sorgo e Milho Safrinha em Cristalina (GO)",
+                resumo: "Encontro reunirá pesquisadores e produtores para demonstração em campo de novos híbridos de sorgo granífero e dinâmica de colheita mecanizada.",
+                porqueImporta: "Ambiente estratégico de difusão de conhecimento e validação agronômica direta para produtores do Entorno do DF.",
+                fonte: "Emater-GO",
+                data: "28/02/2026",
+                url: "https://www.emater.go.gov.br",
+                tags: ["DiaDeCampo", "Cristalina", "Tecnologia"]
+              }
+            ]
+          }
+        }
+      ],
+      precos: [
+        { praca: "Rio Verde", uf: "GO", precoSorgo: "52.00", precoMilho: "66.00", relacaoMilho: "78.8", fonte: "Notícias Agrícolas", data: "27/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
+        { praca: "Jataí", uf: "GO", precoSorgo: "51.50", precoMilho: "65.50", relacaoMilho: "78.6", fonte: "Notícias Agrícolas", data: "27/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
+        { praca: "Luís Eduardo Magalhães (Oeste BA)", uf: "BA", precoSorgo: "53.00", precoMilho: "68.00", relacaoMilho: "77.9", fonte: "Notícias Agrícolas", data: "26/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
+        { praca: "Cristalina", uf: "GO", precoSorgo: "54.00", precoMilho: "67.50", relacaoMilho: "80.0", fonte: "Agrolink", data: "27/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
+        { praca: "Uberlândia (Triângulo)", uf: "MG", precoSorgo: "55.00", precoMilho: "69.00", relacaoMilho: "79.7", fonte: "MilhoSoja / Scot", data: "27/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
+        { praca: "Dourados", uf: "MS", precoSorgo: "50.00", precoMilho: "64.00", relacaoMilho: "78.1", fonte: "Agrolink", data: "26/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
+        { praca: "Cândido Mota", uf: "SP", precoSorgo: "56.00", precoMilho: "70.00", relacaoMilho: "80.0", fonte: "Scot Consultoria", data: "27/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
+        { praca: "Rio do Sul", uf: "SC", precoSorgo: "59.00", precoMilho: "72.00", relacaoMilho: "81.9", fonte: "Notícias Agrícolas", data: "25/02/2026", statusAtualidadeSorgo: "ATUALIZADA" }
+      ],
+      noticias: [
+        {
+          titulo: "Paridade de preços entre sorgo e milho sustenta compras antecipadas em Goiás",
+          resumo: "Com a cotação do sorgo em Rio Verde oscilando a R$ 52,00/sc contra R$ 66,00/sc do milho (relação de 78,8%), indústrias de nutrição animal ampliam contratos futuros de sorgo para entrega no segundo semestre.",
+          porqueImporta: "A relação favorável inferior a 80% reforça o posicionamento do sorgo como matéria-prima prioritária na redução do custo da ração para avicultura e suinocultura regional.",
+          categoria: "Mercado",
+          fonte: "Notícias Agrícolas",
+          data: "26/02/2026",
+          url: "https://www.noticiasagricolas.com.br",
+          tags: ["Preços", "Goiás", "Rações"]
+        },
+        {
+          titulo: "Produtores do Oeste da Bahia intensificam aquisição de híbridos tolerantes à seca",
+          resumo: "Revendas e cooperativas em Luís Eduardo Magalhães reportam crescimento de 14% na demanda por sementes de sorgo granífero e forrageiro para plantio de safrinha após a colheita precoce da soja.",
+          porqueImporta: "Confirma a expansão da área plantada de sorgo em áreas marginais e amplia a liquidez comercial de híbridos de alta densidade no Matopiba.",
+          categoria: "Comercial",
+          fonte: "Agrolink",
+          data: "25/02/2026",
+          url: "https://www.agrolink.com.br",
+          tags: ["Sementes", "LEM", "Safrinha"]
+        },
+        {
+          titulo: "Embrapa Milho e Sorgo apresenta resultados de manejo para controle de pulgão-da-cana",
+          resumo: "Boletim técnico destaca eficácia de híbridos geneticamente tolerantes aliada a rotação com biológicos para manutenção da sanidade foliar e teto produtivo do sorgo.",
+          porqueImporta: "Reduz o custo operacional com inseticidas químicos e diminui o risco de perdas de rendimento na fase reprodutiva da lavoura.",
+          categoria: "Ciência/Técnico",
+          fonte: "Embrapa",
+          data: "24/02/2026",
+          url: "https://www.embrapa.br",
+          tags: ["Embrapa", "Pulgão", "Manejo"]
+        }
+      ],
+      eventos: [
+        {
+          titulo: "Dia de Campo Tecnológico de Sorgo e Milho Safrinha em Cristalina (GO)",
+          resumo: "Encontro reunirá pesquisadores e produtores para demonstração em campo de novos híbridos de sorgo granífero e dinâmica de colheita mecanizada.",
+          porqueImporta: "Ambiente estratégico de difusão de conhecimento e validação agronômica direta para produtores do Entorno do DF.",
+          categoria: "Eventos",
+          fonte: "Emater-GO",
+          data: "28/02/2026",
+          url: "https://www.emater.go.gov.br",
+          tags: ["DiaDeCampo", "Cristalina", "Tecnologia"]
+        }
+      ]
+    };
+
+    // ==========================================
+    // FUNÇÕES UTILITÁRIAS DE FORMATAÇÃO
+    // ==========================================
 
     function formatarMoedaBR(valor) {
       if (valor === null || valor === undefined || valor === "") return null;
@@ -149,7 +402,64 @@
         return { cls: "badge-evento", icn: "event", tag: "Eventos" };
       }
 
-      return { cls: "bg-gray-700 text-white", icn: "article", tag: "Geral" };
+      return { cls: "bg-slate-700 text-white", icn: "article", tag: "Geral" };
+    }
+
+    function exibirToast(mensagem) {
+      const toast = document.getElementById('toast');
+      const msgElem = document.getElementById('toast-message');
+      msgElem.innerText = mensagem;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    // ==========================================
+    // EXPORTAÇÃO PARA WHATSAPP
+    // ==========================================
+    function copiarResumoWhatsApp() {
+      if (!bancoDados.resumosSemanais || bancoDados.resumosSemanais.length === 0) return;
+      const resumosOrdenados = [...bancoDados.resumosSemanais].sort((a, b) => b.idSemana.localeCompare(a.idSemana));
+      const semana = resumosOrdenados[indexSemanaSelecionada] || resumosOrdenados[0];
+
+      let texto = `🌾 *SorghumIntel - Briefing Executivo Semanal*\n`;
+      texto += `📅 *Período:* ${semana.rotuloVisual || semana.idSemana} (${semana.dataInicial} a ${semana.dataFinal})\n\n`;
+      texto += `⚡ *A SEMANA EM 30 SEGUNDOS:*\n${semana.resumoExecutivo}\n\n`;
+
+      const destaques = semana.destaques || {};
+      for (const cat in destaques) {
+        if (destaques[cat] && destaques[cat].length > 0) {
+          texto += `━━━━━━━━━━━━━━━━━━━━\n`;
+          texto += `📌 *${cat.toUpperCase()}*\n`;
+          destaques[cat].forEach(d => {
+            texto += `\n▪️ *${d.titulo}*\n${d.resumo}\n`;
+            if (d.porqueImporta) {
+              texto += `💡 _Impacto:_ ${d.porqueImporta}\n`;
+            }
+          });
+          texto += `\n`;
+        }
+      }
+
+      texto += `📊 *Monitor de Preços & Paridade (SorghumIntel)*\n`;
+      if (bancoDados.precos && bancoDados.precos.length > 0) {
+        bancoDados.precos.forEach(p => {
+          if (p.precoSorgo && p.precoMilho) {
+            texto += `• ${p.praca} (${p.uf}): Sorgo R$ ${p.precoSorgo} | Milho R$ ${p.precoMilho} | Paridade: ${p.relacaoMilho}%\n`;
+          }
+        });
+      }
+
+      texto += `\n🔗 Acesse o painel completo: ${window.location.href}`;
+
+      navigator.clipboard.writeText(texto).then(() => {
+        exibirToast("Briefing formatado copiado para o WhatsApp!");
+      }).catch(() => {
+        exibirToast("Não foi possível copiar automaticamente.");
+      });
     }
 
     // ==========================================
@@ -157,15 +467,15 @@
     // ==========================================
     function renderizarResumoSemanal() {
       const container = document.getElementById('news-container');
-      container.className = "flex flex-col gap-8 col-span-full max-w-4xl mx-auto w-full";
+      container.className = "flex flex-col gap-6 col-span-full max-w-4xl mx-auto w-full";
       container.innerHTML = '';
 
       if (!bancoDados.resumosSemanais || bancoDados.resumosSemanais.length === 0) {
         container.innerHTML = `
-          <div class="bg-white border border-outline-variant rounded-2xl p-10 text-center shadow-sm">
-            <span class="material-symbols-outlined text-5xl text-emerald-600 mb-3">auto_stories</span>
-            <h2 class="text-gray-900 font-bold text-lg mb-1">Briefing Executivo em Geração</h2>
-            <p class="text-sm text-gray-500 max-w-md mx-auto">O Resumo Semanal consolida os fatos mais relevantes a cada encerramento de rotina diária.</p>
+          <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
+            <span class="material-symbols-outlined text-4xl text-brand-700 dark:text-emerald-400 mb-2">auto_stories</span>
+            <h2 class="text-slate-900 dark:text-white font-bold text-base mb-1">Briefing Executivo em Processamento</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">O Resumo Semanal consolida os fatos e movimentações de preços a cada encerramento de rotina diária.</p>
           </div>
         `;
         return;
@@ -181,40 +491,54 @@
       const temProxima = indexSemanaSelecionada > 0;
 
       const statusTag = semana.status === "EM_ANDAMENTO" 
-        ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Semana em andamento</span>`
-        : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Semana concluída</span>`;
+        ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Em andamento</span>`
+        : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Concluída</span>`;
+
+      let opcoesSemanas = resumosOrdenados.map((s, idx) => 
+        `<option value="${idx}" ${idx === indexSemanaSelecionada ? 'selected' : ''}>${s.rotuloVisual || s.idSemana} (${s.dataInicial} a ${s.dataFinal})</option>`
+      ).join('');
 
       let html = `
-        <!-- Seletor e Navegação Semanal -->
-        <div class="flex items-center justify-between bg-white border border-outline-variant p-4 rounded-2xl shadow-sm">
-          <button onclick="mudarSemana(1)" ${!temAnterior ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-sm font-semibold text-gray-500"' : 'class="flex items-center text-sm font-semibold text-primary hover:underline"'}>
-            <span class="material-symbols-outlined text-lg mr-1">arrow_back</span> Semana anterior
-          </button>
-          
-          <div class="text-center">
-            <span class="text-base font-extrabold text-gray-900 tracking-tight block">${semana.rotuloVisual || semana.idSemana}</span>
-            <span class="text-xs text-gray-400 font-medium">${semana.dataInicial} a ${semana.dataFinal}</span>
-            <div class="mt-1">${statusTag}</div>
+        <!-- Barra de Controle Semanal e Ações -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-3.5 px-5 rounded-2xl shadow-sm">
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
+            <button onclick="mudarSemana(1)" ${!temAnterior ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-xs font-semibold text-slate-400 p-2 rounded-lg"' : 'class="flex items-center text-xs font-semibold text-brand-800 dark:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-700 p-2 rounded-lg transition-colors"'}>
+              <span class="material-symbols-outlined text-[18px] mr-1">arrow_back</span> Anterior
+            </button>
+            
+            <select onchange="selecionarSemanaPorIndex(this.value)" class="text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-500">
+              ${opcoesSemanas}
+            </select>
+
+            <button onclick="mudarSemana(-1)" ${!temProxima ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-xs font-semibold text-slate-400 p-2 rounded-lg"' : 'class="flex items-center text-xs font-semibold text-brand-800 dark:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-700 p-2 rounded-lg transition-colors"'}>
+              Próxima <span class="material-symbols-outlined text-[18px] ml-1">arrow_forward</span>
+            </button>
           </div>
 
-          <button onclick="mudarSemana(-1)" ${!temProxima ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-sm font-semibold text-gray-500"' : 'class="flex items-center text-sm font-semibold text-primary hover:underline"'}>
-            Próxima semana <span class="material-symbols-outlined text-lg ml-1">arrow_forward</span>
-          </button>
+          <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100 dark:border-slate-700">
+            <div>${statusTag}</div>
+            <button onclick="copiarResumoWhatsApp()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition-colors" title="Compartilhar briefing formatado">
+              <span class="material-symbols-outlined text-[16px]">share</span>
+              <span>Copiar para WhatsApp</span>
+            </button>
+          </div>
         </div>
 
-        <!-- Nível 1: A semana em 30 segundos -->
-        <section class="bg-gradient-to-br from-emerald-900 to-emerald-950 text-white p-6 md:p-8 rounded-2xl shadow-md">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-amber-400 text-xl">timer</span>
-            <h3 class="text-xs font-bold uppercase tracking-widest text-emerald-200">A semana em 30 segundos</h3>
+        <!-- Síntese Executiva de 30 Segundos -->
+        <section class="bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 p-6 rounded-2xl shadow-sm">
+          <div class="flex items-center gap-2 mb-2.5">
+            <div class="w-7 h-7 rounded-lg bg-brand-800 text-white flex items-center justify-center">
+              <span class="material-symbols-outlined text-[18px]">timer</span>
+            </div>
+            <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-900 dark:text-emerald-300">A semana em 30 segundos</h3>
           </div>
-          <p class="text-sm md:text-base leading-relaxed text-emerald-50 font-normal">
+          <p class="text-sm sm:text-base leading-relaxed text-slate-800 dark:text-slate-200 font-medium">
             ${semana.resumoExecutivo || 'Síntese executiva dos principais acontecimentos estruturados da semana.'}
           </p>
         </section>
       `;
 
-      // Nível 2: Destaques por Categoria
+      // Destaques por Categoria
       const categoriasOrdem = ["Mercado", "Comercial", "Regulatório", "Ciência/Técnico", "Eventos"];
       const destaquesObj = semana.destaques || {};
 
@@ -227,13 +551,13 @@
           const badge = getBadgeInfo(cat);
 
           html += `
-            <section class="space-y-4">
-              <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+            <section class="space-y-4 mt-2">
+              <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2.5">
                 <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-gray-700 text-xl">${badge.icn}</span>
-                  <h3 class="text-base font-bold text-gray-900 uppercase tracking-wider">${cat}</h3>
+                  <span class="material-symbols-outlined text-brand-800 dark:text-emerald-400 text-[20px]">${badge.icn}</span>
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">${cat}</h3>
                 </div>
-                <span class="text-xs text-gray-400 font-medium">${lista.length} principal(is) acontecimento(s)</span>
+                <span class="text-xs text-slate-500 dark:text-slate-400 font-medium bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full">${lista.length} destaque(s)</span>
               </div>
 
               <div class="grid grid-cols-1 gap-4">
@@ -241,40 +565,41 @@
 
           lista.forEach(item => {
             const tagsHTML = (item.tags && item.tags.length > 0) 
-              ? item.tags.map(t => `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[11px] font-medium">#${t}</span>`).join(' ')
+              ? item.tags.map(t => `<span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded text-[10px] font-medium">#${t}</span>`).join(' ')
               : '';
 
             const badgeFontes = (item.fontesRelacionadas && item.fontesRelacionadas > 1)
-              ? `<span class="text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-semibold">${item.fontesRelacionadas} fontes relacionadas</span>`
+              ? `<span class="text-[10px] bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full font-semibold">${item.fontesRelacionadas} fontes relacionadas</span>`
               : '';
 
-            // O box só é renderizado se houver uma análise específica válida
             const boxPorqueImporta = (item.porqueImporta && typeof item.porqueImporta === 'string' && item.porqueImporta.trim().length > 10) ? `
-              <div class="bg-emerald-50/80 border-l-4 border-primary p-3 rounded-r-xl mb-3">
-                <span class="text-xs font-bold text-emerald-900 block mb-0.5 uppercase tracking-wide">Por que isso importa</span>
-                <p class="text-xs text-emerald-950 leading-relaxed">${item.porqueImporta}</p>
+              <div class="bg-brand-50/80 dark:bg-emerald-950/50 border-l-4 border-brand-800 dark:border-emerald-500 p-3.5 rounded-r-xl mb-3">
+                <span class="text-[11px] font-bold text-brand-900 dark:text-emerald-300 block mb-1 uppercase tracking-wide flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">psychology</span> Por que isso importa
+                </span>
+                <p class="text-xs text-slate-800 dark:text-emerald-100 leading-relaxed font-medium">${item.porqueImporta}</p>
               </div>
             ` : '';
 
             html += `
-              <article class="bg-white border border-outline-variant rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+              <article class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex justify-between items-start gap-2 mb-2">
-                  <h4 class="text-base font-bold text-gray-900 leading-snug">
-                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">${item.titulo}</a>
+                  <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
+                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hover:text-brand-800 dark:hover:text-emerald-400 transition-colors">${item.titulo}</a>
                   </h4>
                   ${badgeFontes}
                 </div>
 
-                <p class="text-sm text-gray-700 leading-relaxed mb-3">${item.resumo}</p>
+                <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-3">${item.resumo}</p>
                 ${boxPorqueImporta}
 
-                <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-100 text-xs">
-                  <div class="flex items-center gap-2 text-gray-500 font-medium">
-                    <span class="uppercase font-semibold">${item.fonte || 'Google News'}</span>
+                <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-slate-700/60 text-xs">
+                  <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-medium">
+                    <span class="uppercase text-[10px] font-bold text-slate-700 dark:text-slate-300">${item.fonte || 'Google News'}</span>
                     <span>•</span>
-                    <span>${formatarDataVisual(item.data) || item.data}</span>
+                    <span class="text-[10px]">${formatarDataVisual(item.data) || item.data}</span>
                   </div>
-                  <div class="flex items-center gap-1.5">${tagsHTML}</div>
+                  <div class="flex items-center gap-1">${tagsHTML}</div>
                 </div>
               </article>
             `;
@@ -289,7 +614,7 @@
 
       if (!encontrouAlgumDestaque) {
         html += `
-          <div class="bg-white border border-outline-variant rounded-2xl p-8 text-center text-gray-500">
+          <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-500 dark:text-slate-400 text-sm">
             Nenhum destaque categorizado disponível para este período semanal.
           </div>
         `;
@@ -304,6 +629,12 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function selecionarSemanaPorIndex(index) {
+      indexSemanaSelecionada = parseInt(index) || 0;
+      renderizarResumoSemanal();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     // ==========================================
     // RENDERIZADOR 2: FEED DE NOTÍCIAS / EVENTOS
     // ==========================================
@@ -313,7 +644,13 @@
       container.innerHTML = ''; 
       
       if (!itens || itens.length === 0) {
-        container.innerHTML = '<p class="text-center w-full text-gray-500 col-span-full pt-8">Nenhuma inteligência encontrada nesta categoria.</p>';
+        container.innerHTML = `
+          <div class="col-span-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
+            <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">search_off</span>
+            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">Nenhuma inteligência encontrada</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">Tente ajustar os termos de busca ou selecionar outra categoria acima.</p>
+          </div>
+        `;
         return;
       }
 
@@ -325,45 +662,47 @@
         const dataExibicao = formatarDataVisual(item.data) || item.data || '';
 
         const tagsHTML = (item.tags && item.tags.length > 0) 
-          ? item.tags.map(t => `<span class="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-medium">#${t}</span>`).join(' ')
+          ? item.tags.map(t => `<span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded text-[10px] font-medium">#${t}</span>`).join(' ')
           : '';
 
         const boxPorqueImporta = (item.porqueImporta && typeof item.porqueImporta === 'string' && item.porqueImporta.trim().length > 10) ? `
-          <div class="bg-gray-50 border-l-2 border-primary p-2.5 rounded-r-lg mb-4 text-xs text-gray-700">
-            <strong class="text-emerald-900 block text-[11px] uppercase tracking-wider mb-0.5">Impacto Prático:</strong>
+          <div class="bg-slate-50 dark:bg-slate-900 border-l-2 border-brand-800 dark:border-emerald-500 p-3 rounded-r-lg mb-4 text-xs text-slate-700 dark:text-slate-300">
+            <strong class="text-brand-900 dark:text-emerald-300 block text-[11px] uppercase tracking-wider mb-1 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[13px]">insights</span> Impacto Prático no Mercado:
+            </strong>
             ${item.porqueImporta}
           </div>
         ` : '';
 
         const cardHTML = `
-          <article class="bg-white border border-outline-variant rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between h-full">
+          <article class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between h-full">
             <div>
               <div class="flex justify-between items-center mb-4">
                 <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${badge.cls}">${badge.tag}</span>
-                <div class="flex items-center gap-1.5 text-gray-500 text-xs font-semibold">
-                  <span class="material-symbols-outlined text-[16px] text-gray-400">calendar_today</span>
+                <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-xs font-medium">
+                  <span class="material-symbols-outlined text-[16px]">calendar_today</span>
                   <span>${dataExibicao}</span>
                 </div>
               </div>
 
-              <h2 class="text-base font-bold text-gray-900 mb-2 leading-snug hover:text-primary transition-colors">
+              <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2 leading-snug hover:text-brand-800 dark:hover:text-emerald-400 transition-colors">
                 <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.titulo}</a>
               </h2>
 
-              <div class="text-xs text-gray-500 font-semibold mb-3 flex items-center gap-1.5 uppercase">
-                <span class="material-symbols-outlined text-[16px] text-gray-400">${badge.icn}</span>
-                FONTE: ${item.fonte || 'Google News'}
+              <div class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mb-3 flex items-center gap-1.5 uppercase">
+                <span class="material-symbols-outlined text-[15px] text-slate-400">${badge.icn}</span>
+                <span>Fonte: ${item.fonte || 'Google News'}</span>
               </div>
 
-              <p class="text-gray-700 text-sm leading-relaxed mb-3">${item.resumo}</p>
+              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-3">${item.resumo}</p>
               ${boxPorqueImporta}
             </div>
 
             <div>
-              <div class="flex flex-wrap gap-1 mb-3">${tagsHTML}</div>
-              <div class="pt-3 border-t border-outline-variant flex justify-start items-center text-xs font-bold">
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline flex items-center gap-1">
-                  Acessar fonte original &rarr;
+              <div class="flex flex-wrap gap-1 mb-4">${tagsHTML}</div>
+              <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs font-bold">
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-brand-800 dark:text-emerald-400 hover:underline flex items-center gap-1">
+                  Acessar matéria original <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
                 </a>
               </div>
             </div>
@@ -374,7 +713,7 @@
     }
 
     // ==========================================
-    // RENDERIZADOR 3: MONITOR DE COTAÇÕES
+    // RENDERIZADOR 3: MONITOR DE COTAÇÕES E PARIDADE
     // ==========================================
     function renderizarTabelaPrecos(precos) {
       const container = document.getElementById('news-container');
@@ -383,101 +722,117 @@
 
       if (!precos || precos.length === 0) {
         container.innerHTML = `
-          <div class="bg-white border border-outline-variant rounded-2xl p-8 text-center shadow-sm">
-            <span class="material-symbols-outlined text-4xl text-emerald-600 mb-2">payments</span>
-            <p class="text-gray-800 font-bold text-base mb-1">Monitor de cotações</p>
-            <p class="text-xs text-gray-500 max-w-md mx-auto">Nenhuma cotação verificável foi encontrada no momento.</p>
+          <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
+            <span class="material-symbols-outlined text-4xl text-brand-700 dark:text-emerald-400 mb-2">payments</span>
+            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">Monitor de Cotações dos 8 Polos</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">Nenhuma cotação verificável foi encontrada no momento.</p>
           </div>
         `;
         return;
       }
 
+      // Filtro por UF
+      const ufsDisponiveis = ["TODOS", ...new Set(precos.map(p => p.uf).filter(Boolean))];
+      let pillsUF = ufsDisponiveis.map(uf => `
+        <button onclick="filtrarPrecosPorUF('${uf}')" class="px-3 py-1 rounded-lg text-xs font-bold transition-colors ${filtroEstadoAtual === uf ? 'bg-brand-800 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">
+          ${uf}
+        </button>
+      `).join('');
+
+      let precosFiltrados = precos;
+      if (filtroEstadoAtual !== "TODOS") {
+        precosFiltrados = precos.filter(p => p.uf === filtroEstadoAtual);
+      }
+
       let htmlPrecos = `
-        <div class="bg-white border border-outline-variant rounded-2xl p-6 shadow-sm">
-          <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 mb-6 border-b border-gray-100 pb-4">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm">
+          
+          <!-- Cabeçalho da Tabela e Filtros -->
+          <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
             <div>
-              <h2 class="text-lg font-bold text-gray-900">Monitor de cotações</h2>
-              <p class="text-xs text-gray-500">Apresenta apenas cotações com fonte auditável e relação real observada em datas compatíveis (saca 60kg disponível)</p>
+              <div class="flex items-center gap-2">
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white">Monitor de Cotações e Paridade Sorgo x Milho</h2>
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">8 Polos Oficiais</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Cotações físicas auditadas para saca de 60kg disponível com cálculo em tempo real da relação sorgo/milho.</p>
             </div>
-            <div class="flex items-center gap-2 text-xs">
-              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
-                <span class="w-2 h-2 rounded-full bg-emerald-600"></span> Cotação Verificada
-              </span>
-              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-gray-50 text-gray-600 border border-gray-200 font-medium">
-                <span class="w-2 h-2 rounded-full bg-gray-400"></span> Sem cotação disponível
-              </span>
+            
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-xs text-slate-400 font-semibold mr-1">Filtrar UF:</span>
+              ${pillsUF}
             </div>
           </div>
 
+          <!-- Tabela de Cotações -->
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
               <thead>
-                <tr class="border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                  <th class="pb-3 px-4">Praça / Polo</th>
-                  <th class="pb-3 px-4 text-right">Sorgo (R$/sc 60kg)</th>
-                  <th class="pb-3 px-4 text-right">Milho (R$/sc 60kg)</th>
-                  <th class="pb-3 px-4 text-center">Relação Observada</th>
-                  <th class="pb-3 px-4">Fonte dos Dados</th>
+                <tr class="border-b border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  <th class="pb-3 px-4">Praça / Polo Oficial</th>
+                  <th class="pb-3 px-4 text-right">Sorgo (R$/sc)</th>
+                  <th class="pb-3 px-4 text-right">Milho (R$/sc)</th>
+                  <th class="pb-3 px-4 text-center">Relação Sorgo/Milho</th>
+                  <th class="pb-3 px-4">Fonte Auditada</th>
                   <th class="pb-3 px-4 text-right">Data Cotação</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100 font-medium">
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60 font-medium">
       `;
 
-      precos.forEach(p => {
-        let sorgoHTML = `<span class="text-xs text-gray-400 italic">Sem cotação verificada disponível</span>`;
+      precosFiltrados.forEach(p => {
+        let sorgoHTML = `<span class="text-xs text-slate-400 italic">Sem cotação</span>`;
         if (p.precoSorgo && p.precoSorgo !== "null") {
           const precoFormatado = formatarMoedaBR(p.precoSorgo);
           let tagDefasagem = "";
           if (p.statusAtualidadeSorgo === "ATENCAO_DEFASAGEM") {
-            tagDefasagem = `<span class="block text-[10px] text-amber-600 font-normal">Atualizado há ${p.diasDesdeAtualizacaoSorgo} dias</span>`;
+            tagDefasagem = `<span class="block text-[10px] text-amber-600 font-normal">Há ${p.diasDesdeAtualizacaoSorgo} dias</span>`;
           } else if (p.statusAtualidadeSorgo === "COTACAO_DESATUALIZADA") {
             tagDefasagem = `<span class="block text-[10px] text-red-500 font-normal">Desatualizado</span>`;
           }
-          sorgoHTML = `<span class="text-primary font-bold text-base">${precoFormatado}</span>${tagDefasagem}`;
+          sorgoHTML = `<span class="text-brand-800 dark:text-emerald-400 font-bold text-base">${precoFormatado}</span>${tagDefasagem}`;
         }
 
-        let milhoHTML = `<span class="text-xs text-gray-400 italic">Sem cotação</span>`;
+        let milhoHTML = `<span class="text-xs text-slate-400 italic">Sem cotação</span>`;
         if (p.precoMilho && p.precoMilho !== "null") {
           const precoFormatado = formatarMoedaBR(p.precoMilho);
-          milhoHTML = `<span class="text-gray-700 font-semibold text-base">${precoFormatado}</span>`;
+          milhoHTML = `<span class="text-slate-800 dark:text-slate-200 font-semibold text-base">${precoFormatado}</span>`;
         }
 
-        let relacaoHTML = `<span class="text-xs text-gray-400" title="Exige cotações verificadas na mesma data">—</span>`;
+        let relacaoHTML = `<span class="text-xs text-slate-400" title="Exige cotações verificadas na mesma data">—</span>`;
         if (p.relacaoMilho && p.relacaoMilho !== "null") {
           const relacaoBR = String(p.relacaoMilho).replace('.', ',');
-          relacaoHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">${relacaoBR}%</span>`;
+          relacaoHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-750 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">${relacaoBR}%</span>`;
         }
 
-        let fonteHTML = `<span class="text-xs text-gray-400 italic">Aguardando integração</span>`;
+        let fonteHTML = `<span class="text-xs text-slate-400 italic">Aguardando integração</span>`;
         const fonteExibir = p.fonteSorgo || p.fonte || p.fonteMilho;
         const urlExibir = p.urlFonteSorgo || p.urlFonte || p.urlFonteMilho;
 
         if (fonteExibir) {
           if (urlExibir) {
-            fonteHTML = `<a href="${urlExibir}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-gray-700 hover:text-primary hover:underline bg-gray-50 px-2 py-1 rounded border border-gray-200">
+            fonteHTML = `<a href="${urlExibir}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-brand-800 dark:hover:text-emerald-400 hover:underline bg-slate-50 dark:bg-slate-750 px-2 py-1 rounded border border-slate-200 dark:border-slate-700">
               ${fonteExibir} <span class="material-symbols-outlined text-[13px]">open_in_new</span>
             </a>`;
           } else {
-            fonteHTML = `<span class="text-xs font-semibold text-gray-600 bg-gray-50 px-2 py-1 rounded border border-gray-200">${fonteExibir}</span>`;
+            fonteHTML = `<span class="text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-750 px-2 py-1 rounded border border-slate-200 dark:border-slate-700">${fonteExibir}</span>`;
           }
         }
 
         const dataOriginal = p.dataSorgo || p.data || p.dataMilho;
         const dataFormatada = dataOriginal ? formatarDataVisual(dataOriginal) : null;
-        const dataAtualizacao = dataFormatada ? dataFormatada : `<span class="text-xs text-gray-400 italic">Não identificada</span>`;
+        const dataAtualizacao = dataFormatada ? dataFormatada : `<span class="text-xs text-slate-400 italic">Não identificada</span>`;
 
         htmlPrecos += `
-          <tr class="hover:bg-gray-50/80 transition-colors">
-            <td class="py-4 px-4 font-bold text-gray-900 flex items-center gap-2">
-              <span class="material-symbols-outlined text-gray-400 text-base">location_on</span>
-              ${p.praca} <span class="text-xs text-gray-400 font-normal">(${p.uf || '-'})</span>
+          <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-750/50 transition-colors">
+            <td class="py-4 px-4 font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-slate-400 text-base">location_on</span>
+              ${p.praca} <span class="text-xs text-slate-400 font-normal">(${p.uf || '-'})</span>
             </td>
             <td class="py-4 px-4 text-right">${sorgoHTML}</td>
             <td class="py-4 px-4 text-right">${milhoHTML}</td>
             <td class="py-4 px-4 text-center">${relacaoHTML}</td>
             <td class="py-4 px-4">${fonteHTML}</td>
-            <td class="py-4 px-4 text-right text-xs text-gray-500">${dataAtualizacao}</td>
+            <td class="py-4 px-4 text-right text-xs text-slate-500 dark:text-slate-400">${dataAtualizacao}</td>
           </tr>
         `;
       });
@@ -492,8 +847,13 @@
       container.innerHTML = htmlPrecos;
     }
 
+    function filtrarPrecosPorUF(uf) {
+      filtroEstadoAtual = uf;
+      renderizarTabelaPrecos(bancoDados.precos);
+    }
+
     // ==========================================
-    // CONTROLADOR PRINCIPAL DE NAVEGAÇÃO
+    // CONTROLADOR PRINCIPAL DE NAVEGAÇÃO E BUSCA
     // ==========================================
     async function aplicarFiltro(nomeAba) {
       abaAtual = nomeAba;
@@ -506,13 +866,15 @@
       }
 
       if (abaAtual === "Cotacao") {
-        if (!bancoDados.precos || bancoDados.precos.length === 0) {
-          const container = document.getElementById('news-container');
-          container.className = "flex flex-col gap-6 col-span-full";
-          container.innerHTML = '<p class="text-center w-full py-8 text-gray-500">Consultando cotações verificadas...</p>';
-          await carregarDadosIniciais();
+        let lista = bancoDados.precos || [];
+        if (termo) {
+          lista = lista.filter(p => 
+            (p.praca && p.praca.toLowerCase().includes(termo)) ||
+            (p.uf && p.uf.toLowerCase().includes(termo)) ||
+            (p.fonte && p.fonte.toLowerCase().includes(termo))
+          );
         }
-        renderizarTabelaPrecos(bancoDados.precos);
+        renderizarTabelaPrecos(lista);
         return;
       }
 
@@ -537,10 +899,10 @@
         });
         listaOrigem = Array.from(mapUnicos.values());
       } else if (abaAtual === "Tudo") {
-        listaOrigem = [...bancoDados.noticias, ...bancoDados.eventos];
+        listaOrigem = [...(bancoDados.noticias || []), ...(bancoDados.eventos || [])];
       } else {
         const termoBuscaAba = abaAtual.toLowerCase().split('/')[0].trim();
-        listaOrigem = bancoDados.noticias.filter(n => (n.categoria || "").toLowerCase().includes(termoBuscaAba));
+        listaOrigem = (bancoDados.noticias || []).filter(n => (n.categoria || "").toLowerCase().includes(termoBuscaAba));
       }
 
       if (termo) {
@@ -548,16 +910,85 @@
           (n.titulo && n.titulo.toLowerCase().includes(termo)) || 
           (n.resumo && n.resumo.toLowerCase().includes(termo)) ||
           (n.porqueImporta && n.porqueImporta.toLowerCase().includes(termo)) ||
-          (n.fonte && n.fonte.toLowerCase().includes(termo))
+          (n.fonte && n.fonte.toLowerCase().includes(termo)) ||
+          (n.tags && Array.isArray(n.tags) && n.tags.some(t => t.toLowerCase().includes(termo)))
         );
       }
 
       renderizarCards(listaOrigem);
     }
 
+    function limparBusca() {
+      const input = document.getElementById('search-input');
+      if (input) input.value = '';
+      document.getElementById('btn-clear-search').classList.add('hidden');
+      aplicarFiltro(abaAtual);
+    }
+
+    // ==========================================
+    // CARREGAMENTO DE DADOS COM SKELETON
+    // ==========================================
+    function exibirSkeletonLoader() {
+      const container = document.getElementById('news-container');
+      container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 col-span-full";
+      
+      let skeletonCards = '';
+      for (let i = 0; i < 6; i++) {
+        skeletonCards += `
+          <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm flex flex-col justify-between h-72">
+            <div>
+              <div class="flex justify-between items-center mb-4">
+                <div class="w-24 h-6 rounded-full skeleton-shimmer"></div>
+                <div class="w-20 h-4 rounded skeleton-shimmer"></div>
+              </div>
+              <div class="w-full h-5 rounded skeleton-shimmer mb-2"></div>
+              <div class="w-3/4 h-5 rounded skeleton-shimmer mb-4"></div>
+              <div class="w-full h-3 rounded skeleton-shimmer mb-2"></div>
+              <div class="w-full h-3 rounded skeleton-shimmer mb-2"></div>
+              <div class="w-2/3 h-3 rounded skeleton-shimmer"></div>
+            </div>
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
+              <div class="w-28 h-4 rounded skeleton-shimmer"></div>
+            </div>
+          </div>
+        `;
+      }
+      container.innerHTML = skeletonCards;
+    }
+
+    function atualizarMetricasGerais() {
+      const precos = bancoDados.precos || [];
+      const precosSorgoValidos = precos.map(p => parseFloat(p.precoSorgo)).filter(v => !isNaN(v) && v > 0);
+      const precosMilhoValidos = precos.map(p => parseFloat(p.precoMilho)).filter(v => !isNaN(v) && v > 0);
+      const relacoesValidas = precos.map(p => parseFloat(p.relacaoMilho)).filter(v => !isNaN(v) && v > 0);
+
+      if (precosSorgoValidos.length > 0) {
+        const mediaSorgo = precosSorgoValidos.reduce((a, b) => a + b, 0) / precosSorgoValidos.length;
+        document.getElementById('metric-sorgo-medio').innerText = formatarMoedaBR(mediaSorgo);
+      }
+
+      if (precosMilhoValidos.length > 0) {
+        const mediaMilho = precosMilhoValidos.reduce((a, b) => a + b, 0) / precosMilhoValidos.length;
+        document.getElementById('metric-milho-medio').innerText = formatarMoedaBR(mediaMilho);
+      }
+
+      if (relacoesValidas.length > 0) {
+        const mediaRel = relacoesValidas.reduce((a, b) => a + b, 0) / relacoesValidas.length;
+        document.getElementById('metric-relacao-media').innerText = mediaRel.toFixed(1).replace('.', ',') + "%";
+      }
+
+      const totalNoticias = (bancoDados.noticias ? bancoDados.noticias.length : 0) + (bancoDados.eventos ? bancoDados.eventos.length : 0);
+      document.getElementById('metric-total-noticias').innerText = totalNoticias;
+    }
+
     async function carregarDadosIniciais(forcarAtualizacao = false) {
+      exibirSkeletonLoader();
+      const statusDot = document.getElementById('status-dot');
+      const statusText = document.getElementById('status-text');
+
       try {
         const resposta = await fetch(`${API_URL}?_t=${Date.now()}`);
+        if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
         const dados = await resposta.json();
 
         if (dados && typeof dados === 'object') {
@@ -567,24 +998,39 @@
           bancoDados.resumosSemanais = dados.resumosSemanais || [];
         }
 
-        if (forcarAtualizacao) {
-          aplicarFiltro(abaAtual);
+        if (bancoDados.resumosSemanais.length === 0 && bancoDados.noticias.length === 0) {
+          bancoDados = { ...DEMO_DATA };
+          statusDot.className = "w-2 h-2 rounded-full bg-amber-500";
+          statusText.innerText = "Modo Demonstração";
+        } else {
+          statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+          statusText.innerText = "Ao Vivo";
         }
+
       } catch (erro) {
-        console.error("Erro ao carregar dados:", erro);
+        console.warn("Erro ao conectar à API Apps Script, carregando dados de contingência:", erro);
+        bancoDados = { ...DEMO_DATA };
+        statusDot.className = "w-2 h-2 rounded-full bg-amber-500";
+        statusText.innerText = "Offline / Cache";
       }
+
+      atualizarMetricasGerais();
+      aplicarFiltro(abaAtual);
     }
 
-    function configurarBotoes() {
-      const botoes = document.querySelectorAll('.overflow-x-auto button');
+    // ==========================================
+    // CONFIGURAÇÕES DE INTERFACE E EVENTOS
+    // ==========================================
+    function configurarBotoesAbas() {
+      const botoes = document.querySelectorAll('#tabs-container button');
       botoes.forEach(botao => {
         botao.addEventListener('click', () => {
           botoes.forEach(b => {
-            b.classList.remove('bg-primary', 'text-white', 'border-emerald-600', 'font-bold');
-            b.classList.add('bg-white', 'text-gray-600');
+            b.classList.remove('bg-brand-800', 'text-white', 'font-bold');
+            b.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300', 'font-medium');
           });
-          botao.classList.remove('bg-white', 'text-gray-600');
-          botao.classList.add('bg-primary', 'text-white', 'font-bold');
+          botao.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300', 'font-medium');
+          botao.classList.add('bg-brand-800', 'text-white', 'font-bold');
           
           const tab = botao.getAttribute('data-tab');
           aplicarFiltro(tab);
@@ -594,21 +1040,47 @@
 
     function configurarBusca() {
       const inputBusca = document.getElementById('search-input');
+      const btnClear = document.getElementById('btn-clear-search');
+      
       inputBusca.addEventListener('input', () => {
-        if (abaAtual !== "ResumoSemanal" && abaAtual !== "Cotacao") {
-          aplicarFiltro(abaAtual);
+        if (inputBusca.value.trim().length > 0) {
+          btnClear.classList.remove('hidden');
+        } else {
+          btnClear.classList.add('hidden');
         }
+        aplicarFiltro(abaAtual);
       });
     }
 
+    function alternarTema() {
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('theme-icon');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        themeIcon.innerText = 'dark_mode';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        themeIcon.innerText = 'light_mode';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    function carregarTemaSalvo() {
+      const savedTheme = localStorage.getItem('theme');
+      const themeIcon = document.getElementById('theme-icon');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        if (themeIcon) themeIcon.innerText = 'light_mode';
+      }
+    }
+
+    // Inicialização ao carregar a página
     window.onload = async () => {
-      const container = document.getElementById('news-container');
-      container.innerHTML = '<p class="text-center w-full col-span-full pt-8 text-gray-500">Sintetizando inteligência executiva de mercado...</p>';
-      
-      await carregarDadosIniciais();
-      aplicarFiltro("ResumoSemanal");
-      configurarBotoes();
+      carregarTemaSalvo();
+      configurarBotoesAbas();
       configurarBusca();
+      await carregarDadosIniciais();
     };
   </script>
 </body>
