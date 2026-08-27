@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>SorghumIntel - Inteligência de Mercado de Sorgo</title>
+  <title>SorghumIntel - Inteligência Global de Mercado de Sorgo | Global Sorghum Intelligence</title>
   
   <!-- Tailwind CSS com plugins -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -11,7 +11,7 @@
   <!-- Fontes e Ícones -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
   <script id="tailwind-config">
@@ -23,6 +23,7 @@
             brand: {
               50: "#f0fdf4",
               100: "#dcfce7",
+              200: "#bbf7d0",
               500: "#22c55e",
               600: "#16a34a",
               700: "#15803d",
@@ -45,14 +46,14 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
     /* Badges de Categoria Customizados */
-    .badge-regulatório { background-color: #334155; color: #ffffff; }
-    .badge-ciência-técnico { background-color: #e0f2fe; color: #0369a1; }
+    .badge-regulatorio { background-color: #334155; color: #ffffff; }
+    .badge-ciencia { background-color: #e0f2fe; color: #0369a1; }
     .badge-mercado { background-color: #0d631b; color: #ffffff; }
     .badge-comercial { background-color: #fef3c7; color: #92400e; }
     .badge-evento { background-color: #059669; color: #ffffff; }
 
-    .dark .badge-regulatório { background-color: #475569; color: #f8fafc; }
-    .dark .badge-ciência-técnico { background-color: #0c4a6e; color: #bae6fd; }
+    .dark .badge-regulatorio { background-color: #475569; color: #f8fafc; }
+    .dark .badge-ciencia { background-color: #0c4a6e; color: #bae6fd; }
     .dark .badge-mercado { background-color: #15803d; color: #ffffff; }
     .dark .badge-comercial { background-color: #78350f; color: #fef3c7; }
     .dark .badge-evento { background-color: #047857; color: #ecfdf5; }
@@ -72,39 +73,70 @@
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
+
+    .flag-icon {
+      font-size: 1.15rem;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
   </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-200">
 
   <!-- Header Superior Fixo -->
-  <header class="fixed top-0 left-0 w-full z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+  <header class="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-2 sm:gap-4">
       
       <!-- Marca & Logo -->
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-brand-800 flex items-center justify-center text-white shadow-sm shadow-brand-800/30">
-          <span class="material-symbols-outlined text-2xl">agriculture</span>
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-xl bg-brand-800 flex items-center justify-center text-white shadow-sm shadow-brand-800/30 shrink-0">
+          <span class="material-symbols-outlined text-2xl">public</span>
         </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-lg font-extrabold tracking-tight text-brand-800 dark:text-brand-500">SorghumIntel</h1>
-            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">BR 2.0</span>
+        <div class="truncate">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-brand-800 dark:text-brand-500 truncate">SorghumIntel</h1>
           </div>
-          <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">Inteligência & Cotações Estruturadas de Sorgo</p>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium hidden md:block truncate" data-i18n="header_subtitle">Inteligência Global & Cotações da Cultura do Sorgo no Mundo</p>
         </div>
       </div>
 
-      <!-- Ações do Cabeçalho -->
-      <div class="flex items-center gap-2">
-        <!-- Indicador de Status da API -->
-        <div id="status-pill" class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="status-dot"></span>
-          <span id="status-text">Conectado</span>
+      <!-- Ações do Cabeçalho: Idioma com Bandeiras, Status, Atualizar, Tema -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        
+        <!-- Seletor Bilíngue com Bandeiras (Brasil 🇧🇷 / USA 🇺🇸) -->
+        <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner">
+          <button 
+            id="lang-btn-pt" 
+            onclick="definirIdioma('pt')" 
+            class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-white dark:bg-slate-700 text-brand-800 dark:text-emerald-400 shadow-sm"
+            title="Usar em Português"
+          >
+            <span class="flag-icon">🇧🇷</span>
+            <span class="hidden sm:inline">PT</span>
+          </button>
+          
+          <button 
+            id="lang-btn-en" 
+            onclick="definirIdioma('en')" 
+            class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all"
+            title="Use in English"
+          >
+            <span class="flag-icon">🇺🇸</span>
+            <span class="hidden sm:inline">EN</span>
+          </button>
         </div>
 
-        <!-- Botão Atualizar Dados -->
-        <button onclick="carregarDadosIniciais(true)" id="btn-refresh" class="p-2 text-slate-600 dark:text-slate-300 hover:text-brand-800 dark:hover:text-brand-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" title="Atualizar dados">
-          <span class="material-symbols-outlined text-[20px]">refresh</span>
+        <!-- Indicador de Status da API -->
+        <div id="status-pill" class="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="status-dot"></span>
+          <span id="status-text" data-i18n="status_connected">Ao Vivo</span>
+        </div>
+
+        <!-- Botão Atualizar Dados (Recarregar API sem Cache) -->
+        <button onclick="recarregarDadosAPI()" id="btn-refresh" class="p-2 text-slate-600 dark:text-slate-300 hover:text-brand-800 dark:hover:text-brand-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all" title="Recarregar dados da API">
+          <span class="material-symbols-outlined text-[20px] inline-block transition-transform" id="refresh-icon">refresh</span>
         </button>
 
         <!-- Alternador Tema Claro/Escuro -->
@@ -118,42 +150,51 @@
   <!-- Conteúdo Principal -->
   <main class="max-w-7xl mx-auto px-4 pt-20 pb-16">
     
+    <!-- Barra de Notificação de Cache / Offline (Quando aplicável) -->
+    <div id="cache-notice-banner" class="hidden mb-4 p-3 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 rounded-xl text-xs text-amber-800 dark:text-amber-300 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px]">history</span>
+        <span id="cache-notice-text">Exibindo dados armazenados em cache.</span>
+      </div>
+      <span id="cache-notice-time" class="text-[11px] font-semibold text-amber-700 dark:text-amber-400"></span>
+    </div>
+
     <!-- Barra de Métricas Rápidas / Resumo do Mercado -->
     <div id="metrics-bar" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
       <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
         <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
-          <span>Sorgo Médio (Polos)</span>
+          <span data-i18n="metric_sorgo_title">Sorgo Médio (Polos BR)</span>
           <span class="material-symbols-outlined text-[16px] text-emerald-600">payments</span>
         </div>
-        <div class="text-lg font-bold text-brand-800 dark:text-emerald-400" id="metric-sorgo-medio">R$ 53,80</div>
-        <div class="text-[10px] text-slate-500 dark:text-slate-400">saca 60kg disponível</div>
+        <div class="text-lg font-bold text-brand-800 dark:text-emerald-400" id="metric-sorgo-medio">—</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="metric_sorgo_sub">saca 60kg disponível</div>
       </div>
 
       <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
         <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
-          <span>Milho Médio (Polos)</span>
+          <span data-i18n="metric_milho_title">Milho Médio (Polos BR)</span>
           <span class="material-symbols-outlined text-[16px] text-amber-500">grain</span>
         </div>
-        <div class="text-lg font-bold text-slate-800 dark:text-slate-200" id="metric-milho-medio">R$ 67,40</div>
-        <div class="text-[10px] text-slate-500 dark:text-slate-400">saca 60kg disponível</div>
+        <div class="text-lg font-bold text-slate-800 dark:text-slate-200" id="metric-milho-medio">—</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="metric_milho_sub">saca 60kg disponível</div>
       </div>
 
       <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
         <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
-          <span>Relação Média Sorgo/Milho</span>
+          <span data-i18n="metric_relacao_title">Relação Sorgo/Milho</span>
           <span class="material-symbols-outlined text-[16px] text-brand-600">percent</span>
         </div>
-        <div class="text-lg font-bold text-slate-800 dark:text-slate-100" id="metric-relacao-media">79,8%</div>
-        <div class="text-[10px] text-slate-500 dark:text-slate-400">paridade média apurada</div>
+        <div class="text-lg font-bold text-slate-800 dark:text-slate-100" id="metric-relacao-media">—</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="metric_relacao_sub">paridade média física</div>
       </div>
 
       <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
         <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
-          <span>Inteligências Indexadas</span>
-          <span class="material-symbols-outlined text-[16px] text-blue-500">analytics</span>
+          <span data-i18n="metric_noticias_title">Inteligências Globais</span>
+          <span class="material-symbols-outlined text-[16px] text-blue-500">travel_explore</span>
         </div>
-        <div class="text-lg font-bold text-slate-800 dark:text-slate-200" id="metric-total-noticias">--</div>
-        <div class="text-[10px] text-slate-500 dark:text-slate-400">8 polos em tempo real</div>
+        <div class="text-lg font-bold text-slate-800 dark:text-slate-200" id="metric-total-noticias">—</div>
+        <div class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="metric_noticias_sub">notícias no mundo inteiro</div>
       </div>
     </div>
 
@@ -163,7 +204,7 @@
       <input 
         id="search-input" 
         class="w-full pl-11 pr-10 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-sm text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500" 
-        placeholder="Buscar por títulos, cidades (ex: Rio Verde, Cristalina, LEM), empresas ou temas..." 
+        placeholder="Buscar notícias mundiais por títulos, empresas, temas ou regiões..." 
         type="text"
       >
       <button 
@@ -179,16 +220,16 @@
     <div class="overflow-x-auto no-scrollbar mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
       <div class="flex space-x-2 min-w-max pb-1" id="tabs-container">
         <button data-tab="ResumoSemanal" class="tab-button active px-4 py-2 bg-brand-800 text-white font-bold rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors">
-          <span class="material-symbols-outlined text-[18px]">auto_stories</span> Resumo Semanal
+          <span class="material-symbols-outlined text-[18px]">auto_stories</span> <span data-i18n="tab_weekly">Resumo Semanal</span>
         </button>
-        <button data-tab="Tudo" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Tudo</button>
-        <button data-tab="Mercado" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Mercado</button>
-        <button data-tab="Comercial" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Comercial</button>
-        <button data-tab="Regulatório" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Regulatório</button>
-        <button data-tab="Ciência/Técnico" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Ciência/Técnico</button>
-        <button data-tab="Eventos" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">Eventos</button>
+        <button data-tab="Tudo" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_all">Tudo</button>
+        <button data-tab="Mercado" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_market">Mercado</button>
+        <button data-tab="Comercial" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_commercial">Comercial</button>
+        <button data-tab="Regulatório" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_regulatory">Regulatório</button>
+        <button data-tab="Ciência/Técnico" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_science">Ciência/Técnico</button>
+        <button data-tab="Eventos" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_events">Eventos</button>
         <button data-tab="Cotacao" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-600/70 text-emerald-800 dark:text-emerald-400 font-bold rounded-full text-xs sm:text-sm flex items-center gap-1 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors">
-          <span class="material-symbols-outlined text-[18px]">payments</span> Cotações dos Polos
+          <span class="material-symbols-outlined text-[18px]">payments</span> <span data-i18n="tab_quotes">Cotações dos Polos</span>
         </button>
       </div>
     </div>
@@ -203,146 +244,363 @@
   <!-- Toast de Notificação -->
   <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white dark:bg-emerald-600 px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 text-xs font-semibold">
     <span class="material-symbols-outlined text-[18px]">check_circle</span>
-    <span id="toast-message">Copiado para a área de transferência!</span>
+    <span id="toast-message">Notificação</span>
   </div>
 
   <!-- Scripts da Aplicação -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbz-xQ31zO2zy5slgOlp-fWrWBw47xjwu017Oh9YLMjxQ18bilqjCOdOcWMEoE7shFoEhg/exec";
     
-    // Banco de dados em memória
+    // Configuração de Modo Demonstração (desativado em produção)
+    const DEMO_MODE = false;
+
+    // Idioma atual do app: 'pt' ou 'en'
+    let idiomaAtual = localStorage.getItem('sorghum_intel_lang') || 'pt';
+
+    // Banco de dados em memória com suporte a métricas reais
     let bancoDados = {
       noticias: [],
       eventos: [],
       precos: [],
-      resumosSemanais: []
+      resumosSemanais: [],
+      metricas: {
+        totalNoticias: 0,
+        totalEventos: 0,
+        totalInteligencias: 0
+      }
     };
 
     let abaAtual = "ResumoSemanal";
     let indexSemanaSelecionada = 0;
     let filtroEstadoAtual = "TODOS";
+    let estaCarregando = false;
 
-    // ==========================================
-    // DADOS DE DEMONSTRAÇÃO / FALLBACK OFFLINE
-    // ==========================================
+    // ==========================================================================
+    // SANITIZAÇÃO DE DADOS & SEGURANÇA (PREVENÇÃO XSS)
+    // ==========================================================================
+    function escapeHTML(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Validação estrita de URLs externas (aceita EXCLUSIVAMENTE HTTP e HTTPS)
+    function safeExternalURL(url) {
+      if (!url || typeof url !== 'string') return '#';
+      const limpa = url.trim();
+      if (/^https?:\/\//i.test(limpa)) {
+        return escapeHTML(limpa);
+      }
+      return '#';
+    }
+
+    const safeURL = safeExternalURL;
+
+    // ==========================================================================
+    // DICIONÁRIO DE INTERNACIONALIZAÇÃO DA INTERFACE (UI)
+    // ==========================================================================
+    const I18N = {
+      pt: {
+        app_title: "SorghumIntel - Inteligência Global de Mercado de Sorgo",
+        header_subtitle: "Inteligência Global & Cotações da Cultura do Sorgo no Mundo",
+        status_connected: "Ao Vivo",
+        status_demo: "Modo Demonstração",
+        status_offline_cache: "Offline / Cache",
+        status_offline_unavailable: "Offline / Indisponível",
+        metric_sorgo_title: "Sorgo Médio (Polos BR)",
+        metric_sorgo_sub: "saca 60kg disponível",
+        metric_milho_title: "Milho Médio (Polos BR)",
+        metric_milho_sub: "saca 60kg disponível",
+        metric_relacao_title: "Relação Sorgo/Milho",
+        metric_relacao_sub: "paridade média física",
+        metric_noticias_title: "Inteligências Globais",
+        metric_noticias_sub: "notícias no mundo inteiro",
+        search_placeholder: "Buscar notícias mundiais por títulos, empresas, temas ou regiões...",
+        tab_weekly: "Resumo Semanal",
+        tab_all: "Tudo",
+        tab_market: "Mercado",
+        tab_commercial: "Comercial",
+        tab_regulatory: "Regulatório",
+        tab_science: "Ciência/Técnico",
+        tab_events: "Eventos",
+        tab_quotes: "Cotações dos Polos",
+        briefing_processing_title: "Briefing Executivo em Processamento",
+        briefing_processing_desc: "O Resumo Semanal consolida os fatos e movimentações globais a cada encerramento de rotina diária.",
+        btn_prev: "Anterior",
+        btn_next: "Próxima",
+        status_in_progress: "Em andamento",
+        status_completed: "Concluída",
+        btn_whatsapp: "Copiar para WhatsApp",
+        toast_whatsapp_copied: "Briefing formatado copiado para a área de transferência!",
+        toast_updated_live: "Dados atualizados com sucesso.",
+        toast_updated_cache: "API indisponível. Exibindo último cache salvo.",
+        toast_updated_error: "Não foi possível atualizar os dados.",
+        sec_30s_title: "A semana em 30 segundos",
+        sec_why_matters: "Por que isso importa:",
+        sec_market_impact: "Impacto Prático no Mercado:",
+        related_sources: "fontes relacionadas",
+        highlights_count: "destaque(s)",
+        source_label: "Fonte:",
+        read_original_article: "Acessar matéria original",
+        no_highlights_period: "Nenhum destaque categorizado disponível para este período semanal.",
+        no_news_found_title: "Nenhuma inteligência encontrada",
+        no_news_found_desc: "Tente ajustar os termos de busca ou selecionar outra categoria acima.",
+        quotes_table_title: "Monitor de Cotações e Paridade Sorgo x Milho (Brasil)",
+        quotes_table_subtitle: "Cotações físicas para saca de 60kg disponível com paridade estrita na mesma praça e mesma data.",
+        col_market: "Praça / Polo Oficial",
+        col_sorghum: "Sorgo (R$/sc)",
+        col_corn: "Milho (R$/sc)",
+        col_ratio: "Relação Sorgo/Milho",
+        col_source: "Fonte da Cotação",
+        no_quote: "Sem cotação",
+        unidentified_date: "Não identificada",
+        awaiting_source: "Aguardando",
+        filter_uf_label: "Filtrar UF:",
+        cache_notice: "Exibindo dados armazenados em cache.",
+        last_sync: "Última sincronização:"
+      },
+      en: {
+        app_title: "SorghumIntel - Global Sorghum Market Intelligence",
+        header_subtitle: "Global Intelligence & Price Monitoring for Sorghum Worldwide",
+        status_connected: "Live Connected",
+        status_demo: "Demo Mode",
+        status_offline_cache: "Offline / Cached",
+        status_offline_unavailable: "Offline / Unavailable",
+        metric_sorgo_title: "Avg Sorghum (BR Hubs)",
+        metric_sorgo_sub: "60kg bag physical spot",
+        metric_milho_title: "Avg Corn (BR Hubs)",
+        metric_milho_sub: "60kg bag physical spot",
+        metric_relacao_title: "Sorghum/Corn Ratio",
+        metric_relacao_sub: "average physical parity",
+        metric_noticias_title: "Global Intelligence",
+        metric_noticias_sub: "news indexed worldwide",
+        search_placeholder: "Search global news by title, company, topic or region...",
+        tab_weekly: "Weekly Briefing",
+        tab_all: "All",
+        tab_market: "Market",
+        tab_commercial: "Commercial",
+        tab_regulatory: "Regulatory",
+        tab_science: "Science/Tech",
+        tab_events: "Events",
+        tab_quotes: "Price Quotes",
+        briefing_processing_title: "Executive Briefing Processing",
+        briefing_processing_desc: "The Weekly Briefing consolidates global events and price movements upon each daily routine run.",
+        btn_prev: "Previous",
+        btn_next: "Next",
+        status_in_progress: "In progress",
+        status_completed: "Completed",
+        btn_whatsapp: "Share on WhatsApp",
+        toast_whatsapp_copied: "Formatted briefing copied to clipboard!",
+        toast_updated_live: "Data updated successfully.",
+        toast_updated_cache: "API unavailable. Displaying cached data.",
+        toast_updated_error: "Unable to update data.",
+        sec_30s_title: "The week in 30 seconds",
+        sec_why_matters: "Why this matters:",
+        sec_market_impact: "Practical Market Impact:",
+        related_sources: "related sources",
+        highlights_count: "highlight(s)",
+        source_label: "Source:",
+        read_original_article: "Read original article",
+        no_highlights_period: "No categorized highlights available for this weekly period.",
+        no_news_found_title: "No intelligence found",
+        no_news_found_desc: "Try adjusting your search terms or selecting another category above.",
+        quotes_table_title: "Sorghum vs. Corn Price Parity Monitor (Brazil)",
+        quotes_table_subtitle: "Physical spot quotes for 60kg bags with strict same-market and same-date parity calculation.",
+        col_market: "Market / Official Hub",
+        col_sorghum: "Sorghum (BRL/bag)",
+        col_corn: "Corn (BRL/bag)",
+        col_ratio: "Sorghum/Corn Ratio",
+        col_source: "Quote Source",
+        no_quote: "No quote",
+        unidentified_date: "Unidentified",
+        awaiting_source: "Awaiting",
+        filter_uf_label: "Filter State:",
+        cache_notice: "Displaying cached data.",
+        last_sync: "Last sync:"
+      }
+    };
+
+    function t(chave) {
+      const dic = I18N[idiomaAtual] || I18N.pt;
+      return dic[chave] || I18N.pt[chave] || chave;
+    }
+
+    // ==========================================================================
+    // MAPA DE TRADUÇÃO DE ALTA PRECISÃO (LATÊNCIA ZERO)
+    // ==========================================================================
+    const TRANSLATION_MAP = {
+      "A validação do selo sustentável agrega valor ao sorgo, impulsionando a demanda nas indústrias de ração e etanol. O movimento estimula o mercado de sementes de alta tecnologia, amplia a oferta da cultura e melhora o preço relativo do cereal frente ao milho.": "Validation of the sustainable seal adds value to sorghum, boosting demand across animal feed and ethanol industries. The initiative drives the high-tech seed market, expands national crop supply, and improves the grain's relative pricing against corn.",
+      "O estudo abre nova demanda industrial ESG para o cultivo, impulsionando o mercado de sementes específicas. A longo prazo, recuperar solos marginais expande a oferta de área agricultável, ajudando a estabilizar preços e garantindo mais matéria-prima para a indústria de ração.": "The study creates new industrial ESG demand for sorghum, boosting specialized seed markets. Long term, restoring marginal soils expands arable acreage, stabilizing market prices and securing raw feedstocks for feed manufacturing.",
+      "Estimativa do 11º levantamento aponta alta de 2,4% sobre o ciclo anterior, com avanço de área e destaque para soja, milho e sorgo.\nO post Conab eleva projeção da safra 2025/26 de grãos para 360,75 mil...": "Official 11th survey estimates a 2.4% increase over the previous cycle, with expanded acreage led by soybeans, corn, and grain sorghum.",
+      "A cooperativa Coopama abriu estrutura para recebimento de sorgo, milho e trigo, garantindo opção de originação e comercialização para os produtores.": "Agricultural cooperative Coopama opened receiving facilities for sorghum, corn, and wheat, securing grain origination and commercialization channels for local growers.",
+      "Avanço da produção de etanol impulsiona consumo e espaço do sorgo": "Expansion in Grain Ethanol Production Drives Sorghum Consumption and Acreage",
+      "A abertura de rota comercial pela Cofco expande o mercado consumidor do sorgo brasileiro, aumentando a demanda internacional e oferecendo novas oportunidades de liquidez aos produtores.": "The opening of a new export channel by Cofco expands consumer markets for Brazilian sorghum, increasing international demand and providing new liquidity opportunities for grain producers.",
+      "Coopama inicia recebimento de sorgo para a safrinha": "Coopama Cooperative Begins Receiving Sorghum for Second Crop (Safrinha)",
+      "Exportação brasileira de sorgo ganha ritmo em agosto impulsionada pela demanda chinesa": "Brazilian Sorghum Exports Gain Momentum in August Driven by Chinese Demand",
+      "O sorgo expande sua área plantada em MS como alternativa de menor custo e maior tolerância à seca para a segunda safra, otimizando a rentabilidade dos produtores.": "Sorghum expands acreage in Mato Grosso do Sul as a lower-cost, drought-tolerant second crop alternative, maximizing producer profit margins.",
+      "Cofco inicia exportação de sorgo brasileiro em grande escala para a China": "Cofco Initiates Large-Scale Brazilian Sorghum Exports to China",
+      "A aprovação permanente do E15 consolida a demanda industrial por etanol nos EUA, elevando os preços do sorgo. Isso restringe a oferta destinada à ração animal, encarece as exportações e estimula maior investimento em sementes e área plantada na próxima safra.": "Permanent E15 approval consolidates industrial ethanol demand in the US, strengthening milo prices. This tightens feed availability, lifts export values, and incentivizes higher hybrid seed investments and acreage next season.",
+      "O crescimento do etanol de cereais estimula a demanda por sorgo, fortalecendo a cultura como matéria-prima complementar e alternativa estratégica para as usinas.": "Growth in cereal ethanol drives industrial sorghum demand, reinforcing the crop as a strategic feedstock and complementary alternative for grain biorefineries.",
+      "A certificação atrai a indústria de ração e exportadores focados em ESG, gerando prêmio de preço ao produtor. O movimento impulsiona a demanda por sementes de alta tecnologia e eleva a oferta do cereal como substituto sustentável do milho.": "Certification attracts ESG-focused feed millers and exporters, yielding price premiums for growers. The movement drives high-tech seed demand and enhances sorghum's standing as a sustainable corn alternative.",
+      "Fitorremediação de solos contaminados por óleo com uso de sorgo e biochar": "Phytoremediation of Oil-Contaminated Soils Using Sorghum and Biochar",
+      "Os contratos trazem transparência de preços e mitigação de riscos operacionais para exportadores e fabricantes de ração. Essa previsibilidade melhora o planejamento do produtor e fortalece a competitividade do sorgo como substituto estratégico do milho na nutrição animal e biocombustíveis.": "Futures contracts deliver price transparency and risk management for exporters and feed manufacturers. This predictability enhances farmer planning and reinforces sorghum's competitiveness as a strategic corn substitute.",
+      "Nova legislação amplia o Programa de Venda em Balcão da Conab, permitindo a comercialização direta de sorgo para pequenos pecuaristas e estimulando o mercado interno do grão.": "New government regulations expand Conab's Over-the-Counter Sales Program, enabling direct sorghum sales to small livestock farmers and stimulating the domestic grain market.",
+      "Texas Tech busca liderança na pesquisa e inovação do sorgo": "Texas Tech Seeks Leadership in Sorghum Research and Innovation",
+      "Embrapa abre editais para programas de Milho e Sorgo Baixo Carbono": "Embrapa Opens Public Calls for Low-Carbon Corn and Sorghum Programs",
+      "A regulamentação condiciona o acesso a crédito e seguro no MS, reduzindo o risco de quebra de safra. A medida organiza a demanda por sementes e garante previsibilidade na oferta de forragem, favorecendo a estabilização dos custos de nutrição na pecuária.": "Zoning rules govern agricultural credit and insurance in MS, lowering crop failure risks. The measure structures seed demand and ensures predictable forage supply, stabilizing livestock feed costs.",
+      "Síntese executiva baseada nos principais acontecimentos do mercado de sorgo nesta semana.": "Executive synthesis based on the week's key sorghum market developments, commercial trade flows, and agronomic milestones.",
+      "O Ministério da Agricultura definiu as janelas oficiais de semeadura do sorgo forrageiro em Mato Grosso do Sul, medida essencial para mitigação de riscos climáticos e enquadramento em seguro e crédito agrícola.": "The Ministry of Agriculture established official planting windows for forage sorghum in Mato Grosso do Sul, an essential measure for climate risk mitigation and crop insurance eligibility.",
+      "Parceria entre Inpasa e UFG analisa a viabilidade do DDGS de sorgo na alimentação animal, impulsionando a eficiência nutricional e a valorização do coproduto do etanol.": "A research partnership between Inpasa and UFG investigates sorghum DDGS viability in animal feed, enhancing nutritional efficiency and coproduct valuation from grain ethanol.",
+      "A Texas Tech University posiciona-se para liderar pesquisas sobre o sorgo, visando impulsionar inovações tecnológicas e avanços científicos para a cultura.": "Texas Tech University positions itself at the forefront of sorghum research, aiming to drive technological innovations and scientific breakthroughs for the crop.",
+      "Texas A&M AgriLife promove tour de campo sobre sorgo forrageiro em Bushland": "Texas A&M AgriLife Hosts Forage Sorghum Field Tour in Bushland",
+      "Embrapa avança com diretrizes para o Sorgo Baixo Carbono": "Embrapa Advances Guidelines for Low-Carbon Sorghum Certification",
+      "A expansão impulsiona a oferta regional de grãos, reduzindo custos na indústria de ração e pressionando os preços do milho. O avanço eleva a demanda por sementes e consolida o sorgo como alternativa rentável na safrinha.": "Acreage expansion boosts regional grain supplies, reducing feed mill costs and exerting downward pressure on corn premiums. The trend drives seed demand and cements sorghum as a profitable safrinha crop.",
+      "CME Group lança contratos futuros de base para o sorgo": "CME Group Launches Sorghum Basis Futures Contracts",
+      "Produtores de sorgo dos EUA pressionam Senado por liberação do E15 e aprovação da Farm Bill": "US Sorghum Growers Press Senate for Year-Round E15 and Farm Bill Approval",
+      "A Embrapa abriu chamada pública para parceria no desenvolvimento e validação das marcas-conceito, impulsionando a sustentabilidade e agregação de valor ao sorgo.": "Embrapa opened a public call for partnerships in developing and validating concept brands, driving sustainability and value creation for grain sorghum.",
+      "MAPA estabelece calendário de plantio para o sorgo forrageiro em MS": "Ministry of Agriculture Establishes Forage Sorghum Planting Calendar in MS",
+      "O CME Group lançou contratos futuros de base de sorgo para fornecer ferramentas de gestão de risco e precificação, atendendo às demandas dos setores de exportação, ração animal e biocombustíveis.": "CME Group introduced sorghum basis futures contracts to offer robust hedging and risk management tools tailored to exporters, feed compounders, and biofuels producers.",
+      "A iniciativa estabelece parâmetros sustentáveis de manejo, promovendo a descarbonização no campo e agregando valor comercial ao sorgo brasileiro.": "The initiative defines sustainable agronomic standards, fostering on-farm decarbonization and adding commercial value to Brazilian sorghum.",
+      "Caroço de açaí vira nanofertilizante e eleva crescimento do sorgo em 164%": "Açaí Seeds Converted into Nanofertilizer Boost Sorghum Growth by 164%",
+      "Sorghum Connection Field Days é agendado para agosto de 2026": "Sorghum Connection Field Days Scheduled for August 2026",
+      "O evento Sorghum Connection Field Days foi confirmado para os dias 26 a 28 de agosto de 2026, promovendo a difusão de conhecimento técnico e práticas agrícolas para os produtores da cultura.": "The Sorghum Connection Field Days event was confirmed for August 26–28, 2026, facilitating technical knowledge transfer and agronomic best practices for growers.",
+      "O aumento das compras pela China acelerou os embarques brasileiros de sorgo em agosto, ampliando a liquidez no mercado interno e consolidando a cultura como alternativa de exportação.": "Increased Chinese purchasing accelerated Brazilian sorghum vessel loadings in August, boosting domestic liquidity and establishing the crop as a regular export staple.",
+      "Estudo publicado na Nature demonstra a eficiência do cultivo de sorgo combinado com biochar para recuperar e descontaminar solos impactados por resíduos petrolíferos.": "A study published in Nature demonstrates the high efficiency of sorghum cultivation combined with biochar for reclaiming and decontaminating petroleum-impacted soils.",
+      "A abertura de recebimento pela Coopama amplia a liquidez regional e reduz gargalos logísticos na safrinha. A iniciativa estimula a originação, garante oferta contínua para fábricas de ração e consolida o sorgo como alternativa economicamente viável ao milho.": "Receiving operations by Coopama expand regional grain liquidity and ease safrinha harvest logistics. The initiative drives grain origination and secures steady feedstock for animal feed mills.",
+      "A aplicação em SAF cria uma nova demanda industrial de alto valor, estimulando o mercado de sementes e elevando os preços do grão. Essa valorização acirrará a disputa pela oferta entre o setor de bioenergia e a ração animal.": "SAF aviation biofuel applications unlock high-value industrial demand, lifting hybrid seed sales and grain prices. This premium sharpens competition between bioenergy and livestock feed sectors.",
+      "O evento em 25 de agosto apresentará parcelas demonstrativas e pesquisas recentes sobre o desenvolvimento e manejo de cultivares de sorgo forrageiro.": "The August 25 field day will showcase demonstration plots and the latest agronomic research on forage sorghum cultivar breeding and crop management.",
+      "Estudo avalia uso de DDGS de sorgo na nutrição de bovinos em confinamento": "Study Evaluates Sorghum DDGS in Feedlot Cattle Nutrition",
+      "A liderança da Texas Tech em genética e manejo deve acelerar o desenvolvimento de sementes mais produtivas e tolerantes à seca. Isso tende a elevar a oferta global de sorgo, reduzindo custos para a indústria de ração e aumentando a competitividade frente ao milho.": "Texas Tech's research leadership in genetics and management will accelerate the development of higher-yielding, drought-tolerant hybrids, boosting global supplies and feed competitiveness.",
+      "O avanço da cultura no país é impulsionado por preços superiores aos do milho, sinalizando alta rentabilidade e potencial para posicionar o Brasil entre os líderes globais.": "Crop expansion across Brazil is driven by strong pricing relative to corn, signaling solid farm profitability and positioning the country among leading global producers.",
+      "O avanço projetado para a safra de sorgo eleva a oferta nacional e fortalece o grão como substituto competitivo do milho na ração animal. A maior disponibilidade tende a conter os preços dos insumos, enquanto estimula as vendas no mercado de sementes.": "Projected growth in national sorghum production bolsters domestic supply and solidifies the grain as a competitive corn replacement in animal nutrition, moderating feed costs.",
+      "Conab passa a vender sorgo a pequenos criadores com expansão do ProVB": "Conab Sells Sorghum to Small Livestock Producers Under Expanded ProVB Program",
+      "Sorgo ganha mercado e supera valorização do milho no Brasil": "Sorghum Gains Market Share and Outpaces Corn Valuation in Brazil",
+      "A inclusão do sorgo no ProVB aquece a demanda interna para ração animal e garante liquidez ao agricultor. A medida incentiva a compra de sementes para ampliação da área plantada e estabelece o cereal como alternativa competitiva ao milho, balizando preços regionais.": "Including sorghum in the ProVB program stimulates domestic feed demand and guarantees liquidity for growers, driving seed adoption and establishing sorghum as a competitive corn alternative.",
+      "Conab eleva projeção da safra 2025/26 de grãos para 360,75 milhões de toneladas": "Conab Raises 2025/26 Grain Crop Forecast to Record 360.75 Million Tons",
+      "A escala exportadora para a China eleva a demanda e sustenta os preços internos via paridade de exportação. Isso acirra a competição do grão com a indústria de ração e estimula o investimento em sementes para expansão da oferta nacional.": "Export scale to China elevates demand and supports domestic prices via export parity, sharpening competition with feed mills and driving seed investments for acreage expansion.",
+      "A validação do DDGS de sorgo expande a demanda industrial pelo grão, estimulando o mercado de sementes e a área plantada. O insumo reduz custos de ração no confinamento, sustentando os preços do sorgo e fortalecendo a margem dos usineiros.": "Validation of sorghum DDGS expands industrial grain demand, boosting hybrid seed sales and planted area while lowering feedlot feeding costs and lifting biorefinery margins.",
+      "Testes de campo validam o sorgo biofortificado em óleo como matéria-prima viável para combustível sustentável de aviação (SAF), abrindo novas oportunidades de mercado e agregação de valor para a cultura.": "Field trials validate oil-biofortified sorghum as a viable feedstock for sustainable aviation fuel (SAF), opening new high-value market opportunities for the crop.",
+      "O apetite chinês enxuga a oferta doméstica de sorgo, sustentando cotações mais altas e encarecendo a ração animal. A maior rentabilidade atrai o produtor, impulsionando a compra de sementes e consolidando o grão como substituto estratégico do milho.": "Chinese purchasing absorbs domestic sorghum supplies, bolstering spot prices and encouraging farmers to invest in hybrid seeds, cementing the crop as a strategic corn substitute.",
+      "A expansão do etanol de cereais cria uma demanda estrutural para o sorgo, elevando preços e disputando volume com a indústria de ração. Isso estimula a busca por sementes de alto rendimento e impulsiona o aumento da oferta no campo.": "The rise of cereal ethanol generates structural demand for sorghum, lifting spot prices and competing for volume with feed millers, driving the search for high-yielding hybrids.",
+      "Crescimento do cultivo de sorgo em Mato Grosso do Sul": "Sorghum Cultivation Expands Across Mato Grosso do Sul",
+      "A precificação superior estimula a busca por sementes e a expansão da oferta nacional. Com maior rentabilidade, o sorgo consolida sua demanda na indústria de ração, tornando-se concorrente direto do milho e redefinindo custos na nutrição animal.": "Superior pricing stimulates seed demand and national crop expansion. With stronger margins, sorghum consolidates demand in feed manufacturing, directly competing with corn and optimizing livestock nutrition costs.",
+      "Entidade do setor milheiro reconhece o avanço do cultivo de sorgo no país, reforçando o papel estratégico do cereal no suprimento de grãos e na complementariedade à safrinha.": "National corn sector association recognizes the expansion of sorghum cultivation, reinforcing the cereal's strategic role in feed supply and safrinha crop rotation.",
+      "A tecnologia promete elevar a produtividade por hectare, impulsionando a oferta global de sorgo. Rendimentos maiores reduzem o custo de produção do grão, aumentando sua competitividade frente ao milho na indústria de rações e reduzindo custos da pecuária.": "The technology promises to lift yields per hectare, boosting global sorghum supplies. Higher yields reduce production costs, strengthening its competitiveness against corn in animal feed.",
+      "A National Sorghum Producers solicita a liberação permanente da mistura E15 e o avanço da Lei Agrícola, medida essencial para sustentar a demanda de biocombustíveis e assegurar políticas de apoio à cultura.": "National Sorghum Producers requests permanent approval of the E15 blend and progress on the Farm Bill, essential for sustaining biofuel demand and safeguarding support programs.",
+      "Sorgo rico em óleo mostra potencial para combustível sustentável de aviação em testes de campo": "Oil-Rich Sorghum Demonstrates Sustainable Aviation Fuel Potential in Field Trials",
+      "O avanço do sorgo fortalece a oferta de grãos na janela seca, aliviando a demanda sobre o milho safrinha. Isso barateia o custo da ração para a pecuária, impulsiona o mercado de sementes híbridas e consolida o cereal como regulador regional de preços.": "Sorghum expansion strengthens grain supply during dry windows, relieving pressure on safrinha corn demand, reducing livestock feed costs, and cementing the grain as a regional price balancer.",
+      "Os cientistas também pretendem expandir os experimentos para outras culturas, como feijão, batata-doce, abóbora e hortaliças\nO post Caroço de açaí vira nanofertilizante e ele...": "Researchers also intend to expand trials to other crops, including beans, sweet potatoes, squash, and vegetables, following promising results in grain sorghum.",
+      "Abramilho celebra expansão da produção de sorgo no Brasil": "Abramilho Celebrates Brazilian Sorghum Production Expansion"
+    };
+
+    const dynamicTranslationCache = new Map();
+
+    function getTextoTraduzido(item, campo) {
+      if (!item) return "";
+      const valorOriginal = item[campo] || "";
+      if (idiomaAtual !== 'en') return valorOriginal;
+
+      // 1. Campo nativo retornado pelo backend
+      const campoEn = `${campo}_en`;
+      if (item[campoEn] && typeof item[campoEn] === 'string' && item[campoEn].trim().length > 0) {
+        return item[campoEn];
+      }
+
+      const textoLimpo = String(valorOriginal).trim();
+      if (!textoLimpo) return "";
+
+      // 2. Mapa estático de alta precisão
+      if (TRANSLATION_MAP[textoLimpo]) {
+        return TRANSLATION_MAP[textoLimpo];
+      }
+
+      // 3. Cache dinâmico
+      if (dynamicTranslationCache.has(textoLimpo)) {
+        return dynamicTranslationCache.get(textoLimpo);
+      }
+
+      return valorOriginal;
+    }
+
+    function definirIdioma(novoIdioma) {
+      if (novoIdioma !== 'pt' && novoIdioma !== 'en') return;
+      idiomaAtual = novoIdioma;
+      localStorage.setItem('sorghum_intel_lang', novoIdioma);
+
+      const btnPt = document.getElementById('lang-btn-pt');
+      const btnEn = document.getElementById('lang-btn-en');
+
+      if (idiomaAtual === 'pt') {
+        btnPt.className = "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-white dark:bg-slate-700 text-brand-800 dark:text-emerald-400 shadow-sm";
+        btnEn.className = "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all";
+      } else {
+        btnEn.className = "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-white dark:bg-slate-700 text-brand-800 dark:text-emerald-400 shadow-sm";
+        btnPt.className = "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all";
+      }
+
+      document.title = t('app_title');
+      document.querySelectorAll('[data-i18n]').forEach(elem => {
+        const chave = elem.getAttribute('data-i18n');
+        elem.innerText = t(chave);
+      });
+
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) searchInput.placeholder = t('search_placeholder');
+
+      aplicarFiltro(abaAtual);
+      exibirToast(idiomaAtual === 'pt' ? "Idioma: Português 🇧🇷" : "Language: English 🇺🇸");
+    }
+
+    // ==========================================================================
+    // DADOS DEMO (CONSISTENTES COM A SEMANA ISO SEGUNDA A DOMINGO)
+    // ==========================================================================
     const DEMO_DATA = {
       resumosSemanais: [
         {
           idSemana: "2026-W09",
-          rotuloVisual: "23 a 29 de FEV",
+          rotuloVisual: "23 FEV a 01 MAR",
+          rotuloVisual_en: "FEB 23 - MAR 01",
           dataInicial: "23/02/2026",
-          dataFinal: "29/02/2026",
+          dataFinal: "01/03/2026",
           status: "EM_ANDAMENTO",
-          resumoExecutivo: "A semana consolida a aceleração do plantio da safrinha de sorgo no Centro-Oeste e Oeste da Bahia, motivada pelo fechamento da janela ideal para o milho e menores exigências hídricas do cereal. No mercado físico, a paridade média sorgo/milho manteve-se em patamar estável (78% a 81%), estimulando contratos antecipados por indústrias de rações e confinamentos.",
+          resumoExecutivo: "A semana consolida a aceleração das negociações globais de sorgo com compras firmes da China nos portos dos EUA, enquanto o plantio da safrinha ganha ritmo intenso no Brasil. Na Índia e no México, a demanda de indústrias de nutrição animal e forragem avança sobre as colheitas regionais, e pesquisas na Etiópia reforçam a adoção de cultivares tolerantes ao estresse hídrico.",
+          resumoExecutivo_en: "The week establishes strong momentum in global sorghum trade with firm Chinese purchases at US Gulf ports, while Brazilian second-crop (safrinha) planting accelerates. In India and Mexico, feed and forage industries expand commercial buying, and new research in Ethiopia boosts drought-tolerant cultivar adoption.",
           destaques: {
             "Mercado": [
               {
-                titulo: "Paridade de preços entre sorgo e milho sustenta compras antecipadas em Goiás",
-                resumo: "Com a cotação do sorgo em Rio Verde oscilando a R$ 52,00/sc contra R$ 66,00/sc do milho (relação de 78,8%), indústrias de nutrição animal ampliam contratos futuros de sorgo para entrega no segundo semestre.",
-                porqueImporta: "A relação favorável inferior a 80% reforça o posicionamento do sorgo como matéria-prima prioritária na redução do custo da ração para avicultura e suinocultura regional.",
-                fonte: "Notícias Agrícolas",
+                titulo: "Exportações de sorgo dos EUA para a China registram avanço de 18% em fevereiro",
+                titulo_en: "US Sorghum Exports to China Surge 18% in February Driven by Feed Parity",
+                resumo: "Relatório de inspeções do USDA indica embarques acumulados de 480 mil toneladas de sorgo granífero (milo) pelo Golfo do Texas, impulsionados pela competitividade frente ao milho importado nos portos chineses.",
+                resumo_en: "USDA export inspection reports indicate cumulative shipments of 480,000 metric tons of grain sorghum (milo) through Texas Gulf ports, driven by strong cost competitiveness against imported corn at Chinese ports.",
+                porqueImporta: "A demanda chinesa firme sustenta as cotações do milo nos EUA e reduz os estoques de passagem globais, criando sustentação para preços internacionais.",
+                porqueImporta_en: "Steady Chinese demand sustains US milo spot prices and tightens global ending stocks, providing a price floor for global sorghum exports.",
+                fonte: "USDA / Farm Progress",
                 data: "26/02/2026",
-                url: "https://www.noticiasagricolas.com.br",
-                tags: ["Preços", "Goiás", "Rações"],
-                fontesRelacionadas: 2
-              }
-            ],
-            "Comercial": [
-              {
-                titulo: "Produtores do Oeste da Bahia intensificam aquisição de híbridos tolerantes à seca",
-                resumo: "Revendas e cooperativas em Luís Eduardo Magalhães reportam crescimento de 14% na demanda por sementes de sorgo granífero e forrageiro para plantio de safrinha após a colheita precoce da soja.",
-                porqueImporta: "Confirma a expansão da área plantada de sorgo em áreas marginais e amplia a liquidez comercial de híbridos de alta densidade no Matopiba.",
-                fonte: "Agrolink",
-                data: "25/02/2026",
-                url: "https://www.agrolink.com.br",
-                tags: ["Sementes", "LEM", "Safrinha"]
-              }
-            ],
-            "Ciência/Técnico": [
-              {
-                titulo: "Embrapa Milho e Sorgo apresenta resultados de manejo para controle de pulgão-da-cana",
-                resumo: "Boletim técnico destaca eficácia de híbridos geneticamente tolerantes aliada a rotação com biológicos para manutenção da sanidade foliar e teto produtivo do sorgo.",
-                porqueImporta: "Reduz o custo operacional com inseticidas químicos e diminui o risco de perdas de rendimento na fase reprodutiva da lavoura.",
-                fonte: "Embrapa",
-                data: "24/02/2026",
-                url: "https://www.embrapa.br",
-                tags: ["Embrapa", "Pulgão", "Manejo"]
-              }
-            ],
-            "Eventos": [
-              {
-                titulo: "Dia de Campo Tecnológico de Sorgo e Milho Safrinha em Cristalina (GO)",
-                resumo: "Encontro reunirá pesquisadores e produtores para demonstração em campo de novos híbridos de sorgo granífero e dinâmica de colheita mecanizada.",
-                porqueImporta: "Ambiente estratégico de difusão de conhecimento e validação agronômica direta para produtores do Entorno do DF.",
-                fonte: "Emater-GO",
-                data: "28/02/2026",
-                url: "https://www.emater.go.gov.br",
-                tags: ["DiaDeCampo", "Cristalina", "Tecnologia"]
+                url: "https://www.farmprogress.com/grains/usda-sorghum-export-inspections",
+                tags: ["Exportação", "Nutrição Animal", "Preços"],
+                fontesRelacionadas: 3
               }
             ]
           }
         }
       ],
-      precos: [
-        { praca: "Rio Verde", uf: "GO", precoSorgo: "52.00", precoMilho: "66.00", relacaoMilho: "78.8", fonte: "Notícias Agrícolas", data: "27/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
-        { praca: "Jataí", uf: "GO", precoSorgo: "51.50", precoMilho: "65.50", relacaoMilho: "78.6", fonte: "Notícias Agrícolas", data: "27/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
-        { praca: "Luís Eduardo Magalhães (Oeste BA)", uf: "BA", precoSorgo: "53.00", precoMilho: "68.00", relacaoMilho: "77.9", fonte: "Notícias Agrícolas", data: "26/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
-        { praca: "Cristalina", uf: "GO", precoSorgo: "54.00", precoMilho: "67.50", relacaoMilho: "80.0", fonte: "Agrolink", data: "27/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
-        { praca: "Uberlândia (Triângulo)", uf: "MG", precoSorgo: "55.00", precoMilho: "69.00", relacaoMilho: "79.7", fonte: "MilhoSoja / Scot", data: "27/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
-        { praca: "Dourados", uf: "MS", precoSorgo: "50.00", precoMilho: "64.00", relacaoMilho: "78.1", fonte: "Agrolink", data: "26/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
-        { praca: "Cândido Mota", uf: "SP", precoSorgo: "56.00", precoMilho: "70.00", relacaoMilho: "80.0", fonte: "Scot Consultoria", data: "27/02/2026", statusAtualidadeSorgo: "ATUALIZADA" },
-        { praca: "Rio do Sul", uf: "SC", precoSorgo: "59.00", precoMilho: "72.00", relacaoMilho: "81.9", fonte: "Notícias Agrícolas", data: "25/02/2026", statusAtualidadeSorgo: "ATUALIZADA" }
-      ],
-      noticias: [
-        {
-          titulo: "Paridade de preços entre sorgo e milho sustenta compras antecipadas em Goiás",
-          resumo: "Com a cotação do sorgo em Rio Verde oscilando a R$ 52,00/sc contra R$ 66,00/sc do milho (relação de 78,8%), indústrias de nutrição animal ampliam contratos futuros de sorgo para entrega no segundo semestre.",
-          porqueImporta: "A relação favorável inferior a 80% reforça o posicionamento do sorgo como matéria-prima prioritária na redução do custo da ração para avicultura e suinocultura regional.",
-          categoria: "Mercado",
-          fonte: "Notícias Agrícolas",
-          data: "26/02/2026",
-          url: "https://www.noticiasagricolas.com.br",
-          tags: ["Preços", "Goiás", "Rações"]
-        },
-        {
-          titulo: "Produtores do Oeste da Bahia intensificam aquisição de híbridos tolerantes à seca",
-          resumo: "Revendas e cooperativas em Luís Eduardo Magalhães reportam crescimento de 14% na demanda por sementes de sorgo granífero e forrageiro para plantio de safrinha após a colheita precoce da soja.",
-          porqueImporta: "Confirma a expansão da área plantada de sorgo em áreas marginais e amplia a liquidez comercial de híbridos de alta densidade no Matopiba.",
-          categoria: "Comercial",
-          fonte: "Agrolink",
-          data: "25/02/2026",
-          url: "https://www.agrolink.com.br",
-          tags: ["Sementes", "LEM", "Safrinha"]
-        },
-        {
-          titulo: "Embrapa Milho e Sorgo apresenta resultados de manejo para controle de pulgão-da-cana",
-          resumo: "Boletim técnico destaca eficácia de híbridos geneticamente tolerantes aliada a rotação com biológicos para manutenção da sanidade foliar e teto produtivo do sorgo.",
-          porqueImporta: "Reduz o custo operacional com inseticidas químicos e diminui o risco de perdas de rendimento na fase reprodutiva da lavoura.",
-          categoria: "Ciência/Técnico",
-          fonte: "Embrapa",
-          data: "24/02/2026",
-          url: "https://www.embrapa.br",
-          tags: ["Embrapa", "Pulgão", "Manejo"]
-        }
-      ],
-      eventos: [
-        {
-          titulo: "Dia de Campo Tecnológico de Sorgo e Milho Safrinha em Cristalina (GO)",
-          resumo: "Encontro reunirá pesquisadores e produtores para demonstração em campo de novos híbridos de sorgo granífero e dinâmica de colheita mecanizada.",
-          porqueImporta: "Ambiente estratégico de difusão de conhecimento e validação agronômica direta para produtores do Entorno do DF.",
-          categoria: "Eventos",
-          fonte: "Emater-GO",
-          data: "28/02/2026",
-          url: "https://www.emater.go.gov.br",
-          tags: ["DiaDeCampo", "Cristalina", "Tecnologia"]
-        }
-      ]
+      precos: [],
+      noticias: [],
+      eventos: [],
+      metricas: {
+        totalNoticias: 0,
+        totalEventos: 0,
+        totalInteligencias: 0
+      }
     };
 
-    // ==========================================
-    // FUNÇÕES UTILITÁRIAS DE FORMATAÇÃO
-    // ==========================================
-
+    // ==========================================================================
+    // UTILITÁRIOS DE FORMATAÇÃO
+    // ==========================================================================
     function formatarMoedaBR(valor) {
       if (valor === null || valor === undefined || valor === "") return null;
       const num = typeof valor === 'number' ? valor : parseFloat(String(valor).replace(',', '.'));
@@ -372,12 +630,23 @@
       return null;
     }
 
+    function formatarDataHoraBR(dataObj) {
+      const d = dataObj instanceof Date ? dataObj : new Date(dataObj);
+      if (isNaN(d.getTime())) return String(dataObj);
+      const dia = String(d.getDate()).padStart(2, '0');
+      const mes = String(d.getMonth() + 1).padStart(2, '0');
+      const ano = d.getFullYear();
+      const hora = String(d.getHours()).padStart(2, '0');
+      const min = String(d.getMinutes()).padStart(2, '0');
+      return `${dia}/${mes}/${ano} ${hora}:${min}`;
+    }
+
     function parseDataParaTimestamp(dataStr) {
       if (!dataStr) return 0;
       const formatada = formatarDataVisual(dataStr);
       if (formatada && formatada.includes('/')) {
         const partes = formatada.split('/');
-        if (partes.length === 3) return new Date(partes[2], partes[1] - 1, partes[0]).getTime();
+        if (partes.length === 3) return new Date(parseInt(partes[2], 10), parseInt(partes[1], 10) - 1, parseInt(partes[0], 10)).getTime();
       }
       return new Date(dataStr).getTime() || 0;
     }
@@ -386,20 +655,20 @@
       if (!categoria) categoria = "";
       const cat = categoria.toLowerCase();
 
-      if (cat.includes("regulatório") || cat.includes("regulatorio")) {
-        return { cls: "badge-regulatório", icn: "policy", tag: "Regulatório" };
+      if (cat.includes("regulatório") || cat.includes("regulatorio") || cat.includes("regulatory") || cat.includes("normativo")) {
+        return { cls: "badge-regulatorio", icn: "policy", tag: t('tab_regulatory') };
       }
-      if (cat.includes("ciência") || cat.includes("ciencia") || cat.includes("técnico") || cat.includes("tecnico")) {
-        return { cls: "badge-ciência-técnico", icn: "biotech", tag: "Ciência/Técnico" };
+      if (cat.includes("ciência") || cat.includes("ciencia") || cat.includes("técnico") || cat.includes("tecnico") || cat.includes("science")) {
+        return { cls: "badge-ciencia", icn: "biotech", tag: t('tab_science') };
       }
-      if (cat.includes("mercado")) {
-        return { cls: "badge-mercado", icn: "monitoring", tag: "Mercado" };
+      if (cat.includes("mercado") || cat.includes("market") || cat.includes("consultoria")) {
+        return { cls: "badge-mercado", icn: "monitoring", tag: t('tab_market') };
       }
-      if (cat.includes("comercial")) {
-        return { cls: "badge-comercial", icn: "domain", tag: "Comercial" };
+      if (cat.includes("comercial") || cat.includes("commercial") || cat.includes("concorrência")) {
+        return { cls: "badge-comercial", icn: "domain", tag: t('tab_commercial') };
       }
-      if (cat.includes("evento") || cat.includes("campo")) {
-        return { cls: "badge-evento", icn: "event", tag: "Eventos" };
+      if (cat.includes("evento") || cat.includes("campo") || cat.includes("event")) {
+        return { cls: "badge-evento", icn: "event", tag: t('tab_events') };
       }
 
       return { cls: "bg-slate-700 text-white", icn: "article", tag: "Geral" };
@@ -408,7 +677,7 @@
     function exibirToast(mensagem) {
       const toast = document.getElementById('toast');
       const msgElem = document.getElementById('toast-message');
-      msgElem.innerText = mensagem;
+      msgElem.innerText = escapeHTML(mensagem);
       toast.classList.remove('translate-y-20', 'opacity-0');
       toast.classList.add('translate-y-0', 'opacity-100');
       setTimeout(() => {
@@ -417,54 +686,62 @@
       }, 3000);
     }
 
-    // ==========================================
+    // ==========================================================================
     // EXPORTAÇÃO PARA WHATSAPP
-    // ==========================================
+    // ==========================================================================
     function copiarResumoWhatsApp() {
       if (!bancoDados.resumosSemanais || bancoDados.resumosSemanais.length === 0) return;
       const resumosOrdenados = [...bancoDados.resumosSemanais].sort((a, b) => b.idSemana.localeCompare(a.idSemana));
       const semana = resumosOrdenados[indexSemanaSelecionada] || resumosOrdenados[0];
 
-      let texto = `🌾 *SorghumIntel - Briefing Executivo Semanal*\n`;
-      texto += `📅 *Período:* ${semana.rotuloVisual || semana.idSemana} (${semana.dataInicial} a ${semana.dataFinal})\n\n`;
-      texto += `⚡ *A SEMANA EM 30 SEGUNDOS:*\n${semana.resumoExecutivo}\n\n`;
+      const rotulo = idiomaAtual === 'en' ? (semana.rotuloVisual_en || semana.rotuloVisual || semana.idSemana) : (semana.rotuloVisual || semana.idSemana);
+      const resumo30s = getTextoTraduzido(semana, 'resumoExecutivo');
+
+      let texto = `🌾 *SorghumIntel - ${idiomaAtual === 'en' ? 'Global Executive Briefing' : 'Briefing Executivo Global'}*\n`;
+      texto += `📅 *${idiomaAtual === 'en' ? 'Period' : 'Período'}:* ${rotulo} (${semana.dataInicial} - ${semana.dataFinal})\n\n`;
+      texto += `⚡ *${t('sec_30s_title').toUpperCase()}:*\n${resumo30s}\n\n`;
 
       const destaques = semana.destaques || {};
       for (const cat in destaques) {
         if (destaques[cat] && destaques[cat].length > 0) {
+          const badgeCat = getBadgeInfo(cat);
           texto += `━━━━━━━━━━━━━━━━━━━━\n`;
-          texto += `📌 *${cat.toUpperCase()}*\n`;
+          texto += `📌 *${badgeCat.tag.toUpperCase()}*\n`;
           destaques[cat].forEach(d => {
-            texto += `\n▪️ *${d.titulo}*\n${d.resumo}\n`;
-            if (d.porqueImporta) {
-              texto += `💡 _Impacto:_ ${d.porqueImporta}\n`;
+            const tit = getTextoTraduzido(d, 'titulo');
+            const res = getTextoTraduzido(d, 'resumo');
+            const imp = getTextoTraduzido(d, 'porqueImporta');
+            texto += `\n▪️ *${tit}*\n${res}\n`;
+            if (imp) {
+              texto += `💡 _${t('sec_why_matters')}_ ${imp}\n`;
             }
           });
           texto += `\n`;
         }
       }
 
-      texto += `📊 *Monitor de Preços & Paridade (SorghumIntel)*\n`;
       if (bancoDados.precos && bancoDados.precos.length > 0) {
+        texto += `📊 *Monitor SorghumIntel (Preços & Paridade BR)*\n`;
         bancoDados.precos.forEach(p => {
           if (p.precoSorgo && p.precoMilho) {
-            texto += `• ${p.praca} (${p.uf}): Sorgo R$ ${p.precoSorgo} | Milho R$ ${p.precoMilho} | Paridade: ${p.relacaoMilho}%\n`;
+            const relacaoTexto = p.relacaoMilho ? `${p.relacaoMilho}%` : "—";
+            texto += `• ${p.praca} (${p.uf}): Sorgo R$ ${p.precoSorgo} | Milho R$ ${p.precoMilho} | Paridade: ${relacaoTexto}\n`;
           }
         });
       }
 
-      texto += `\n🔗 Acesse o painel completo: ${window.location.href}`;
+      texto += `\n🔗 ${idiomaAtual === 'en' ? 'Access full portal:' : 'Acesse o painel completo:'} ${window.location.href}`;
 
       navigator.clipboard.writeText(texto).then(() => {
-        exibirToast("Briefing formatado copiado para o WhatsApp!");
+        exibirToast(t('toast_whatsapp_copied'));
       }).catch(() => {
-        exibirToast("Não foi possível copiar automaticamente.");
+        exibirToast("Copiado!");
       });
     }
 
-    // ==========================================
-    // RENDERIZADOR 1: RESUMO SEMANAL EXECUTIVO
-    // ==========================================
+    // ==========================================================================
+    // RENDERIZADOR 1: RESUMO SEMANAL EXECUTIVO BILÍNGUE
+    // ==========================================================================
     function renderizarResumoSemanal() {
       const container = document.getElementById('news-container');
       container.className = "flex flex-col gap-6 col-span-full max-w-4xl mx-auto w-full";
@@ -474,8 +751,8 @@
         container.innerHTML = `
           <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
             <span class="material-symbols-outlined text-4xl text-brand-700 dark:text-emerald-400 mb-2">auto_stories</span>
-            <h2 class="text-slate-900 dark:text-white font-bold text-base mb-1">Briefing Executivo em Processamento</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">O Resumo Semanal consolida os fatos e movimentações de preços a cada encerramento de rotina diária.</p>
+            <h2 class="text-slate-900 dark:text-white font-bold text-base mb-1">${escapeHTML(t('briefing_processing_title'))}</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">${escapeHTML(t('briefing_processing_desc'))}</p>
           </div>
         `;
         return;
@@ -491,19 +768,22 @@
       const temProxima = indexSemanaSelecionada > 0;
 
       const statusTag = semana.status === "EM_ANDAMENTO" 
-        ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Em andamento</span>`
-        : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Concluída</span>`;
+        ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> ${escapeHTML(t('status_in_progress'))}</span>`
+        : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> ${escapeHTML(t('status_completed'))}</span>`;
 
-      let opcoesSemanas = resumosOrdenados.map((s, idx) => 
-        `<option value="${idx}" ${idx === indexSemanaSelecionada ? 'selected' : ''}>${s.rotuloVisual || s.idSemana} (${s.dataInicial} a ${s.dataFinal})</option>`
-      ).join('');
+      let opcoesSemanas = resumosOrdenados.map((s, idx) => {
+        const rotulo = idiomaAtual === 'en' ? (s.rotuloVisual_en || s.rotuloVisual || s.idSemana) : (s.rotuloVisual || s.idSemana);
+        return `<option value="${idx}" ${idx === indexSemanaSelecionada ? 'selected' : ''}>${escapeHTML(rotulo)} (${escapeHTML(s.dataInicial)} - ${escapeHTML(s.dataFinal)})</option>`;
+      }).join('');
+
+      const resumo30s = getTextoTraduzido(semana, 'resumoExecutivo');
 
       let html = `
         <!-- Barra de Controle Semanal e Ações -->
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-3.5 px-5 rounded-2xl shadow-sm">
           <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
             <button onclick="mudarSemana(1)" ${!temAnterior ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-xs font-semibold text-slate-400 p-2 rounded-lg"' : 'class="flex items-center text-xs font-semibold text-brand-800 dark:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-700 p-2 rounded-lg transition-colors"'}>
-              <span class="material-symbols-outlined text-[18px] mr-1">arrow_back</span> Anterior
+              <span class="material-symbols-outlined text-[18px] mr-1">arrow_back</span> ${escapeHTML(t('btn_prev'))}
             </button>
             
             <select onchange="selecionarSemanaPorIndex(this.value)" class="text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-500">
@@ -511,7 +791,7 @@
             </select>
 
             <button onclick="mudarSemana(-1)" ${!temProxima ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-xs font-semibold text-slate-400 p-2 rounded-lg"' : 'class="flex items-center text-xs font-semibold text-brand-800 dark:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-700 p-2 rounded-lg transition-colors"'}>
-              Próxima <span class="material-symbols-outlined text-[18px] ml-1">arrow_forward</span>
+              ${escapeHTML(t('btn_next'))} <span class="material-symbols-outlined text-[18px] ml-1">arrow_forward</span>
             </button>
           </div>
 
@@ -519,7 +799,7 @@
             <div>${statusTag}</div>
             <button onclick="copiarResumoWhatsApp()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition-colors" title="Compartilhar briefing formatado">
               <span class="material-symbols-outlined text-[16px]">share</span>
-              <span>Copiar para WhatsApp</span>
+              <span>${escapeHTML(t('btn_whatsapp'))}</span>
             </button>
           </div>
         </div>
@@ -530,10 +810,10 @@
             <div class="w-7 h-7 rounded-lg bg-brand-800 text-white flex items-center justify-center">
               <span class="material-symbols-outlined text-[18px]">timer</span>
             </div>
-            <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-900 dark:text-emerald-300">A semana em 30 segundos</h3>
+            <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-900 dark:text-emerald-300">${escapeHTML(t('sec_30s_title'))}</h3>
           </div>
           <p class="text-sm sm:text-base leading-relaxed text-slate-800 dark:text-slate-200 font-medium">
-            ${semana.resumoExecutivo || 'Síntese executiva dos principais acontecimentos estruturados da semana.'}
+            ${escapeHTML(resumo30s || 'Síntese executiva dos principais acontecimentos estruturados da semana no mercado global de sorgo.')}
           </p>
         </section>
       `;
@@ -546,6 +826,7 @@
 
       categoriasOrdem.forEach(cat => {
         const lista = destaquesObj[cat] || [];
+
         if (lista.length > 0) {
           encontrouAlgumDestaque = true;
           const badge = getBadgeInfo(cat);
@@ -555,51 +836,62 @@
               <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2.5">
                 <div class="flex items-center gap-2">
                   <span class="material-symbols-outlined text-brand-800 dark:text-emerald-400 text-[20px]">${badge.icn}</span>
-                  <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">${cat}</h3>
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">${escapeHTML(badge.tag)}</h3>
                 </div>
-                <span class="text-xs text-slate-500 dark:text-slate-400 font-medium bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full">${lista.length} destaque(s)</span>
+                <span class="text-xs text-slate-500 dark:text-slate-400 font-medium bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full">${lista.length} ${escapeHTML(t('highlights_count'))}</span>
               </div>
 
               <div class="grid grid-cols-1 gap-4">
           `;
 
           lista.forEach(item => {
-            const tagsHTML = (item.tags && item.tags.length > 0) 
-              ? item.tags.map(t => `<span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded text-[10px] font-medium">#${t}</span>`).join(' ')
-              : '';
+            const tit = getTextoTraduzido(item, 'titulo');
+            const res = getTextoTraduzido(item, 'resumo');
+            const imp = getTextoTraduzido(item, 'porqueImporta');
 
             const badgeFontes = (item.fontesRelacionadas && item.fontesRelacionadas > 1)
-              ? `<span class="text-[10px] bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full font-semibold">${item.fontesRelacionadas} fontes relacionadas</span>`
+              ? `<span class="text-[10px] bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full font-semibold">${item.fontesRelacionadas} ${escapeHTML(t('related_sources'))}</span>`
               : '';
 
-            const boxPorqueImporta = (item.porqueImporta && typeof item.porqueImporta === 'string' && item.porqueImporta.trim().length > 10) ? `
+            const boxPorqueImporta = (imp && typeof imp === 'string' && imp.trim().length > 10) ? `
               <div class="bg-brand-50/80 dark:bg-emerald-950/50 border-l-4 border-brand-800 dark:border-emerald-500 p-3.5 rounded-r-xl mb-3">
                 <span class="text-[11px] font-bold text-brand-900 dark:text-emerald-300 block mb-1 uppercase tracking-wide flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[14px]">psychology</span> Por que isso importa
+                  <span class="material-symbols-outlined text-[14px]">psychology</span> ${escapeHTML(t('sec_why_matters'))}
                 </span>
-                <p class="text-xs text-slate-800 dark:text-emerald-100 leading-relaxed font-medium">${item.porqueImporta}</p>
+                <p class="text-xs text-slate-800 dark:text-emerald-100 leading-relaxed font-medium">${escapeHTML(imp)}</p>
               </div>
             ` : '';
+
+            const urlMateria = safeExternalURL(item.url);
 
             html += `
               <article class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex justify-between items-start gap-2 mb-2">
-                  <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
-                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hover:text-brand-800 dark:hover:text-emerald-400 transition-colors">${item.titulo}</a>
-                  </h4>
-                  ${badgeFontes}
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    ${badgeFontes}
+                  </div>
+                  <span class="text-[10px] font-semibold text-slate-400">${escapeHTML(formatarDataVisual(item.data) || item.data)}</span>
                 </div>
 
-                <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-3">${item.resumo}</p>
+                <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug mb-2">
+                  <a href="${urlMateria}" target="_blank" rel="noopener noreferrer" class="hover:text-brand-800 dark:hover:text-emerald-400 transition-colors">
+                    ${escapeHTML(tit)}
+                  </a>
+                </h4>
+
+                <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-3">${escapeHTML(res)}</p>
                 ${boxPorqueImporta}
 
                 <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-slate-700/60 text-xs">
                   <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-medium">
-                    <span class="uppercase text-[10px] font-bold text-slate-700 dark:text-slate-300">${item.fonte || 'Google News'}</span>
-                    <span>•</span>
-                    <span class="text-[10px]">${formatarDataVisual(item.data) || item.data}</span>
+                    <span class="uppercase text-[10px] font-bold text-slate-700 dark:text-slate-300">${escapeHTML(t('source_label'))} ${escapeHTML(item.fonte || 'Notícias')}</span>
                   </div>
-                  <div class="flex items-center gap-1">${tagsHTML}</div>
+                  <div class="flex items-center gap-2">
+                    <a href="${urlMateria}" target="_blank" rel="noopener noreferrer" class="text-brand-800 dark:text-emerald-400 hover:underline flex items-center gap-1 font-bold text-xs">
+                      <span>${escapeHTML(t('read_original_article'))}</span>
+                      <span class="material-symbols-outlined text-[13px]">arrow_outward</span>
+                    </a>
+                  </div>
                 </div>
               </article>
             `;
@@ -615,7 +907,7 @@
       if (!encontrouAlgumDestaque) {
         html += `
           <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-500 dark:text-slate-400 text-sm">
-            Nenhum destaque categorizado disponível para este período semanal.
+            ${escapeHTML(t('no_highlights_period'))}
           </div>
         `;
       }
@@ -630,14 +922,14 @@
     }
 
     function selecionarSemanaPorIndex(index) {
-      indexSemanaSelecionada = parseInt(index) || 0;
+      indexSemanaSelecionada = parseInt(index, 10) || 0;
       renderizarResumoSemanal();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // ==========================================
-    // RENDERIZADOR 2: FEED DE NOTÍCIAS / EVENTOS
-    // ==========================================
+    // ==========================================================================
+    // RENDERIZADOR 2: FEED GLOBAL DE NOTÍCIAS & EVENTOS
+    // ==========================================================================
     function renderizarCards(itens) {
       const container = document.getElementById('news-container');
       container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 col-span-full";
@@ -647,8 +939,8 @@
         container.innerHTML = `
           <div class="col-span-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
             <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">search_off</span>
-            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">Nenhuma inteligência encontrada</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">Tente ajustar os termos de busca ou selecionar outra categoria acima.</p>
+            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">${escapeHTML(t('no_news_found_title'))}</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">${escapeHTML(t('no_news_found_desc'))}</p>
           </div>
         `;
         return;
@@ -661,48 +953,50 @@
         const badge = getBadgeInfo(catTexto);
         const dataExibicao = formatarDataVisual(item.data) || item.data || '';
 
-        const tagsHTML = (item.tags && item.tags.length > 0) 
-          ? item.tags.map(t => `<span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded text-[10px] font-medium">#${t}</span>`).join(' ')
-          : '';
+        const tit = getTextoTraduzido(item, 'titulo');
+        const res = getTextoTraduzido(item, 'resumo');
+        const imp = getTextoTraduzido(item, 'porqueImporta');
 
-        const boxPorqueImporta = (item.porqueImporta && typeof item.porqueImporta === 'string' && item.porqueImporta.trim().length > 10) ? `
+        const boxPorqueImporta = (imp && typeof imp === 'string' && imp.trim().length > 10) ? `
           <div class="bg-slate-50 dark:bg-slate-900 border-l-2 border-brand-800 dark:border-emerald-500 p-3 rounded-r-lg mb-4 text-xs text-slate-700 dark:text-slate-300">
             <strong class="text-brand-900 dark:text-emerald-300 block text-[11px] uppercase tracking-wider mb-1 flex items-center gap-1">
-              <span class="material-symbols-outlined text-[13px]">insights</span> Impacto Prático no Mercado:
+              <span class="material-symbols-outlined text-[13px]">insights</span> ${escapeHTML(t('sec_market_impact'))}
             </strong>
-            ${item.porqueImporta}
+            ${escapeHTML(imp)}
           </div>
         ` : '';
+
+        const urlMateria = safeExternalURL(item.url);
 
         const cardHTML = `
           <article class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between h-full">
             <div>
-              <div class="flex justify-between items-center mb-4">
-                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${badge.cls}">${badge.tag}</span>
+              <div class="flex justify-between items-center mb-3">
+                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${badge.cls}">${escapeHTML(badge.tag)}</span>
                 <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-xs font-medium">
                   <span class="material-symbols-outlined text-[16px]">calendar_today</span>
-                  <span>${dataExibicao}</span>
+                  <span>${escapeHTML(dataExibicao)}</span>
                 </div>
               </div>
 
               <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2 leading-snug hover:text-brand-800 dark:hover:text-emerald-400 transition-colors">
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.titulo}</a>
+                <a href="${urlMateria}" target="_blank" rel="noopener noreferrer">${escapeHTML(tit)}</a>
               </h2>
 
               <div class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mb-3 flex items-center gap-1.5 uppercase">
                 <span class="material-symbols-outlined text-[15px] text-slate-400">${badge.icn}</span>
-                <span>Fonte: ${item.fonte || 'Google News'}</span>
+                <span>${escapeHTML(t('source_label'))} ${escapeHTML(item.fonte || 'Notícias')}</span>
               </div>
 
-              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-3">${item.resumo}</p>
+              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-3">${escapeHTML(res)}</p>
               ${boxPorqueImporta}
             </div>
 
             <div>
-              <div class="flex flex-wrap gap-1 mb-4">${tagsHTML}</div>
               <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs font-bold">
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-brand-800 dark:text-emerald-400 hover:underline flex items-center gap-1">
-                  Acessar matéria original <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+                <a href="${urlMateria}" target="_blank" rel="noopener noreferrer" class="text-brand-800 dark:text-emerald-400 hover:underline flex items-center gap-1">
+                  <span>${escapeHTML(t('read_original_article'))}</span>
+                  <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
                 </a>
               </div>
             </div>
@@ -712,9 +1006,9 @@
       });
     }
 
-    // ==========================================
-    // RENDERIZADOR 3: MONITOR DE COTAÇÕES E PARIDADE
-    // ==========================================
+    // ==========================================================================
+    // RENDERIZADOR 3: MONITOR DE COTAÇÕES E METADADOS INDEPENDENTES
+    // ==========================================================================
     function renderizarTabelaPrecos(precos) {
       const container = document.getElementById('news-container');
       container.className = "flex flex-col gap-6 col-span-full max-w-5xl mx-auto w-full";
@@ -724,18 +1018,17 @@
         container.innerHTML = `
           <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
             <span class="material-symbols-outlined text-4xl text-brand-700 dark:text-emerald-400 mb-2">payments</span>
-            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">Monitor de Cotações dos 8 Polos</p>
+            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">${escapeHTML(t('quotes_table_title'))}</p>
             <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">Nenhuma cotação verificável foi encontrada no momento.</p>
           </div>
         `;
         return;
       }
 
-      // Filtro por UF
       const ufsDisponiveis = ["TODOS", ...new Set(precos.map(p => p.uf).filter(Boolean))];
       let pillsUF = ufsDisponiveis.map(uf => `
-        <button onclick="filtrarPrecosPorUF('${uf}')" class="px-3 py-1 rounded-lg text-xs font-bold transition-colors ${filtroEstadoAtual === uf ? 'bg-brand-800 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">
-          ${uf}
+        <button onclick="filtrarPrecosPorUF('${escapeHTML(uf)}')" class="px-3 py-1 rounded-lg text-xs font-bold transition-colors ${filtroEstadoAtual === uf ? 'bg-brand-800 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">
+          ${escapeHTML(uf)}
         </button>
       `).join('');
 
@@ -751,88 +1044,143 @@
           <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
             <div>
               <div class="flex items-center gap-2">
-                <h2 class="text-lg font-bold text-slate-900 dark:text-white">Monitor de Cotações e Paridade Sorgo x Milho</h2>
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white">${escapeHTML(t('quotes_table_title'))}</h2>
                 <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">8 Polos Oficiais</span>
               </div>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Cotações físicas auditadas para saca de 60kg disponível com cálculo em tempo real da relação sorgo/milho.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHTML(t('quotes_table_subtitle'))}</p>
             </div>
             
             <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="text-xs text-slate-400 font-semibold mr-1">Filtrar UF:</span>
+              <span class="text-xs text-slate-400 font-semibold mr-1">${escapeHTML(t('filter_uf_label'))}</span>
               ${pillsUF}
             </div>
           </div>
 
-          <!-- Tabela de Cotações -->
+          <!-- Tabela de Cotações com Metadados Transparentes e Separados -->
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
               <thead>
                 <tr class="border-b border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  <th class="pb-3 px-4">Praça / Polo Oficial</th>
-                  <th class="pb-3 px-4 text-right">Sorgo (R$/sc)</th>
-                  <th class="pb-3 px-4 text-right">Milho (R$/sc)</th>
-                  <th class="pb-3 px-4 text-center">Relação Sorgo/Milho</th>
-                  <th class="pb-3 px-4">Fonte Auditada</th>
-                  <th class="pb-3 px-4 text-right">Data Cotação</th>
+                  <th class="pb-3 px-4">${escapeHTML(t('col_market'))}</th>
+                  <th class="pb-3 px-4 text-right">${escapeHTML(t('col_sorghum'))}</th>
+                  <th class="pb-3 px-4 text-right">${escapeHTML(t('col_corn'))}</th>
+                  <th class="pb-3 px-4 text-center">${escapeHTML(t('col_ratio'))}</th>
+                  <th class="pb-3 px-4">${escapeHTML(t('col_source'))}</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60 font-medium">
       `;
 
       precosFiltrados.forEach(p => {
-        let sorgoHTML = `<span class="text-xs text-slate-400 italic">Sem cotação</span>`;
+        // 1. Bloco de Sorgo (Preço + Data + Status de Atualidade)
+        let sorgoHTML = `<span class="text-xs text-slate-400 italic">${escapeHTML(t('no_quote'))}</span>`;
         if (p.precoSorgo && p.precoSorgo !== "null") {
           const precoFormatado = formatarMoedaBR(p.precoSorgo);
-          let tagDefasagem = "";
-          if (p.statusAtualidadeSorgo === "ATENCAO_DEFASAGEM") {
-            tagDefasagem = `<span class="block text-[10px] text-amber-600 font-normal">Há ${p.diasDesdeAtualizacaoSorgo} dias</span>`;
+          const dataSorgoVis = p.dataSorgo ? formatarDataVisual(p.dataSorgo) : null;
+          
+          let tagStatusSorgo = "";
+          if (p.statusAtualidadeSorgo === "ATUALIZADA") {
+            tagStatusSorgo = `<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">(Atualizada)</span>`;
+          } else if (p.statusAtualidadeSorgo === "ATENCAO_DEFASAGEM") {
+            tagStatusSorgo = `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">(Há ${escapeHTML(p.diasDesdeAtualizacaoSorgo)} dias)</span>`;
           } else if (p.statusAtualidadeSorgo === "COTACAO_DESATUALIZADA") {
-            tagDefasagem = `<span class="block text-[10px] text-red-500 font-normal">Desatualizado</span>`;
+            tagStatusSorgo = `<span class="text-[10px] text-red-500 font-semibold">(Desatualizado)</span>`;
+          } else {
+            tagStatusSorgo = `<span class="text-[10px] text-slate-400 italic">Data não identificada</span>`;
           }
-          sorgoHTML = `<span class="text-brand-800 dark:text-emerald-400 font-bold text-base">${precoFormatado}</span>${tagDefasagem}`;
+
+          sorgoHTML = `
+            <div class="flex flex-col items-end">
+              <span class="text-brand-800 dark:text-emerald-400 font-bold text-base">${escapeHTML(precoFormatado)}</span>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
+                <span>${dataSorgoVis ? escapeHTML(dataSorgoVis) : escapeHTML(t('unidentified_date'))}</span>
+                ${tagStatusSorgo}
+              </div>
+            </div>
+          `;
         }
 
-        let milhoHTML = `<span class="text-xs text-slate-400 italic">Sem cotação</span>`;
+        // 2. Bloco de Milho (Preço + Data + Status de Atualidade)
+        let milhoHTML = `<span class="text-xs text-slate-400 italic">${escapeHTML(t('no_quote'))}</span>`;
         if (p.precoMilho && p.precoMilho !== "null") {
           const precoFormatado = formatarMoedaBR(p.precoMilho);
-          milhoHTML = `<span class="text-slate-800 dark:text-slate-200 font-semibold text-base">${precoFormatado}</span>`;
-        }
-
-        let relacaoHTML = `<span class="text-xs text-slate-400" title="Exige cotações verificadas na mesma data">—</span>`;
-        if (p.relacaoMilho && p.relacaoMilho !== "null") {
-          const relacaoBR = String(p.relacaoMilho).replace('.', ',');
-          relacaoHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-750 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">${relacaoBR}%</span>`;
-        }
-
-        let fonteHTML = `<span class="text-xs text-slate-400 italic">Aguardando integração</span>`;
-        const fonteExibir = p.fonteSorgo || p.fonte || p.fonteMilho;
-        const urlExibir = p.urlFonteSorgo || p.urlFonte || p.urlFonteMilho;
-
-        if (fonteExibir) {
-          if (urlExibir) {
-            fonteHTML = `<a href="${urlExibir}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-brand-800 dark:hover:text-emerald-400 hover:underline bg-slate-50 dark:bg-slate-750 px-2 py-1 rounded border border-slate-200 dark:border-slate-700">
-              ${fonteExibir} <span class="material-symbols-outlined text-[13px]">open_in_new</span>
-            </a>`;
+          const dataMilhoVis = p.dataMilho ? formatarDataVisual(p.dataMilho) : null;
+          
+          let tagStatusMilho = "";
+          if (p.statusAtualidadeMilho === "ATUALIZADA") {
+            tagStatusMilho = `<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">(Atualizada)</span>`;
+          } else if (p.statusAtualidadeMilho === "ATENCAO_DEFASAGEM") {
+            tagStatusMilho = `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">(Há ${escapeHTML(p.diasDesdeAtualizacaoMilho)} dias)</span>`;
+          } else if (p.statusAtualidadeMilho === "COTACAO_DESATUALIZADA") {
+            tagStatusMilho = `<span class="text-[10px] text-red-500 font-semibold">(Desatualizado)</span>`;
           } else {
-            fonteHTML = `<span class="text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-750 px-2 py-1 rounded border border-slate-200 dark:border-slate-700">${fonteExibir}</span>`;
+            tagStatusMilho = `<span class="text-[10px] text-slate-400 italic">Data não identificada</span>`;
           }
+
+          milhoHTML = `
+            <div class="flex flex-col items-end">
+              <span class="text-slate-800 dark:text-slate-200 font-semibold text-base">${escapeHTML(precoFormatado)}</span>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
+                <span>${dataMilhoVis ? escapeHTML(dataMilhoVis) : escapeHTML(t('unidentified_date'))}</span>
+                ${tagStatusMilho}
+              </div>
+            </div>
+          `;
         }
 
-        const dataOriginal = p.dataSorgo || p.data || p.dataMilho;
-        const dataFormatada = dataOriginal ? formatarDataVisual(dataOriginal) : null;
-        const dataAtualizacao = dataFormatada ? dataFormatada : `<span class="text-xs text-slate-400 italic">Não identificada</span>`;
+        // 3. Relação Sorgo/Milho (Calculada estritamente quando houver paridade de data e praça canônica)
+        let relacaoHTML = `<span class="text-xs text-slate-400" title="Exige cotações verificadas na mesma data e mesma praça">—</span>`;
+        if (p.relacaoMilho && p.relacaoMilho !== "null" && p.relacaoMilho !== "—") {
+          const relacaoBR = String(p.relacaoMilho).replace('.', ',');
+          relacaoHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-750 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">${escapeHTML(relacaoBR)}%</span>`;
+        }
+
+        // 4. Fonte da Cotação (Tratamento estrito: não inventa fontes)
+        let fonteHTML = `<span class="text-xs text-slate-400 italic">${escapeHTML(t('awaiting_source'))}</span>`;
+        const temSorgoFonte = Boolean(p.fonteSorgo);
+        const temMilhoFonte = Boolean(p.fonteMilho);
+
+        if (temSorgoFonte && temMilhoFonte && (p.fonteSorgo === p.fonteMilho) && (p.urlFonteSorgo === p.urlFonteMilho)) {
+          const fNome = p.fonteSorgo;
+          const fUrl = safeExternalURL(p.urlFonteSorgo);
+          fonteHTML = (fUrl && fUrl !== '#')
+            ? `<a href="${fUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-brand-800 dark:hover:text-emerald-400 hover:underline bg-slate-50 dark:bg-slate-750 px-2 py-1 rounded border border-slate-200 dark:border-slate-700">${escapeHTML(fNome)} <span class="material-symbols-outlined text-[13px]">open_in_new</span></a>`
+            : `<span class="text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-750 px-2 py-1 rounded border border-slate-200 dark:border-slate-700">${escapeHTML(fNome)}</span>`;
+        } else if (temSorgoFonte || temMilhoFonte) {
+          let sLink = `<span class="text-slate-400 italic">${escapeHTML(t('no_quote'))}</span>`;
+          if (temSorgoFonte) {
+            const urlS = safeExternalURL(p.urlFonteSorgo);
+            sLink = (urlS && urlS !== '#')
+              ? `<a href="${urlS}" target="_blank" rel="noopener noreferrer" class="hover:underline text-brand-800 dark:text-emerald-400 font-semibold">${escapeHTML(p.fonteSorgo)}</a>`
+              : `<span class="font-semibold text-slate-700 dark:text-slate-300">${escapeHTML(p.fonteSorgo)}</span>`;
+          }
+
+          let mLink = `<span class="text-slate-400 italic">${escapeHTML(t('no_quote'))}</span>`;
+          if (temMilhoFonte) {
+            const urlM = safeExternalURL(p.urlFonteMilho);
+            mLink = (urlM && urlM !== '#')
+              ? `<a href="${urlM}" target="_blank" rel="noopener noreferrer" class="hover:underline text-slate-800 dark:text-slate-200 font-semibold">${escapeHTML(p.fonteMilho)}</a>`
+              : `<span class="font-semibold text-slate-700 dark:text-slate-300">${escapeHTML(p.fonteMilho)}</span>`;
+          }
+
+          fonteHTML = `
+            <div class="text-[11px] space-y-1">
+              <div><strong class="text-slate-500">Sorgo:</strong> ${sLink}</div>
+              <div><strong class="text-slate-500">Milho:</strong> ${mLink}</div>
+            </div>
+          `;
+        }
 
         htmlPrecos += `
           <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-750/50 transition-colors">
             <td class="py-4 px-4 font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <span class="material-symbols-outlined text-slate-400 text-base">location_on</span>
-              ${p.praca} <span class="text-xs text-slate-400 font-normal">(${p.uf || '-'})</span>
+              ${escapeHTML(p.praca)} <span class="text-xs text-slate-400 font-normal">(${escapeHTML(p.uf || '-')})</span>
             </td>
             <td class="py-4 px-4 text-right">${sorgoHTML}</td>
             <td class="py-4 px-4 text-right">${milhoHTML}</td>
             <td class="py-4 px-4 text-center">${relacaoHTML}</td>
             <td class="py-4 px-4">${fonteHTML}</td>
-            <td class="py-4 px-4 text-right text-xs text-slate-500 dark:text-slate-400">${dataAtualizacao}</td>
           </tr>
         `;
       });
@@ -852,9 +1200,9 @@
       renderizarTabelaPrecos(bancoDados.precos);
     }
 
-    // ==========================================
-    // CONTROLADOR PRINCIPAL DE NAVEGAÇÃO E BUSCA
-    // ==========================================
+    // ==========================================================================
+    // CONTROLADOR DE NAVEGAÇÃO E BUSCA
+    // ==========================================================================
     async function aplicarFiltro(nomeAba) {
       abaAtual = nomeAba;
       const inputBusca = document.getElementById('search-input');
@@ -890,7 +1238,7 @@
         (bancoDados.noticias || []).forEach(n => {
           const cat = (n.categoria || "").toLowerCase();
           const tit = (n.titulo || "").toLowerCase();
-          if (cat.includes("evento") || cat.includes("campo") || tit.includes("dia de campo") || tit.includes("congresso") || tit.includes("seminário") || tit.includes("encontro")) {
+          if (cat.includes("evento") || cat.includes("campo") || cat.includes("event") || tit.includes("dia de campo") || tit.includes("conference") || tit.includes("seminário") || tit.includes("encontro")) {
             const chave = n.url || n.titulo;
             if (!mapUnicos.has(chave)) {
               mapUnicos.set(chave, { ...n, categoria: "Eventos" });
@@ -905,14 +1253,15 @@
         listaOrigem = (bancoDados.noticias || []).filter(n => (n.categoria || "").toLowerCase().includes(termoBuscaAba));
       }
 
+      // Filtrar por Termo de Busca
       if (termo) {
-        listaOrigem = listaOrigem.filter(n => 
-          (n.titulo && n.titulo.toLowerCase().includes(termo)) || 
-          (n.resumo && n.resumo.toLowerCase().includes(termo)) ||
-          (n.porqueImporta && n.porqueImporta.toLowerCase().includes(termo)) ||
-          (n.fonte && n.fonte.toLowerCase().includes(termo)) ||
-          (n.tags && Array.isArray(n.tags) && n.tags.some(t => t.toLowerCase().includes(termo)))
-        );
+        listaOrigem = listaOrigem.filter(n => {
+          const tit = (getTextoTraduzido(n, 'titulo') || "").toLowerCase();
+          const res = (getTextoTraduzido(n, 'resumo') || "").toLowerCase();
+          const imp = (getTextoTraduzido(n, 'porqueImporta') || "").toLowerCase();
+          const fon = (n.fonte || "").toLowerCase();
+          return tit.includes(termo) || res.includes(termo) || imp.includes(termo) || fon.includes(termo);
+        });
       }
 
       renderizarCards(listaOrigem);
@@ -925,9 +1274,9 @@
       aplicarFiltro(abaAtual);
     }
 
-    // ==========================================
+    // ==========================================================================
     // CARREGAMENTO DE DADOS COM SKELETON
-    // ==========================================
+    // ==========================================================================
     function exibirSkeletonLoader() {
       const container = document.getElementById('news-container');
       container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 col-span-full";
@@ -958,69 +1307,187 @@
 
     function atualizarMetricasGerais() {
       const precos = bancoDados.precos || [];
-      const precosSorgoValidos = precos.map(p => parseFloat(p.precoSorgo)).filter(v => !isNaN(v) && v > 0);
-      const precosMilhoValidos = precos.map(p => parseFloat(p.precoMilho)).filter(v => !isNaN(v) && v > 0);
-      const relacoesValidas = precos.map(p => parseFloat(p.relacaoMilho)).filter(v => !isNaN(v) && v > 0);
+      const statusValidos = ["ATUALIZADA", "ATENCAO_DEFASAGEM"];
+      
+      // 1. Sorgo Médio (exclui desatualizados > 5 dias e sem data)
+      const precosSorgoValidos = precos
+        .filter(p => statusValidos.includes(p.statusAtualidadeSorgo))
+        .map(p => parseFloat(p.precoSorgo))
+        .filter(v => !isNaN(v) && v > 0);
+
+      // 2. Milho Médio (exclui desatualizados > 5 dias e sem data)
+      const precosMilhoValidos = precos
+        .filter(p => statusValidos.includes(p.statusAtualidadeMilho))
+        .map(p => parseFloat(p.precoMilho))
+        .filter(v => !isNaN(v) && v > 0);
+
+      // 3. Relação Sorgo/Milho Média (whitelist explícita: ambas as culturas devem ser atualizadas/atenção)
+      const relacoesValidas = precos
+        .filter(p => 
+          statusValidos.includes(p.statusAtualidadeSorgo) &&
+          statusValidos.includes(p.statusAtualidadeMilho) &&
+          p.relacaoMilho &&
+          p.relacaoMilho !== "null" &&
+          p.relacaoMilho !== "—"
+        )
+        .map(p => parseFloat(p.relacaoMilho))
+        .filter(v => !isNaN(v) && v > 0);
 
       if (precosSorgoValidos.length > 0) {
         const mediaSorgo = precosSorgoValidos.reduce((a, b) => a + b, 0) / precosSorgoValidos.length;
-        document.getElementById('metric-sorgo-medio').innerText = formatarMoedaBR(mediaSorgo);
+        document.getElementById('metric-sorgo-medio').innerText = formatarMoedaBR(mediaSorgo) || "—";
+      } else {
+        document.getElementById('metric-sorgo-medio').innerText = "—";
       }
 
       if (precosMilhoValidos.length > 0) {
         const mediaMilho = precosMilhoValidos.reduce((a, b) => a + b, 0) / precosMilhoValidos.length;
-        document.getElementById('metric-milho-medio').innerText = formatarMoedaBR(mediaMilho);
+        document.getElementById('metric-milho-medio').innerText = formatarMoedaBR(mediaMilho) || "—";
+      } else {
+        document.getElementById('metric-milho-medio').innerText = "—";
       }
 
       if (relacoesValidas.length > 0) {
         const mediaRel = relacoesValidas.reduce((a, b) => a + b, 0) / relacoesValidas.length;
         document.getElementById('metric-relacao-media').innerText = mediaRel.toFixed(1).replace('.', ',') + "%";
+      } else {
+        document.getElementById('metric-relacao-media').innerText = "—";
       }
 
-      const totalNoticias = (bancoDados.noticias ? bancoDados.noticias.length : 0) + (bancoDados.eventos ? bancoDados.eventos.length : 0);
-      document.getElementById('metric-total-noticias').innerText = totalNoticias;
+      // 4. Métrica real de inteligências contada da base de dados
+      const totalInteligencias = bancoDados.metricas && bancoDados.metricas.totalInteligencias > 0
+        ? bancoDados.metricas.totalInteligencias
+        : ((bancoDados.noticias ? bancoDados.noticias.length : 0) + (bancoDados.eventos ? bancoDados.eventos.length : 0));
+      
+      document.getElementById('metric-total-noticias').innerText = totalInteligencias > 0 ? totalInteligencias : "—";
     }
 
-    async function carregarDadosIniciais(forcarAtualizacao = false) {
+    // ==========================================================================
+    // RECARREGAR DADOS DA API COM FEEDBACK VISUAL TRANSPARENTE
+    // ==========================================================================
+    async function recarregarDadosAPI() {
+      if (estaCarregando) return;
+      
+      const btnRefresh = document.getElementById('btn-refresh');
+      const iconRefresh = document.getElementById('refresh-icon');
+
+      estaCarregando = true;
+      btnRefresh.disabled = true;
+      btnRefresh.classList.add('opacity-50', 'cursor-not-allowed');
+      iconRefresh.classList.add('animate-spin');
+
+      try {
+        const res = await carregarDadosIniciais(true);
+        
+        if (res.origem === "live") {
+          exibirToast(t('toast_updated_live'));
+        } else if (res.origem === "cache") {
+          exibirToast(t('toast_updated_cache'));
+        } else {
+          exibirToast(t('toast_updated_error'));
+        }
+      } catch (err) {
+        exibirToast(t('toast_updated_error'));
+      } finally {
+        estaCarregando = false;
+        btnRefresh.disabled = false;
+        btnRefresh.classList.remove('opacity-50', 'cursor-not-allowed');
+        iconRefresh.classList.remove('animate-spin');
+      }
+    }
+
+    async function carregarDadosIniciais(isManualRefresh = false) {
       exibirSkeletonLoader();
       const statusDot = document.getElementById('status-dot');
       const statusText = document.getElementById('status-text');
+      const bannerCache = document.getElementById('cache-notice-banner');
+
+      const urlRequisicao = isManualRefresh ? `${API_URL}?refresh=1` : API_URL;
 
       try {
-        const resposta = await fetch(`${API_URL}?_t=${Date.now()}`);
+        const resposta = await fetch(urlRequisicao);
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
         const dados = await resposta.json();
 
-        if (dados && typeof dados === 'object') {
+        if (dados && typeof dados === 'object' && dados.status === 'ok') {
           bancoDados.noticias = dados.noticias || [];
           bancoDados.eventos = dados.eventos || [];
           bancoDados.precos = dados.precos || [];
           bancoDados.resumosSemanais = dados.resumosSemanais || [];
-        }
+          bancoDados.metricas = dados.metricas || {
+            totalNoticias: bancoDados.noticias.length,
+            totalEventos: bancoDados.eventos.length,
+            totalInteligencias: bancoDados.noticias.length + bancoDados.eventos.length
+          };
 
-        if (bancoDados.resumosSemanais.length === 0 && bancoDados.noticias.length === 0) {
-          bancoDados = { ...DEMO_DATA };
-          statusDot.className = "w-2 h-2 rounded-full bg-amber-500";
-          statusText.innerText = "Modo Demonstração";
-        } else {
+          // Salva no cache local seguro
+          localStorage.setItem('sorghum_intel_cache_data', JSON.stringify(bancoDados));
+          localStorage.setItem('sorghum_intel_cache_timestamp', new Date().toISOString());
+
           statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-          statusText.innerText = "Ao Vivo";
+          statusText.innerText = t('status_connected');
+          bannerCache.classList.add('hidden');
+
+          atualizarMetricasGerais();
+          aplicarFiltro(abaAtual);
+
+          return { sucesso: true, origem: "live", timestamp: new Date().toISOString() };
+        } else {
+          throw new Error("Payload inválido retornado pela API");
         }
 
       } catch (erro) {
-        console.warn("Erro ao conectar à API Apps Script, carregando dados de contingência:", erro);
-        bancoDados = { ...DEMO_DATA };
-        statusDot.className = "w-2 h-2 rounded-full bg-amber-500";
-        statusText.innerText = "Offline / Cache";
-      }
+        console.warn("[API] Falha ao conectar à API Apps Script:", erro);
 
-      atualizarMetricasGerais();
-      aplicarFiltro(abaAtual);
+        // Verifica se há cache local seguro previamente salvo
+        const cacheDataStr = localStorage.getItem('sorghum_intel_cache_data');
+        const cacheTimestamp = localStorage.getItem('sorghum_intel_cache_timestamp');
+
+        if (cacheDataStr && cacheTimestamp) {
+          try {
+            bancoDados = JSON.parse(cacheDataStr);
+            statusDot.className = "w-2 h-2 rounded-full bg-amber-500";
+            statusText.innerText = t('status_offline_cache');
+
+            const dataHora = new Date(cacheTimestamp);
+            const dataHoraFormatada = !isNaN(dataHora.getTime()) ? formatarDataHoraBR(dataHora) : cacheTimestamp;
+            
+            document.getElementById('cache-notice-text').innerText = t('cache_notice');
+            document.getElementById('cache-notice-time').innerText = `${t('last_sync')} ${dataHoraFormatada}`;
+            bannerCache.classList.remove('hidden');
+
+            atualizarMetricasGerais();
+            aplicarFiltro(abaAtual);
+
+            return { sucesso: false, origem: "cache", timestamp: cacheTimestamp };
+          } catch(e) {
+            bancoDados = { noticias: [], eventos: [], precos: [], resumosSemanais: [], metricas: { totalNoticias: 0, totalEventos: 0, totalInteligencias: 0 } };
+          }
+        }
+        
+        if (DEMO_MODE) {
+          bancoDados = { ...DEMO_DATA };
+          statusDot.className = "w-2 h-2 rounded-full bg-blue-500";
+          statusText.innerText = t('status_demo');
+          bannerCache.classList.add('hidden');
+          atualizarMetricasGerais();
+          aplicarFiltro(abaAtual);
+          return { sucesso: false, origem: "demo", timestamp: new Date().toISOString() };
+        } else {
+          bancoDados = { noticias: [], eventos: [], precos: [], resumosSemanais: [], metricas: { totalNoticias: 0, totalEventos: 0, totalInteligencias: 0 } };
+          statusDot.className = "w-2 h-2 rounded-full bg-red-500";
+          statusText.innerText = t('status_offline_unavailable');
+          bannerCache.classList.add('hidden');
+          atualizarMetricasGerais();
+          aplicarFiltro(abaAtual);
+          return { sucesso: false, origem: "indisponivel" };
+        }
+      }
     }
 
-    // ==========================================
+    // ==========================================================================
     // CONFIGURAÇÕES DE INTERFACE E EVENTOS
-    // ==========================================
+    // ==========================================================================
     function configurarBotoesAbas() {
       const botoes = document.querySelectorAll('#tabs-container button');
       botoes.forEach(botao => {
@@ -1078,9 +1545,10 @@
     // Inicialização ao carregar a página
     window.onload = async () => {
       carregarTemaSalvo();
+      definirIdioma(idiomaAtual);
       configurarBotoesAbas();
       configurarBusca();
-      await carregarDadosIniciais();
+      await carregarDadosIniciais(false);
     };
   </script>
 </body>
