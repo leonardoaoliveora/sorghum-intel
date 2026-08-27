@@ -1079,12 +1079,14 @@
           const dataSorgoVis = p.dataSorgo ? formatarDataVisual(p.dataSorgo) : null;
           
           let tagStatusSorgo = "";
-          if (p.statusAtualidadeSorgo === "ATUALIZADA") {
-            tagStatusSorgo = `<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">(Atualizada)</span>`;
-          } else if (p.statusAtualidadeSorgo === "ATENCAO_DEFASAGEM") {
-            tagStatusSorgo = `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">(Há ${escapeHTML(p.diasDesdeAtualizacaoSorgo)} dias)</span>`;
-          } else if (p.statusAtualidadeSorgo === "COTACAO_DESATUALIZADA") {
-            tagStatusSorgo = `<span class="text-[10px] text-red-500 font-semibold">(Desatualizado)</span>`;
+          if (dataSorgoVis) {
+            if (p.statusAtualidadeSorgo === "ATENCAO_DEFASAGEM") {
+              tagStatusSorgo = `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">(Há ${escapeHTML(p.diasDesdeAtualizacaoSorgo)} dias)</span>`;
+            } else if (p.statusAtualidadeSorgo === "COTACAO_DESATUALIZADA") {
+              tagStatusSorgo = `<span class="text-[10px] text-red-500 font-semibold">(Desatualizado)</span>`;
+            } else {
+              tagStatusSorgo = `<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">(Atualizada)</span>`;
+            }
           } else {
             tagStatusSorgo = `<span class="text-[10px] text-slate-400 italic">Data não identificada</span>`;
           }
@@ -1093,8 +1095,7 @@
             <div class="flex flex-col items-end">
               <span class="text-brand-800 dark:text-emerald-400 font-bold text-base">${escapeHTML(precoFormatado)}</span>
               <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
-                <span>${dataSorgoVis ? escapeHTML(dataSorgoVis) : escapeHTML(t('unidentified_date'))}</span>
-                ${tagStatusSorgo}
+                ${dataSorgoVis ? `<span>${escapeHTML(dataSorgoVis)}</span> ${tagStatusSorgo}` : tagStatusSorgo}
               </div>
             </div>
           `;
@@ -1107,12 +1108,14 @@
           const dataMilhoVis = p.dataMilho ? formatarDataVisual(p.dataMilho) : null;
           
           let tagStatusMilho = "";
-          if (p.statusAtualidadeMilho === "ATUALIZADA") {
-            tagStatusMilho = `<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">(Atualizada)</span>`;
-          } else if (p.statusAtualidadeMilho === "ATENCAO_DEFASAGEM") {
-            tagStatusMilho = `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">(Há ${escapeHTML(p.diasDesdeAtualizacaoMilho)} dias)</span>`;
-          } else if (p.statusAtualidadeMilho === "COTACAO_DESATUALIZADA") {
-            tagStatusMilho = `<span class="text-[10px] text-red-500 font-semibold">(Desatualizado)</span>`;
+          if (dataMilhoVis) {
+            if (p.statusAtualidadeMilho === "ATENCAO_DEFASAGEM") {
+              tagStatusMilho = `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">(Há ${escapeHTML(p.diasDesdeAtualizacaoMilho)} dias)</span>`;
+            } else if (p.statusAtualidadeMilho === "COTACAO_DESATUALIZADA") {
+              tagStatusMilho = `<span class="text-[10px] text-red-500 font-semibold">(Desatualizado)</span>`;
+            } else {
+              tagStatusMilho = `<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">(Atualizada)</span>`;
+            }
           } else {
             tagStatusMilho = `<span class="text-[10px] text-slate-400 italic">Data não identificada</span>`;
           }
@@ -1121,8 +1124,7 @@
             <div class="flex flex-col items-end">
               <span class="text-slate-800 dark:text-slate-200 font-semibold text-base">${escapeHTML(precoFormatado)}</span>
               <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
-                <span>${dataMilhoVis ? escapeHTML(dataMilhoVis) : escapeHTML(t('unidentified_date'))}</span>
-                ${tagStatusMilho}
+                ${dataMilhoVis ? `<span>${escapeHTML(dataMilhoVis)}</span> ${tagStatusMilho}` : tagStatusMilho}
               </div>
             </div>
           `;
