@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>SorghumIntel</title>
+  <title>SorghumIntel - Inteligência de Mercado</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <script id="tailwind-config">
     tailwind.config = {
@@ -36,25 +36,30 @@
 <body class="font-body-md bg-background pb-24 md:pb-0 pt-16">
 
   <!-- Header -->
-  <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white border-b border-outline-variant">
+  <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white border-b border-outline-variant shadow-sm">
     <div class="flex items-center gap-2">
       <span class="material-symbols-outlined text-primary text-2xl">agriculture</span>
-      <h1 class="text-xl font-bold text-primary">SorghumIntel</h1>
+      <h1 class="text-xl font-bold text-primary tracking-tight">SorghumIntel</h1>
     </div>
-    <button class="material-symbols-outlined text-primary p-2">filter_list</button>
+    <div class="flex items-center gap-2">
+      <button onclick="carregarDadosIniciais(true)" class="material-symbols-outlined text-primary p-2 hover:bg-emerald-50 rounded-full transition-colors" title="Atualizar dados">refresh</button>
+    </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-4 py-6">
     <!-- Barra de Busca -->
     <div id="search-bar-container" class="mb-6 relative">
       <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">search</span>
-      <input id="search-input" class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-lg focus:outline-none focus:border-primary shadow-sm" placeholder="Buscar inteligência..." type="text">
+      <input id="search-input" class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-xl focus:outline-none focus:border-primary shadow-sm text-sm" placeholder="Buscar no SorghumIntel..." type="text">
     </div>
 
-    <!-- Navegação / Abas -->
+    <!-- Navegação de Abas -->
     <div class="overflow-x-auto no-scrollbar mb-8">
       <div class="flex space-x-2">
-        <button data-tab="Tudo" class="px-4 py-2 bg-primary text-white rounded-full text-sm font-semibold whitespace-nowrap active-tab">Tudo</button>
+        <button data-tab="ResumoSemanal" class="px-4 py-2 bg-primary text-white font-bold rounded-full text-sm whitespace-nowrap flex items-center gap-1.5 shadow-sm active-tab">
+          <span class="material-symbols-outlined text-[18px]">auto_stories</span> Resumo Semanal
+        </button>
+        <button data-tab="Tudo" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Tudo</button>
         <button data-tab="Regulatório" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Regulatório</button>
         <button data-tab="Ciência/Técnico" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Ciência/Técnico</button>
         <button data-tab="Mercado" class="px-4 py-2 bg-white border border-outline-variant text-gray-600 rounded-full text-sm whitespace-nowrap">Mercado</button>
@@ -66,7 +71,7 @@
       </div>
     </div>
 
-    <!-- Container Geral -->
+    <!-- Container Principal Dinâmico -->
     <div id="main-content-container">
       <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </div>
@@ -78,10 +83,12 @@
     let bancoDados = {
       noticias: [],
       eventos: [],
-      precos: []
+      precos: [],
+      resumosSemanais: []
     };
 
-    let abaAtual = "Tudo";
+    let abaAtual = "ResumoSemanal";
+    let indexSemanaSelecionada = 0; // 0 = Mais recente
 
     function formatarMoedaBR(valor) {
       if (valor === null || valor === undefined || valor === "") return null;
@@ -145,9 +152,162 @@
       return { cls: "bg-gray-700 text-white", icn: "article", tag: "Geral" };
     }
 
+    // ==========================================
+    // RENDERIZADOR 1: RESUMO SEMANAL EXECUTIVO
+    // ==========================================
+    function renderizarResumoSemanal() {
+      const container = document.getElementById('news-container');
+      container.className = "flex flex-col gap-8 col-span-full max-w-4xl mx-auto w-full";
+      container.innerHTML = '';
+
+      if (!bancoDados.resumosSemanais || bancoDados.resumosSemanais.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white border border-outline-variant rounded-2xl p-10 text-center shadow-sm">
+            <span class="material-symbols-outlined text-5xl text-emerald-600 mb-3">auto_stories</span>
+            <h2 class="text-gray-900 font-bold text-lg mb-1">Briefing Executivo em Geração</h2>
+            <p class="text-sm text-gray-500 max-w-md mx-auto">O Resumo Semanal consolida os fatos mais relevantes a cada encerramento de rotina diária.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Ordena resumos por data decrescente (mais recente primeiro)
+      const resumosOrdenados = [...bancoDados.resumosSemanais].sort((a, b) => b.idSemana.localeCompare(a.idSemana));
+      
+      if (indexSemanaSelecionada >= resumosOrdenados.length) indexSemanaSelecionada = 0;
+      if (indexSemanaSelecionada < 0) indexSemanaSelecionada = 0;
+
+      const semana = resumosOrdenados[indexSemanaSelecionada];
+      const temAnterior = indexSemanaSelecionada < resumosOrdenados.length - 1;
+      const temProxima = indexSemanaSelecionada > 0;
+
+      const statusTag = semana.status === "EM_ANDAMENTO" 
+        ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Semana em andamento</span>`
+        : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Semana concluída</span>`;
+
+      let html = `
+        <!-- Seletor e Navegação Semanal -->
+        <div class="flex items-center justify-between bg-white border border-outline-variant p-4 rounded-2xl shadow-sm">
+          <button onclick="mudarSemana(1)" ${!temAnterior ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-sm font-semibold text-gray-500"' : 'class="flex items-center text-sm font-semibold text-primary hover:underline"'}>
+            <span class="material-symbols-outlined text-lg mr-1">arrow_back</span> Semana anterior
+          </button>
+          
+          <div class="text-center">
+            <span class="text-base font-extrabold text-gray-900 tracking-tight block">${semana.rotuloVisual || semana.idSemana}</span>
+            <span class="text-xs text-gray-400 font-medium">${semana.dataInicial} a ${semana.dataFinal}</span>
+            <div class="mt-1">${statusTag}</div>
+          </div>
+
+          <button onclick="mudarSemana(-1)" ${!temProxima ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-sm font-semibold text-gray-500"' : 'class="flex items-center text-sm font-semibold text-primary hover:underline"'}>
+            Próxima semana <span class="material-symbols-outlined text-lg ml-1">arrow_forward</span>
+          </button>
+        </div>
+
+        <!-- Nível 1: A semana em 30 segundos -->
+        <section class="bg-gradient-to-br from-emerald-900 to-emerald-950 text-white p-6 md:p-8 rounded-2xl shadow-md">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-amber-400 text-xl">timer</span>
+            <h3 class="text-xs font-bold uppercase tracking-widest text-emerald-200">A semana em 30 segundos</h3>
+          </div>
+          <p class="text-sm md:text-base leading-relaxed text-emerald-50 font-normal">
+            ${semana.resumoExecutivo || 'Síntese executiva dos principais acontecimentos estruturados da semana.'}
+          </p>
+        </section>
+      `;
+
+      // Nível 2: Destaques por Categoria
+      const categoriasOrdem = ["Mercado", "Comercial", "Regulatório", "Ciência/Técnico", "Eventos"];
+      const destaquesObj = semana.destaques || {};
+
+      let encontrouAlgumDestaque = false;
+
+      categoriasOrdem.forEach(cat => {
+        const lista = destaquesObj[cat] || [];
+        if (lista.length > 0) {
+          encontrouAlgumDestaque = true;
+          const badge = getBadgeInfo(cat);
+
+          html += `
+            <section class="space-y-4">
+              <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-gray-700 text-xl">${badge.icn}</span>
+                  <h3 class="text-base font-bold text-gray-900 uppercase tracking-wider">${cat}</h3>
+                </div>
+                <span class="text-xs text-gray-400 font-medium">${lista.length} principal(is) acontecimento(s)</span>
+              </div>
+
+              <div class="grid grid-cols-1 gap-4">
+          `;
+
+          lista.forEach(item => {
+            const tagsHTML = (item.tags && item.tags.length > 0) 
+              ? item.tags.map(t => `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[11px] font-medium">#${t}</span>`).join(' ')
+              : '';
+
+            const badgeFontes = (item.fontesRelacionadas && item.fontesRelacionadas > 1)
+              ? `<span class="text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-semibold">${item.fontesRelacionadas} fontes relacionadas</span>`
+              : '';
+
+            html += `
+              <article class="bg-white border border-outline-variant rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex justify-between items-start gap-2 mb-2">
+                  <h4 class="text-base font-bold text-gray-900 leading-snug">
+                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">${item.titulo}</a>
+                  </h4>
+                  ${badgeFontes}
+                </div>
+
+                <p class="text-sm text-gray-700 leading-relaxed mb-3">${item.resumo}</p>
+
+                <!-- Box: Por que importa -->
+                <div class="bg-emerald-50/70 border-l-4 border-primary p-3 rounded-r-xl mb-3">
+                  <span class="text-xs font-bold text-emerald-900 block mb-0.5 uppercase tracking-wide">Por que isso importa</span>
+                  <p class="text-xs text-emerald-950 leading-relaxed">${item.porqueImporta}</p>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-100 text-xs">
+                  <div class="flex items-center gap-2 text-gray-500 font-medium">
+                    <span class="uppercase font-semibold">${item.fonte || 'Google News'}</span>
+                    <span>•</span>
+                    <span>${formatarDataVisual(item.data) || item.data}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">${tagsHTML}</div>
+                </div>
+              </article>
+            `;
+          });
+
+          html += `
+              </div>
+            </section>
+          `;
+        }
+      });
+
+      if (!encontrouAlgumDestaque) {
+        html += `
+          <div class="bg-white border border-outline-variant rounded-2xl p-8 text-center text-gray-500">
+            Nenhum destaque categorizado disponível para este período semanal.
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function mudarSemana(delta) {
+      indexSemanaSelecionada += delta;
+      renderizarResumoSemanal();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==========================================
+    // RENDERIZADOR 2: FEED DE NOTÍCIAS / EVENTOS
+    // ==========================================
     function renderizarCards(itens) {
       const container = document.getElementById('news-container');
-      container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+      container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 col-span-full";
       container.innerHTML = ''; 
       
       if (!itens || itens.length === 0) {
@@ -161,6 +321,17 @@
         const catTexto = item.categoria || "";
         const badge = getBadgeInfo(catTexto);
         const dataExibicao = formatarDataVisual(item.data) || item.data || '';
+
+        const tagsHTML = (item.tags && item.tags.length > 0) 
+          ? item.tags.map(t => `<span class="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-medium">#${t}</span>`).join(' ')
+          : '';
+
+        const boxPorqueImporta = item.porqueImporta ? `
+          <div class="bg-gray-50 border-l-2 border-primary p-2.5 rounded-r-lg mb-4 text-xs text-gray-700">
+            <strong class="text-emerald-900 block text-[11px] uppercase tracking-wider mb-0.5">Impacto Prático:</strong>
+            ${item.porqueImporta}
+          </div>
+        ` : '';
 
         const cardHTML = `
           <article class="bg-white border border-outline-variant rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between h-full">
@@ -177,18 +348,22 @@
                 <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.titulo}</a>
               </h2>
 
-              <div class="text-xs text-gray-500 font-semibold mb-4 flex items-center gap-1.5 uppercase">
+              <div class="text-xs text-gray-500 font-semibold mb-3 flex items-center gap-1.5 uppercase">
                 <span class="material-symbols-outlined text-[16px] text-gray-400">${badge.icn}</span>
                 FONTE: ${item.fonte || 'Google News'}
               </div>
 
-              <p class="text-gray-700 text-sm leading-relaxed mb-6">${item.resumo}</p>
+              <p class="text-gray-700 text-sm leading-relaxed mb-3">${item.resumo}</p>
+              ${boxPorqueImporta}
             </div>
 
-            <div class="pt-4 border-t border-outline-variant flex justify-start items-center text-xs font-bold">
-              <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline flex items-center gap-1">
-                Acessar fonte original &rarr;
-              </a>
+            <div>
+              <div class="flex flex-wrap gap-1 mb-3">${tagsHTML}</div>
+              <div class="pt-3 border-t border-outline-variant flex justify-start items-center text-xs font-bold">
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline flex items-center gap-1">
+                  Acessar fonte original &rarr;
+                </a>
+              </div>
             </div>
           </article>
         `;
@@ -196,9 +371,12 @@
       });
     }
 
+    // ==========================================
+    // RENDERIZADOR 3: MONITOR DE COTAÇÕES
+    // ==========================================
     function renderizarTabelaPrecos(precos) {
       const container = document.getElementById('news-container');
-      container.className = "flex flex-col gap-6 col-span-full";
+      container.className = "flex flex-col gap-6 col-span-full max-w-5xl mx-auto w-full";
       container.innerHTML = '';
 
       if (!precos || precos.length === 0) {
@@ -245,7 +423,6 @@
       `;
 
       precos.forEach(p => {
-        // Preço do Sorgo formatado em Real Brasileiro (R$ 48,00)
         let sorgoHTML = `<span class="text-xs text-gray-400 italic">Sem cotação verificada disponível</span>`;
         if (p.precoSorgo && p.precoSorgo !== "null") {
           const precoFormatado = formatarMoedaBR(p.precoSorgo);
@@ -258,21 +435,18 @@
           sorgoHTML = `<span class="text-primary font-bold text-base">${precoFormatado}</span>${tagDefasagem}`;
         }
 
-        // Preço do Milho formatado em Real Brasileiro
         let milhoHTML = `<span class="text-xs text-gray-400 italic">Sem cotação</span>`;
         if (p.precoMilho && p.precoMilho !== "null") {
           const precoFormatado = formatarMoedaBR(p.precoMilho);
           milhoHTML = `<span class="text-gray-700 font-semibold text-base">${precoFormatado}</span>`;
         }
 
-        // Relação Observada (90,6%)
         let relacaoHTML = `<span class="text-xs text-gray-400" title="Exige cotações verificadas na mesma data">—</span>`;
         if (p.relacaoMilho && p.relacaoMilho !== "null") {
           const relacaoBR = String(p.relacaoMilho).replace('.', ',');
           relacaoHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">${relacaoBR}%</span>`;
         }
 
-        // Fonte com Link Verificável
         let fonteHTML = `<span class="text-xs text-gray-400 italic">Aguardando integração</span>`;
         const fonteExibir = p.fonteSorgo || p.fonte || p.fonteMilho;
         const urlExibir = p.urlFonteSorgo || p.urlFonte || p.urlFonteMilho;
@@ -287,7 +461,6 @@
           }
         }
 
-        // Data da Cotação
         const dataOriginal = p.dataSorgo || p.data || p.dataMilho;
         const dataFormatada = dataOriginal ? formatarDataVisual(dataOriginal) : null;
         const dataAtualizacao = dataFormatada ? dataFormatada : `<span class="text-xs text-gray-400 italic">Não identificada</span>`;
@@ -317,10 +490,18 @@
       container.innerHTML = htmlPrecos;
     }
 
+    // ==========================================
+    // CONTROLADOR PRINCIPAL DE NAVEGAÇÃO
+    // ==========================================
     async function aplicarFiltro(nomeAba) {
       abaAtual = nomeAba;
       const inputBusca = document.getElementById('search-input');
       const termo = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
+
+      if (abaAtual === "ResumoSemanal") {
+        renderizarResumoSemanal();
+        return;
+      }
 
       if (abaAtual === "Cotacao") {
         if (!bancoDados.precos || bancoDados.precos.length === 0) {
@@ -364,6 +545,7 @@
         listaOrigem = listaOrigem.filter(n => 
           (n.titulo && n.titulo.toLowerCase().includes(termo)) || 
           (n.resumo && n.resumo.toLowerCase().includes(termo)) ||
+          (n.porqueImporta && n.porqueImporta.toLowerCase().includes(termo)) ||
           (n.fonte && n.fonte.toLowerCase().includes(termo))
         );
       }
@@ -371,19 +553,20 @@
       renderizarCards(listaOrigem);
     }
 
-    async function carregarDadosIniciais() {
+    async function carregarDadosIniciais(forcarAtualizacao = false) {
       try {
         const resposta = await fetch(`${API_URL}?_t=${Date.now()}`);
         const dados = await resposta.json();
 
-        if (Array.isArray(dados)) {
-          bancoDados.noticias = dados;
-          bancoDados.eventos = dados.filter(d => (d.categoria || "").toLowerCase().includes('evento'));
-          bancoDados.precos = [];
-        } else if (dados && typeof dados === 'object') {
+        if (dados && typeof dados === 'object') {
           bancoDados.noticias = dados.noticias || [];
           bancoDados.eventos = dados.eventos || [];
           bancoDados.precos = dados.precos || [];
+          bancoDados.resumosSemanais = dados.resumosSemanais || [];
+        }
+
+        if (forcarAtualizacao) {
+          aplicarFiltro(abaAtual);
         }
       } catch (erro) {
         console.error("Erro ao carregar dados:", erro);
@@ -395,11 +578,11 @@
       botoes.forEach(botao => {
         botao.addEventListener('click', () => {
           botoes.forEach(b => {
-            b.classList.remove('bg-primary', 'text-white', 'border-emerald-600');
+            b.classList.remove('bg-primary', 'text-white', 'border-emerald-600', 'font-bold');
             b.classList.add('bg-white', 'text-gray-600');
           });
           botao.classList.remove('bg-white', 'text-gray-600');
-          botao.classList.add('bg-primary', 'text-white');
+          botao.classList.add('bg-primary', 'text-white', 'font-bold');
           
           const tab = botao.getAttribute('data-tab');
           aplicarFiltro(tab);
@@ -410,16 +593,18 @@
     function configurarBusca() {
       const inputBusca = document.getElementById('search-input');
       inputBusca.addEventListener('input', () => {
-        aplicarFiltro(abaAtual);
+        if (abaAtual !== "ResumoSemanal" && abaAtual !== "Cotacao") {
+          aplicarFiltro(abaAtual);
+        }
       });
     }
 
     window.onload = async () => {
       const container = document.getElementById('news-container');
-      container.innerHTML = '<p class="text-center w-full col-span-full pt-8">Sintetizando inteligência de mercado...</p>';
+      container.innerHTML = '<p class="text-center w-full col-span-full pt-8 text-gray-500">Sintetizando inteligência executiva de mercado...</p>';
       
       await carregarDadosIniciais();
-      aplicarFiltro("Tudo");
+      aplicarFiltro("ResumoSemanal");
       configurarBotoes();
       configurarBusca();
     };
