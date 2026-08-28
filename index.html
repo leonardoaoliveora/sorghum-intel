@@ -1,201 +1,190 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR" class="light">
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>SorghumIntel - Inteligência Global de Mercado de Sorgo | Global Sorghum Intelligence</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SorghumIntel - Inteligência Global de Mercado de Sorgo</title>
   
-  <!-- Tailwind CSS com plugins -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  
-  <!-- Fontes e Ícones -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-
-  <script id="tailwind-config">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
     tailwind.config = {
-      darkMode: "class",
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             brand: {
-              50: "#f0fdf4",
-              100: "#dcfce7",
-              200: "#bbf7d0",
-              500: "#22c55e",
-              600: "#16a34a",
-              700: "#15803d",
-              800: "#0d631b",
-              900: "#0b4d15",
-              950: "#052e0b"
+              50: '#fbf8f3',
+              100: '#f5eee3',
+              500: '#b8621b',
+              600: '#9e4a13',
+              700: '#7d350d',
+              800: '#4a1e05',
+              900: '#2b1002',
+            },
+            slate: {
+              750: '#293548',
+              850: '#172033',
+              950: '#0b1120'
             }
-          },
-          fontFamily: {
-            sans: ["Inter", "sans-serif"],
-            mono: ["JetBrains Mono", "monospace"]
           }
         }
       }
     }
   </script>
 
+  <!-- Google Fonts: Inter e Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
   <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .badge-mercado { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .badge-comercial { background-color: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+    .badge-regulatorio { background-color: #fce7f3; color: #9d174d; border: 1px solid #fbcfe8; }
+    .badge-ciencia { background-color: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+    .badge-evento { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    
+    .dark .badge-mercado { background-color: rgba(146, 64, 14, 0.25); color: #fcd34d; border-color: rgba(253, 230, 138, 0.2); }
+    .dark .badge-comercial { background-color: rgba(7, 89, 133, 0.25); color: #7dd3fc; border-color: rgba(186, 230, 253, 0.2); }
+    .dark .badge-regulatorio { background-color: rgba(157, 23, 77, 0.25); color: #f472b6; border-color: rgba(251, 207, 232, 0.2); }
+    .dark .badge-ciencia { background-color: rgba(91, 33, 182, 0.25); color: #c4b5fd; border-color: rgba(221, 214, 254, 0.2); }
+    .dark .badge-evento { background-color: rgba(22, 101, 52, 0.25); color: #86efac; border-color: rgba(187, 247, 208, 0.2); }
+
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
-    /* Badges de Categoria Customizados */
-    .badge-regulatorio { background-color: #334155; color: #ffffff; }
-    .badge-ciencia { background-color: #e0f2fe; color: #0369a1; }
-    .badge-mercado { background-color: #0d631b; color: #ffffff; }
-    .badge-comercial { background-color: #fef3c7; color: #92400e; }
-    .badge-evento { background-color: #059669; color: #ffffff; }
-
-    .dark .badge-regulatorio { background-color: #475569; color: #f8fafc; }
-    .dark .badge-ciencia { background-color: #0c4a6e; color: #bae6fd; }
-    .dark .badge-mercado { background-color: #15803d; color: #ffffff; }
-    .dark .badge-comercial { background-color: #78350f; color: #fef3c7; }
-    .dark .badge-evento { background-color: #047857; color: #ecfdf5; }
-
-    /* Shimmer de carregamento */
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
     .skeleton-shimmer {
-      background: linear-gradient(90deg, rgba(229, 231, 235, 0.6) 25%, rgba(243, 244, 246, 0.9) 50%, rgba(229, 231, 235, 0.6) 75%);
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
     .dark .skeleton-shimmer {
-      background: linear-gradient(90deg, rgba(55, 65, 81, 0.6) 25%, rgba(75, 85, 99, 0.9) 50%, rgba(55, 65, 81, 0.6) 75%);
+      background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
-
-    .flag-icon {
-      font-size: 1.15rem;
-      line-height: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
   </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-200">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
 
-  <!-- Header Superior Fixo -->
-  <header class="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-2 sm:gap-4">
+  <!-- Header Superior -->
+  <header class="bg-white dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex justify-between items-center">
       
-      <!-- Marca & Logo -->
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-9 h-9 rounded-xl bg-brand-800 flex items-center justify-center text-white shadow-sm shadow-brand-800/30 shrink-0">
-          <span class="material-symbols-outlined text-2xl">public</span>
+      <!-- Logo e Identidade -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-brand-800 dark:bg-emerald-600 flex items-center justify-center text-white shadow-md">
+          <span class="material-symbols-outlined text-[24px]">grain</span>
         </div>
-        <div class="truncate">
-          <div class="flex items-center gap-1.5 sm:gap-2">
-            <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-brand-800 dark:text-brand-500 truncate">SorghumIntel</h1>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white leading-none">
+              Sorghum<span class="text-brand-700 dark:text-emerald-400">Intel</span>
+            </h1>
           </div>
-          <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium hidden md:block truncate" data-i18n="header_subtitle">Inteligência Global & Cotações da Cultura do Sorgo no Mundo</p>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium" data-i18n="header_subtitle">
+            Inteligência Global & Cotações da Cultura do Sorgo no Mundo
+          </p>
         </div>
       </div>
 
-      <!-- Ações do Cabeçalho: Idioma com Bandeiras, Status, Atualizar, Tema -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        
-        <!-- Seletor Bilíngue com Bandeiras (Brasil 🇧🇷 / USA 🇺🇸) -->
-        <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner">
-          <button 
-            id="lang-btn-pt" 
-            onclick="definirIdioma('pt')" 
-            class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-white dark:bg-slate-700 text-brand-800 dark:text-emerald-400 shadow-sm"
-            title="Usar em Português"
-          >
-            <span class="flag-icon">🇧🇷</span>
-            <span class="hidden sm:inline">PT</span>
-          </button>
-          
-          <button 
-            id="lang-btn-en" 
-            onclick="definirIdioma('en')" 
-            class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all"
-            title="Use in English"
-          >
-            <span class="flag-icon">🇺🇸</span>
-            <span class="hidden sm:inline">EN</span>
-          </button>
-        </div>
-
-        <!-- Indicador de Status da API -->
-        <div id="status-pill" class="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="status-dot"></span>
+      <!-- Controles: Status, Idioma, Tema, Refresh -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        <!-- Status da Conexão -->
+        <div id="status-container" class="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+          <span id="status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span id="status-text" data-i18n="status_connected">Ao Vivo</span>
         </div>
 
-        <!-- Botão Atualizar Dados (Recarregar API sem Cache) -->
-        <button onclick="recarregarDadosAPI()" id="btn-refresh" class="p-2 text-slate-600 dark:text-slate-300 hover:text-brand-800 dark:hover:text-brand-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all" title="Recarregar dados da API">
-          <span class="material-symbols-outlined text-[20px] inline-block transition-transform" id="refresh-icon">refresh</span>
+        <!-- Seletor de Idioma PT/EN -->
+        <div class="flex items-center bg-slate-100 dark:bg-slate-750 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
+          <button id="lang-btn-pt" onclick="definirIdioma('pt')" class="px-2 py-1 text-xs font-bold rounded-md bg-white dark:bg-slate-600 text-brand-800 dark:text-white shadow-xs transition-all">PT</button>
+          <button id="lang-btn-en" onclick="definirIdioma('en')" class="px-2 py-1 text-xs font-medium rounded-md text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white transition-all">EN</button>
+        </div>
+
+        <!-- Alternador de Tema Escuro/Claro -->
+        <button onclick="alternarTema()" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-750 transition-colors" title="Alternar Modo Escuro">
+          <span id="theme-icon" class="material-symbols-outlined text-[20px]">dark_mode</span>
         </button>
 
-        <!-- Alternador Tema Claro/Escuro -->
-        <button onclick="alternarTema()" id="btn-theme" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" title="Alternar tema">
-          <span class="material-symbols-outlined text-[20px]" id="theme-icon">dark_mode</span>
+        <!-- Botão Atualizar -->
+        <button id="btn-refresh" onclick="recarregarDadosAPI()" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-750 transition-colors" title="Atualizar Dados">
+          <span id="refresh-icon" class="material-symbols-outlined text-[20px]">refresh</span>
         </button>
       </div>
+
     </div>
   </header>
 
+  <!-- Banner de Notificação de Cache (quando aplicável) -->
+  <div id="cache-notice-banner" class="hidden bg-amber-50 dark:bg-amber-950/60 border-b border-amber-200 dark:border-amber-900/60 px-4 py-2 text-center text-xs text-amber-800 dark:text-amber-200 font-medium">
+    <span class="material-symbols-outlined text-[15px] align-middle mr-1 text-amber-600 dark:text-amber-400">cloud_off</span>
+    <span id="cache-notice-text">Exibindo dados armazenados em cache.</span>
+    <span id="cache-notice-time" class="ml-1 font-bold"></span>
+  </div>
+
   <!-- Conteúdo Principal -->
-  <main class="max-w-7xl mx-auto px-4 pt-20 pb-16">
-    
-    <!-- Barra de Notificação de Cache / Offline (Quando aplicável) -->
-    <div id="cache-notice-banner" class="hidden mb-4 p-3 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 rounded-xl text-xs text-amber-800 dark:text-amber-300 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="material-symbols-outlined text-[18px]">history</span>
-        <span id="cache-notice-text">Exibindo dados armazenados em cache.</span>
-      </div>
-      <span id="cache-notice-time" class="text-[11px] font-semibold text-amber-700 dark:text-amber-400"></span>
-    </div>
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-    <!-- Barra de Métricas Rápidas / Resumo do Mercado -->
-    <div id="metrics-bar" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
-        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
-          <span data-i18n="metric_sorgo_title">Sorgo Médio (Polos BR)</span>
-          <span class="material-symbols-outlined text-[16px] text-emerald-600">payments</span>
+    <!-- Grid de Métricas Superiores Globais e Cotações BR -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      
+      <!-- Card 1: Sorgo Médio Brasil -->
+      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-1">
+          <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="metric_sorgo_title">Sorgo Médio (Polos BR)</span>
+          <span class="material-symbols-outlined text-brand-700 dark:text-emerald-400 text-lg">monetization_on</span>
         </div>
-        <div class="text-lg font-bold text-brand-800 dark:text-emerald-400" id="metric-sorgo-medio">—</div>
-        <div class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="metric_sorgo_sub">saca 60kg disponível</div>
+        <div>
+          <span id="metric-sorgo-medio" class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">R$ 51,00</span>
+          <span class="text-[11px] text-slate-400 block mt-0.5" data-i18n="metric_sorgo_sub">saca 60kg disponível</span>
+        </div>
       </div>
 
-      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
-        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
-          <span data-i18n="metric_milho_title">Milho Médio (Polos BR)</span>
-          <span class="material-symbols-outlined text-[16px] text-amber-500">grain</span>
+      <!-- Card 2: Milho Médio Brasil -->
+      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-1">
+          <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="metric_milho_title">Milho Médio (Polos BR)</span>
+          <span class="material-symbols-outlined text-amber-600 text-lg">local_florist</span>
         </div>
-        <div class="text-lg font-bold text-slate-800 dark:text-slate-200" id="metric-milho-medio">—</div>
-        <div class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="metric_milho_sub">saca 60kg disponível</div>
+        <div>
+          <span id="metric-milho-medio" class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">R$ 57,00</span>
+          <span class="text-[11px] text-slate-400 block mt-0.5" data-i18n="metric_milho_sub">saca 60kg disponível</span>
+        </div>
       </div>
 
-      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
-        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
-          <span data-i18n="metric_relacao_title">Relação Sorgo/Milho</span>
-          <span class="material-symbols-outlined text-[16px] text-brand-600">percent</span>
+      <!-- Card 3: Relação Sorgo/Milho Média -->
+      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-1">
+          <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="metric_relacao_title">Relação Sorgo/Milho</span>
+          <span class="material-symbols-outlined text-blue-600 text-lg">balance</span>
         </div>
-        <div class="text-lg font-bold text-slate-800 dark:text-slate-100" id="metric-relacao-media">—</div>
-        <div class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="metric_relacao_sub">paridade média física</div>
+        <div>
+          <span id="metric-relacao-media" class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">89,5%</span>
+          <span class="text-[11px] text-slate-400 block mt-0.5" data-i18n="metric_relacao_sub">paridade média física</span>
+        </div>
       </div>
 
-      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 shadow-sm">
-        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">
-          <span data-i18n="metric_noticias_title">Inteligências Globais</span>
-          <span class="material-symbols-outlined text-[16px] text-blue-500">travel_explore</span>
+      <!-- Card 4: Total de Inteligências Globais -->
+      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-1">
+          <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="metric_noticias_title">Inteligências Globais</span>
+          <span class="material-symbols-outlined text-purple-600 text-lg">public</span>
         </div>
-        <div class="text-lg font-bold text-slate-800 dark:text-slate-200" id="metric-total-noticias">—</div>
-        <div class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="metric_noticias_sub">notícias no mundo inteiro</div>
+        <div>
+          <span id="metric-total-noticias" class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">42</span>
+          <span class="text-[11px] text-slate-400 block mt-0.5" data-i18n="metric_noticias_sub">notícias no mundo inteiro</span>
+        </div>
       </div>
+
     </div>
 
     <!-- Barra de Busca Universal Inteligente -->
@@ -216,21 +205,53 @@
       </button>
     </div>
 
-    <!-- Navegação de Abas -->
+    <!-- Navegação Principal de Abas Reorganizada -->
     <div class="overflow-x-auto no-scrollbar mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
       <div class="flex space-x-2 min-w-max pb-1" id="tabs-container">
-        <button data-tab="ResumoSemanal" class="tab-button active px-4 py-2 bg-brand-800 text-white font-bold rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors">
-          <span class="material-symbols-outlined text-[18px]">auto_stories</span> <span data-i18n="tab_weekly">Resumo Semanal</span>
+        
+        <!-- 1. Notícias da Semana (Aba Padrão ao Abrir) -->
+        <button data-tab="NoticiasSemana" class="tab-button active px-4 py-2 bg-brand-800 text-white font-bold rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors">
+          <span class="material-symbols-outlined text-[18px]">calendar_view_week</span>
+          <span data-i18n="tab_this_week">Notícias da Semana</span>
+          <span id="tab-count-NoticiasSemana" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-white/20 text-white dark:bg-emerald-950 dark:text-emerald-300">0</span>
         </button>
-        <button data-tab="Tudo" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_all">Tudo</button>
-        <button data-tab="Mercado" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_market">Mercado</button>
-        <button data-tab="Comercial" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_commercial">Comercial</button>
-        <button data-tab="Regulatório" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_regulatory">Regulatório</button>
-        <button data-tab="Ciência/Técnico" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_science">Ciência/Técnico</button>
-        <button data-tab="Eventos" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors" data-i18n="tab_events">Eventos</button>
+
+        <!-- 2. Mercado (Histórico Completo) -->
+        <button data-tab="Mercado" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors flex items-center gap-1.5">
+          <span data-i18n="tab_market">Mercado</span>
+          <span id="tab-count-Mercado" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">0</span>
+        </button>
+
+        <!-- 3. Comercial (Histórico Completo) -->
+        <button data-tab="Comercial" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors flex items-center gap-1.5">
+          <span data-i18n="tab_commercial">Comercial</span>
+          <span id="tab-count-Comercial" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">0</span>
+        </button>
+
+        <!-- 4. Regulatório (Histórico Completo) -->
+        <button data-tab="Regulatório" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors flex items-center gap-1.5">
+          <span data-i18n="tab_regulatory">Regulatório</span>
+          <span id="tab-count-Regulatório" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">0</span>
+        </button>
+
+        <!-- 5. Ciência/Tecnologia (Histórico Completo) -->
+        <button data-tab="Ciência/Técnico" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors flex items-center gap-1.5">
+          <span data-i18n="tab_science">Ciência/Tecnologia</span>
+          <span id="tab-count-Ciência" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">0</span>
+        </button>
+
+        <!-- 6. Eventos -->
+        <button data-tab="Eventos" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors flex items-center gap-1.5">
+          <span data-i18n="tab_events">Eventos</span>
+          <span id="tab-count-Eventos" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">0</span>
+        </button>
+
+        <!-- 7. Cotações dos Polos BR -->
         <button data-tab="Cotacao" class="tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-600/70 text-emerald-800 dark:text-emerald-400 font-bold rounded-full text-xs sm:text-sm flex items-center gap-1 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors">
-          <span class="material-symbols-outlined text-[18px]">payments</span> <span data-i18n="tab_quotes">Cotações dos Polos</span>
+          <span class="material-symbols-outlined text-[18px]">payments</span>
+          <span data-i18n="tab_quotes">Cotações</span>
         </button>
+
       </div>
     </div>
 
@@ -270,9 +291,13 @@
       }
     };
 
-    let abaAtual = "ResumoSemanal";
+    // Estados de Navegação e Filtros
+    let abaAtual = "NoticiasSemana"; // Nova aba inicial padrão
     let indexSemanaSelecionada = 0;
-    let filtroEstadoAtual = "TODOS";
+    let filtroCategoriaSemanal = "all"; // 'all' | 'Mercado' | 'Comercial' | 'Regulatório' | 'Ciência/Técnico'
+    let filtroRegiaoSemanal = "all";    // 'all' | 'Brasil' | 'Estados Unidos' | 'Mundo'
+    let filtroRegiaoHistorico = "all";  // 'all' | 'Brasil' | 'Estados Unidos' | 'Mundo'
+    let filtroEstadoAtual = "TODOS";    // Cotações (UF)
     let estaCarregando = false;
 
     // ==========================================================================
@@ -320,35 +345,40 @@
         metric_noticias_title: "Inteligências Globais",
         metric_noticias_sub: "notícias no mundo inteiro",
         search_placeholder: "Buscar notícias mundiais por títulos, empresas, temas ou regiões...",
+        tab_this_week: "Notícias da Semana",
         tab_weekly: "Resumo Semanal",
         tab_all: "Tudo",
         tab_market: "Mercado",
         tab_commercial: "Comercial",
         tab_regulatory: "Regulatório",
-        tab_science: "Ciência/Técnico",
+        tab_science: "Ciência/Tecnologia",
         tab_events: "Eventos",
-        tab_quotes: "Cotações dos Polos",
-        briefing_processing_title: "Briefing Executivo em Processamento",
-        briefing_processing_desc: "O Resumo Semanal consolida os fatos e movimentações globais a cada encerramento de rotina diária.",
+        tab_quotes: "Cotações",
+        filter_category_label: "Categoria:",
+        filter_all_categories: "Todas",
+        region_label: "Região:",
+        region_all: "Todos",
+        region_brazil: "Brasil",
+        region_us: "Estados Unidos",
+        region_world: "Mundo",
+        weekly_summary_label: "Resumo da Semana",
+        history_subtitle: "Histórico completo e inteligências estratégicas arquivadas.",
+        no_news_for_filters: "Nenhuma notícia encontrada para os filtros selecionados.",
+        no_news_for_week: "Nenhuma notícia registrada para esta semana.",
         btn_prev: "Anterior",
         btn_next: "Próxima",
         status_in_progress: "Em andamento",
         status_completed: "Concluída",
-        btn_whatsapp: "Copiar para WhatsApp",
-        toast_whatsapp_copied: "Briefing formatado copiado para a área de transferência!",
+        btn_whatsapp: "Compartilhar",
+        toast_whatsapp_copied: "Resumo formatado copiado para a área de transferência!",
         toast_updated_live: "Dados atualizados com sucesso.",
         toast_updated_cache: "API indisponível. Exibindo último cache salvo.",
         toast_updated_error: "Não foi possível atualizar os dados.",
         sec_30s_title: "A semana em 30 segundos",
         sec_why_matters: "Por que isso importa:",
         sec_market_impact: "Impacto Prático no Mercado:",
-        related_sources: "fontes relacionadas",
-        highlights_count: "destaque(s)",
         source_label: "Fonte:",
         read_original_article: "Acessar matéria original",
-        no_highlights_period: "Nenhum destaque categorizado disponível para este período semanal.",
-        no_news_found_title: "Nenhuma inteligência encontrada",
-        no_news_found_desc: "Tente ajustar os termos de busca ou selecionar outra categoria acima.",
         quotes_table_title: "Monitor de Cotações e Paridade Sorgo x Milho (Brasil)",
         quotes_table_subtitle: "Cotações físicas para saca de 60kg disponível com paridade estrita na mesma praça e mesma data.",
         col_market: "Praça / Polo Oficial",
@@ -379,6 +409,7 @@
         metric_noticias_title: "Global Intelligence",
         metric_noticias_sub: "news indexed worldwide",
         search_placeholder: "Search global news by title, company, topic or region...",
+        tab_this_week: "This Week",
         tab_weekly: "Weekly Briefing",
         tab_all: "All",
         tab_market: "Market",
@@ -387,27 +418,31 @@
         tab_science: "Science/Tech",
         tab_events: "Events",
         tab_quotes: "Price Quotes",
-        briefing_processing_title: "Executive Briefing Processing",
-        briefing_processing_desc: "The Weekly Briefing consolidates global events and price movements upon each daily routine run.",
+        filter_category_label: "Category:",
+        filter_all_categories: "All",
+        region_label: "Region:",
+        region_all: "All",
+        region_brazil: "Brazil",
+        region_us: "United States",
+        region_world: "World",
+        weekly_summary_label: "Weekly Summary",
+        history_subtitle: "Complete archive and categorized market intelligence.",
+        no_news_for_filters: "No news found for the selected filters.",
+        no_news_for_week: "No news recorded for this week.",
         btn_prev: "Previous",
         btn_next: "Next",
         status_in_progress: "In progress",
         status_completed: "Completed",
-        btn_whatsapp: "Share on WhatsApp",
-        toast_whatsapp_copied: "Formatted briefing copied to clipboard!",
+        btn_whatsapp: "Share",
+        toast_whatsapp_copied: "Formatted summary copied to clipboard!",
         toast_updated_live: "Data updated successfully.",
         toast_updated_cache: "API unavailable. Displaying cached data.",
         toast_updated_error: "Unable to update data.",
         sec_30s_title: "The week in 30 seconds",
         sec_why_matters: "Why this matters:",
         sec_market_impact: "Practical Market Impact:",
-        related_sources: "related sources",
-        highlights_count: "highlight(s)",
         source_label: "Source:",
         read_original_article: "Read original article",
-        no_highlights_period: "No categorized highlights available for this weekly period.",
-        no_news_found_title: "No intelligence found",
-        no_news_found_desc: "Try adjusting your search terms or selecting another category above.",
         quotes_table_title: "Sorghum vs. Corn Price Parity Monitor (Brazil)",
         quotes_table_subtitle: "Physical spot quotes for 60kg bags with strict same-market and same-date parity calculation.",
         col_market: "Market / Official Hub",
@@ -447,245 +482,129 @@
       "O crescimento do etanol de cereais estimula a demanda por sorgo, fortalecendo a cultura como matéria-prima complementar e alternativa estratégica para as usinas.": "Growth in cereal ethanol drives industrial sorghum demand, reinforcing the crop as a strategic feedstock and complementary alternative for grain biorefineries.",
       "A certificação atrai a indústria de ração e exportadores focados em ESG, gerando prêmio de preço ao produtor. O movimento impulsiona a demanda por sementes de alta tecnologia e eleva a oferta do cereal como substituto sustentável do milho.": "Certification attracts ESG-focused feed millers and exporters, yielding price premiums for growers. The movement drives high-tech seed demand and enhances sorghum's standing as a sustainable corn alternative.",
       "Fitorremediação de solos contaminados por óleo com uso de sorgo e biochar": "Phytoremediation of Oil-Contaminated Soils Using Sorghum and Biochar",
-      "Os contratos trazem transparência de preços e mitigação de riscos operacionais para exportadores e fabricantes de ração. Essa previsibilidade melhora o planejamento do produtor e fortalece a competitividade do sorgo como substituto estratégico do milho na nutrição animal e biocombustíveis.": "Futures contracts deliver price transparency and risk management for exporters and feed manufacturers. This predictability enhances farmer planning and reinforces sorghum's competitiveness as a strategic corn substitute.",
-      "Nova legislação amplia o Programa de Venda em Balcão da Conab, permitindo a comercialização direta de sorgo para pequenos pecuaristas e estimulando o mercado interno do grão.": "New government regulations expand Conab's Over-the-Counter Sales Program, enabling direct sorghum sales to small livestock farmers and stimulating the domestic grain market.",
-      "Texas Tech busca liderança na pesquisa e inovação do sorgo": "Texas Tech Seeks Leadership in Sorghum Research and Innovation",
-      "Embrapa abre editais para programas de Milho e Sorgo Baixo Carbono": "Embrapa Opens Public Calls for Low-Carbon Corn and Sorghum Programs",
-      "A regulamentação condiciona o acesso a crédito e seguro no MS, reduzindo o risco de quebra de safra. A medida organiza a demanda por sementes e garante previsibilidade na oferta de forragem, favorecendo a estabilização dos custos de nutrição na pecuária.": "Zoning rules govern agricultural credit and insurance in MS, lowering crop failure risks. The measure structures seed demand and ensures predictable forage supply, stabilizing livestock feed costs.",
-      "Síntese executiva baseada nos principais acontecimentos do mercado de sorgo nesta semana.": "Executive synthesis based on the week's key sorghum market developments, commercial trade flows, and agronomic milestones.",
-      "O Ministério da Agricultura definiu as janelas oficiais de semeadura do sorgo forrageiro em Mato Grosso do Sul, medida essencial para mitigação de riscos climáticos e enquadramento em seguro e crédito agrícola.": "The Ministry of Agriculture established official planting windows for forage sorghum in Mato Grosso do Sul, an essential measure for climate risk mitigation and crop insurance eligibility.",
-      "Parceria entre Inpasa e UFG analisa a viabilidade do DDGS de sorgo na alimentação animal, impulsionando a eficiência nutricional e a valorização do coproduto do etanol.": "A research partnership between Inpasa and UFG investigates sorghum DDGS viability in animal feed, enhancing nutritional efficiency and coproduct valuation from grain ethanol.",
-      "A Texas Tech University posiciona-se para liderar pesquisas sobre o sorgo, visando impulsionar inovações tecnológicas e avanços científicos para a cultura.": "Texas Tech University positions itself at the forefront of sorghum research, aiming to drive technological innovations and scientific breakthroughs for the crop.",
-      "Texas A&M AgriLife promove tour de campo sobre sorgo forrageiro em Bushland": "Texas A&M AgriLife Hosts Forage Sorghum Field Tour in Bushland",
-      "Embrapa avança com diretrizes para o Sorgo Baixo Carbono": "Embrapa Advances Guidelines for Low-Carbon Sorghum Certification",
-      "A expansão impulsiona a oferta regional de grãos, reduzindo custos na indústria de ração e pressionando os preços do milho. O avanço eleva a demanda por sementes e consolida o sorgo como alternativa rentável na safrinha.": "Acreage expansion boosts regional grain supplies, reducing feed mill costs and exerting downward pressure on corn premiums. The trend drives seed demand and cements sorghum as a profitable safrinha crop.",
-      "CME Group lança contratos futuros de base para o sorgo": "CME Group Launches Sorghum Basis Futures Contracts",
-      "Produtores de sorgo dos EUA pressionam Senado por liberação do E15 e aprovação da Farm Bill": "US Sorghum Growers Press Senate for Year-Round E15 and Farm Bill Approval",
-      "A Embrapa abriu chamada pública para parceria no desenvolvimento e validação das marcas-conceito, impulsionando a sustentabilidade e agregação de valor ao sorgo.": "Embrapa opened a public call for partnerships in developing and validating concept brands, driving sustainability and value creation for grain sorghum.",
-      "MAPA estabelece calendário de plantio para o sorgo forrageiro em MS": "Ministry of Agriculture Establishes Forage Sorghum Planting Calendar in MS",
-      "O CME Group lançou contratos futuros de base de sorgo para fornecer ferramentas de gestão de risco e precificação, atendendo às demandas dos setores de exportação, ração animal e biocombustíveis.": "CME Group introduced sorghum basis futures contracts to offer robust hedging and risk management tools tailored to exporters, feed compounders, and biofuels producers.",
-      "A iniciativa estabelece parâmetros sustentáveis de manejo, promovendo a descarbonização no campo e agregando valor comercial ao sorgo brasileiro.": "The initiative defines sustainable agronomic standards, fostering on-farm decarbonization and adding commercial value to Brazilian sorghum.",
-      "Caroço de açaí vira nanofertilizante e eleva crescimento do sorgo em 164%": "Açaí Seeds Converted into Nanofertilizer Boost Sorghum Growth by 164%",
-      "Sorghum Connection Field Days é agendado para agosto de 2026": "Sorghum Connection Field Days Scheduled for August 2026",
-      "O evento Sorghum Connection Field Days foi confirmado para os dias 26 a 28 de agosto de 2026, promovendo a difusão de conhecimento técnico e práticas agrícolas para os produtores da cultura.": "The Sorghum Connection Field Days event was confirmed for August 26–28, 2026, facilitating technical knowledge transfer and agronomic best practices for growers.",
-      "O aumento das compras pela China acelerou os embarques brasileiros de sorgo em agosto, ampliando a liquidez no mercado interno e consolidando a cultura como alternativa de exportação.": "Increased Chinese purchasing accelerated Brazilian sorghum vessel loadings in August, boosting domestic liquidity and establishing the crop as a regular export staple.",
-      "Estudo publicado na Nature demonstra a eficiência do cultivo de sorgo combinado com biochar para recuperar e descontaminar solos impactados por resíduos petrolíferos.": "A study published in Nature demonstrates the high efficiency of sorghum cultivation combined with biochar for reclaiming and decontaminating petroleum-impacted soils.",
-      "A abertura de recebimento pela Coopama amplia a liquidez regional e reduz gargalos logísticos na safrinha. A iniciativa estimula a originação, garante oferta contínua para fábricas de ração e consolida o sorgo como alternativa economicamente viável ao milho.": "Receiving operations by Coopama expand regional grain liquidity and ease safrinha harvest logistics. The initiative drives grain origination and secures steady feedstock for animal feed mills.",
-      "A aplicação em SAF cria uma nova demanda industrial de alto valor, estimulando o mercado de sementes e elevando os preços do grão. Essa valorização acirrará a disputa pela oferta entre o setor de bioenergia e a ração animal.": "SAF aviation biofuel applications unlock high-value industrial demand, lifting hybrid seed sales and grain prices. This premium sharpens competition between bioenergy and livestock feed sectors.",
-      "O evento em 25 de agosto apresentará parcelas demonstrativas e pesquisas recentes sobre o desenvolvimento e manejo de cultivares de sorgo forrageiro.": "The August 25 field day will showcase demonstration plots and the latest agronomic research on forage sorghum cultivar breeding and crop management.",
-      "Estudo avalia uso de DDGS de sorgo na nutrição de bovinos em confinamento": "Study Evaluates Sorghum DDGS in Feedlot Cattle Nutrition",
-      "A liderança da Texas Tech em genética e manejo deve acelerar o desenvolvimento de sementes mais produtivas e tolerantes à seca. Isso tende a elevar a oferta global de sorgo, reduzindo custos para a indústria de ração e aumentando a competitividade frente ao milho.": "Texas Tech's research leadership in genetics and management will accelerate the development of higher-yielding, drought-tolerant hybrids, boosting global supplies and feed competitiveness.",
-      "O avanço da cultura no país é impulsionado por preços superiores aos do milho, sinalizando alta rentabilidade e potencial para posicionar o Brasil entre os líderes globais.": "Crop expansion across Brazil is driven by strong pricing relative to corn, signaling solid farm profitability and positioning the country among leading global producers.",
-      "O avanço projetado para a safra de sorgo eleva a oferta nacional e fortalece o grão como substituto competitivo do milho na ração animal. A maior disponibilidade tende a conter os preços dos insumos, enquanto estimula as vendas no mercado de sementes.": "Projected growth in national sorghum production bolsters domestic supply and solidifies the grain as a competitive corn replacement in animal nutrition, moderating feed costs.",
-      "Conab passa a vender sorgo a pequenos criadores com expansão do ProVB": "Conab Sells Sorghum to Small Livestock Producers Under Expanded ProVB Program",
-      "Sorgo ganha mercado e supera valorização do milho no Brasil": "Sorghum Gains Market Share and Outpaces Corn Valuation in Brazil",
-      "A inclusão do sorgo no ProVB aquece a demanda interna para ração animal e garante liquidez ao agricultor. A medida incentiva a compra de sementes para ampliação da área plantada e estabelece o cereal como alternativa competitiva ao milho, balizando preços regionais.": "Including sorghum in the ProVB program stimulates domestic feed demand and guarantees liquidity for growers, driving seed adoption and establishing sorghum as a competitive corn alternative.",
-      "Conab eleva projeção da safra 2025/26 de grãos para 360,75 milhões de toneladas": "Conab Raises 2025/26 Grain Crop Forecast to Record 360.75 Million Tons",
-      "A escala exportadora para a China eleva a demanda e sustenta os preços internos via paridade de exportação. Isso acirra a competição do grão com a indústria de ração e estimula o investimento em sementes para expansão da oferta nacional.": "Export scale to China elevates demand and supports domestic prices via export parity, sharpening competition with feed mills and driving seed investments for acreage expansion.",
-      "A validação do DDGS de sorgo expande a demanda industrial pelo grão, estimulando o mercado de sementes e a área plantada. O insumo reduz custos de ração no confinamento, sustentando os preços do sorgo e fortalecendo a margem dos usineiros.": "Validation of sorghum DDGS expands industrial grain demand, boosting hybrid seed sales and planted area while lowering feedlot feeding costs and lifting biorefinery margins.",
-      "Testes de campo validam o sorgo biofortificado em óleo como matéria-prima viável para combustível sustentável de aviação (SAF), abrindo novas oportunidades de mercado e agregação de valor para a cultura.": "Field trials validate oil-biofortified sorghum as a viable feedstock for sustainable aviation fuel (SAF), opening new high-value market opportunities for the crop.",
-      "O apetite chinês enxuga a oferta doméstica de sorgo, sustentando cotações mais altas e encarecendo a ração animal. A maior rentabilidade atrai o produtor, impulsionando a compra de sementes e consolidando o grão como substituto estratégico do milho.": "Chinese purchasing absorbs domestic sorghum supplies, bolstering spot prices and encouraging farmers to invest in hybrid seeds, cementing the crop as a strategic corn substitute.",
-      "A expansão do etanol de cereais cria uma demanda estrutural para o sorgo, elevando preços e disputando volume com a indústria de ração. Isso estimula a busca por sementes de alto rendimento e impulsiona o aumento da oferta no campo.": "The rise of cereal ethanol generates structural demand for sorghum, lifting spot prices and competing for volume with feed millers, driving the search for high-yielding hybrids.",
-      "Crescimento do cultivo de sorgo em Mato Grosso do Sul": "Sorghum Cultivation Expands Across Mato Grosso do Sul",
-      "A precificação superior estimula a busca por sementes e a expansão da oferta nacional. Com maior rentabilidade, o sorgo consolida sua demanda na indústria de ração, tornando-se concorrente direto do milho e redefinindo custos na nutrição animal.": "Superior pricing stimulates seed demand and national crop expansion. With stronger margins, sorghum consolidates demand in feed manufacturing, directly competing with corn and optimizing livestock nutrition costs.",
-      "Entidade do setor milheiro reconhece o avanço do cultivo de sorgo no país, reforçando o papel estratégico do cereal no suprimento de grãos e na complementariedade à safrinha.": "National corn sector association recognizes the expansion of sorghum cultivation, reinforcing the cereal's strategic role in feed supply and safrinha crop rotation.",
-      "A tecnologia promete elevar a produtividade por hectare, impulsionando a oferta global de sorgo. Rendimentos maiores reduzem o custo de produção do grão, aumentando sua competitividade frente ao milho na indústria de rações e reduzindo custos da pecuária.": "The technology promises to lift yields per hectare, boosting global sorghum supplies. Higher yields reduce production costs, strengthening its competitiveness against corn in animal feed.",
-      "A National Sorghum Producers solicita a liberação permanente da mistura E15 e o avanço da Lei Agrícola, medida essencial para sustentar a demanda de biocombustíveis e assegurar políticas de apoio à cultura.": "National Sorghum Producers requests permanent approval of the E15 blend and progress on the Farm Bill, essential for sustaining biofuel demand and safeguarding support programs.",
-      "Sorgo rico em óleo mostra potencial para combustível sustentável de aviação em testes de campo": "Oil-Rich Sorghum Demonstrates Sustainable Aviation Fuel Potential in Field Trials",
-      "O avanço do sorgo fortalece a oferta de grãos na janela seca, aliviando a demanda sobre o milho safrinha. Isso barateia o custo da ração para a pecuária, impulsiona o mercado de sementes híbridas e consolida o cereal como regulador regional de preços.": "Sorghum expansion strengthens grain supply during dry windows, relieving pressure on safrinha corn demand, reducing livestock feed costs, and cementing the grain as a regional price balancer.",
-      "Os cientistas também pretendem expandir os experimentos para outras culturas, como feijão, batata-doce, abóbora e hortaliças\nO post Caroço de açaí vira nanofertilizante e ele...": "Researchers also intend to expand trials to other crops, including beans, sweet potatoes, squash, and vegetables, following promising results in grain sorghum.",
-      "Abramilho celebra expansão da produção de sorgo no Brasil": "Abramilho Celebrates Brazilian Sorghum Production Expansion"
+      "Os contratos trazem transparência de preços e mitigação de riscos operacionais para exportadores e fabricantes de ração. Essa previsibilidade melhora o planejamento do produtor e fortalece a competitividade do sorgo como substituto estratégico do milho na nutrição animal e biocombustíveis.": "Futures contracts deliver price transparency and risk management for exporters and feed manufacturers. This predictability enhances farmer planning and reinforces sorghum's competitiveness as a strategic corn substitute."
     };
 
-    const dynamicTranslationCache = new Map();
-
-    function getTextoTraduzido(item, campo) {
-      if (!item) return "";
-      const valorOriginal = item[campo] || "";
-      if (idiomaAtual !== 'en') return valorOriginal;
-
-      // 1. Campo nativo retornado pelo backend
-      const campoEn = `${campo}_en`;
-      if (item[campoEn] && typeof item[campoEn] === 'string' && item[campoEn].trim().length > 0) {
-        return item[campoEn];
+    function getTextoTraduzido(obj, campoBase) {
+      if (!obj) return "";
+      if (idiomaAtual === 'en') {
+        const campoEn = campoBase + '_en';
+        if (obj[campoEn] && String(obj[campoEn]).trim().length > 0) {
+          return obj[campoEn];
+        }
+        const textoOriginal = obj[campoBase] || "";
+        if (TRANSLATION_MAP[textoOriginal]) {
+          return TRANSLATION_MAP[textoOriginal];
+        }
       }
-
-      const textoLimpo = String(valorOriginal).trim();
-      if (!textoLimpo) return "";
-
-      // 2. Mapa estático de alta precisão
-      if (TRANSLATION_MAP[textoLimpo]) {
-        return TRANSLATION_MAP[textoLimpo];
-      }
-
-      // 3. Cache dinâmico
-      if (dynamicTranslationCache.has(textoLimpo)) {
-        return dynamicTranslationCache.get(textoLimpo);
-      }
-
-      return valorOriginal;
+      return obj[campoBase] || "";
     }
 
     function definirIdioma(novoIdioma) {
-      if (novoIdioma !== 'pt' && novoIdioma !== 'en') return;
       idiomaAtual = novoIdioma;
       localStorage.setItem('sorghum_intel_lang', novoIdioma);
 
-      const btnPt = document.getElementById('lang-btn-pt');
-      const btnEn = document.getElementById('lang-btn-en');
-
-      if (idiomaAtual === 'pt') {
-        btnPt.className = "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-white dark:bg-slate-700 text-brand-800 dark:text-emerald-400 shadow-sm";
-        btnEn.className = "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all";
-      } else {
-        btnEn.className = "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-white dark:bg-slate-700 text-brand-800 dark:text-emerald-400 shadow-sm";
-        btnPt.className = "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all";
-      }
-
-      document.title = t('app_title');
-      document.querySelectorAll('[data-i18n]').forEach(elem => {
-        const chave = elem.getAttribute('data-i18n');
-        elem.innerText = t(chave);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const chave = el.getAttribute('data-i18n');
+        if (chave) el.innerText = t(chave);
       });
 
       const searchInput = document.getElementById('search-input');
-      if (searchInput) searchInput.placeholder = t('search_placeholder');
+      if (searchInput) {
+        searchInput.placeholder = t('search_placeholder');
+      }
 
+      const btnPt = document.getElementById('lang-btn-pt');
+      const btnEn = document.getElementById('lang-btn-en');
+      if (novoIdioma === 'pt') {
+        btnPt.className = "px-2 py-1 text-xs font-bold rounded-md bg-white dark:bg-slate-600 text-brand-800 dark:text-white shadow-xs transition-all";
+        btnEn.className = "px-2 py-1 text-xs font-medium rounded-md text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white transition-all";
+      } else {
+        btnEn.className = "px-2 py-1 text-xs font-bold rounded-md bg-white dark:bg-slate-600 text-brand-800 dark:text-white shadow-xs transition-all";
+        btnPt.className = "px-2 py-1 text-xs font-medium rounded-md text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white transition-all";
+      }
+
+      atualizarMetricasGerais();
       aplicarFiltro(abaAtual);
-      exibirToast(idiomaAtual === 'pt' ? "Idioma: Português 🇧🇷" : "Language: English 🇺🇸");
     }
 
     // ==========================================================================
-    // DADOS DEMO (CONSISTENTES COM A SEMANA ISO SEGUNDA A DOMINGO)
+    // PARSERS, DATAS E FORMATAÇÃO
     // ==========================================================================
-    const DEMO_DATA = {
-      resumosSemanais: [
-        {
-          idSemana: "2026-W09",
-          rotuloVisual: "23 FEV a 01 MAR",
-          rotuloVisual_en: "FEB 23 - MAR 01",
-          dataInicial: "23/02/2026",
-          dataFinal: "01/03/2026",
-          status: "EM_ANDAMENTO",
-          resumoExecutivo: "A semana consolida a aceleração das negociações globais de sorgo com compras firmes da China nos portos dos EUA, enquanto o plantio da safrinha ganha ritmo intenso no Brasil. Na Índia e no México, a demanda de indústrias de nutrição animal e forragem avança sobre as colheitas regionais, e pesquisas na Etiópia reforçam a adoção de cultivares tolerantes ao estresse hídrico.",
-          resumoExecutivo_en: "The week establishes strong momentum in global sorghum trade with firm Chinese purchases at US Gulf ports, while Brazilian second-crop (safrinha) planting accelerates. In India and Mexico, feed and forage industries expand commercial buying, and new research in Ethiopia boosts drought-tolerant cultivar adoption.",
-          destaques: {
-            "Mercado": [
-              {
-                titulo: "Exportações de sorgo dos EUA para a China registram avanço de 18% em fevereiro",
-                titulo_en: "US Sorghum Exports to China Surge 18% in February Driven by Feed Parity",
-                resumo: "Relatório de inspeções do USDA indica embarques acumulados de 480 mil toneladas de sorgo granífero (milo) pelo Golfo do Texas, impulsionados pela competitividade frente ao milho importado nos portos chineses.",
-                resumo_en: "USDA export inspection reports indicate cumulative shipments of 480,000 metric tons of grain sorghum (milo) through Texas Gulf ports, driven by strong cost competitiveness against imported corn at Chinese ports.",
-                porqueImporta: "A demanda chinesa firme sustenta as cotações do milo nos EUA e reduz os estoques de passagem globais, criando sustentação para preços internacionais.",
-                porqueImporta_en: "Steady Chinese demand sustains US milo spot prices and tightens global ending stocks, providing a price floor for global sorghum exports.",
-                fonte: "USDA / Farm Progress",
-                data: "26/02/2026",
-                url: "https://www.farmprogress.com/grains/usda-sorghum-export-inspections",
-                tags: ["Exportação", "Nutrição Animal", "Preços"],
-                fontesRelacionadas: 3
-              }
-            ]
+    function formatarMoedaBR(valor) {
+      if (valor === null || valor === undefined || valor === "" || isNaN(valor)) return null;
+      return "R$ " + Number(valor).toFixed(2).replace('.', ',');
+    }
+
+    function parseNumeroCotacao(valor) {
+      if (valor === null || valor === undefined || valor === "") return null;
+      if (typeof valor === 'number') return isNaN(valor) ? null : valor;
+      
+      let str = String(valor).trim();
+      str = str.replace(/^R\$\s*/i, '').replace(/%$/, '').trim();
+      if (!str || str === "—" || str === "-" || str.toLowerCase() === "null") return null;
+      
+      str = str.replace(/\./g, '').replace(',', '.');
+      const num = parseFloat(str);
+      return isNaN(num) ? null : num;
+    }
+
+    function formatarDataBR(data) {
+      if (!data) return "";
+      if (data instanceof Date) {
+        if (isNaN(data.getTime())) return "";
+        return `${String(data.getDate()).padStart(2, '0')}/${String(data.getMonth() + 1).padStart(2, '0')}/${data.getFullYear()}`;
+      }
+      return String(data).trim();
+    }
+
+    function formatarDataHoraBR(data) {
+      if (!data) return "";
+      const d = (data instanceof Date) ? data : new Date(data);
+      if (isNaN(d.getTime())) return String(data);
+      return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    }
+
+    function formatarDataVisual(dataStr) {
+      if (!dataStr) return "";
+      if (typeof dataStr === 'string' && dataStr.includes('/')) {
+        const partes = dataStr.split(' ')[0].split('/');
+        if (partes.length === 3) {
+          const dia = partes[0];
+          const mesNum = parseInt(partes[1], 10) - 1;
+          const mesesPT = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
+          const mesesEN = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+          const meses = idiomaAtual === 'en' ? mesesEN : mesesPT;
+          if (mesNum >= 0 && mesNum < 12) {
+            return `${dia} ${meses[mesNum]}`;
           }
         }
-      ],
-      precos: [],
-      noticias: [],
-      eventos: [],
-      metricas: {
-        totalNoticias: 0,
-        totalEventos: 0,
-        totalInteligencias: 0
       }
-    };
-
-    // ==========================================================================
-    // UTILITÁRIOS DE FORMATAÇÃO E NORMALIZAÇÃO DE PREÇOS
-    // ==========================================================================
-    function parseNumeroCotacao(valor) {
-      if (valor === null || valor === undefined || valor === "" || valor === "null" || valor === "—") return null;
-      if (typeof valor === 'number') return Number.isFinite(valor) ? valor : null;
-      
-      let s = String(valor).trim().replace('R$', '').replace('%', '').trim();
-      if (!s) return null;
-      
-      if (s.includes(',') && s.includes('.')) {
-        s = s.replace(/\./g, '').replace(',', '.');
-      } else if (s.includes(',')) {
-        s = s.replace(',', '.');
-      }
-      
-      const num = Number(s);
-      return (Number.isFinite(num) && !isNaN(num)) ? num : null;
-    }
-
-    function formatarMoedaBR(valor) {
-      const num = parseNumeroCotacao(valor);
-      if (num === null) return null;
-      return "R$ " + num.toFixed(2).replace('.', ',');
-    }
-
-    function formatarDataVisual(dataInput) {
-      if (!dataInput) return null;
-      const str = String(dataInput).trim();
-      if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
-        const partes = str.split(' ')[0].split('/');
-        return `${partes[0].padStart(2, '0')}/${partes[1].padStart(2, '0')}/${partes[2]}`;
-      }
-      if (str.includes('-')) {
-        const partesData = str.split('T')[0].split('-');
-        if (partesData.length === 3 && partesData[0].length === 4) {
-          return `${partesData[2].padStart(2, '0')}/${partesData[1].padStart(2, '0')}/${partesData[0]}`;
-        }
-      }
-      try {
-        const d = new Date(str);
-        if (!isNaN(d.getTime())) {
-          return `${String(d.getUTCDate()).padStart(2, '0')}/${String(d.getUTCMonth() + 1).padStart(2, '0')}/${d.getUTCFullYear()}`;
-        }
-      } catch (e) {}
-      return null;
-    }
-
-    function formatarDataHoraBR(dataObj) {
-      const d = dataObj instanceof Date ? dataObj : new Date(dataObj);
-      if (isNaN(d.getTime())) return String(dataObj);
-      const dia = String(d.getDate()).padStart(2, '0');
-      const mes = String(d.getMonth() + 1).padStart(2, '0');
-      const ano = d.getFullYear();
-      const hora = String(d.getHours()).padStart(2, '0');
-      const min = String(d.getMinutes()).padStart(2, '0');
-      return `${dia}/${mes}/${ano} ${hora}:${min}`;
+      return dataStr;
     }
 
     function parseDataParaTimestamp(dataStr) {
       if (!dataStr) return 0;
-      const formatada = formatarDataVisual(dataStr);
-      if (formatada && formatada.includes('/')) {
-        const partes = formatada.split('/');
-        if (partes.length === 3) return new Date(parseInt(partes[2], 10), parseInt(partes[1], 10) - 1, parseInt(partes[0], 10)).getTime();
+      if (dataStr instanceof Date) return isNaN(dataStr.getTime()) ? 0 : dataStr.getTime();
+      if (typeof dataStr === 'string' && dataStr.includes('/')) {
+        const p = dataStr.trim().split(' ')[0].split('/');
+        if (p.length === 3) {
+          const d = new Date(parseInt(p[2], 10), parseInt(p[1], 10) - 1, parseInt(p[0], 10));
+          return isNaN(d.getTime()) ? 0 : d.getTime();
+        }
       }
-      return new Date(dataStr).getTime() || 0;
+      const d = new Date(dataStr);
+      return isNaN(d.getTime()) ? 0 : d.getTime();
     }
 
     function calcularDiasDesdeAtualizacaoData(dataStr) {
-      if (!dataStr || String(dataStr).toLowerCase() === "não identificada" || dataStr === "null") return 999;
-      const dataVis = formatarDataVisual(dataStr);
-      if (!dataVis || !dataVis.includes('/')) return 999;
-      
-      const partes = dataVis.split('/');
-      if (partes.length !== 3) return 999;
-      
-      const dia = parseInt(partes[0], 10);
-      const mes = parseInt(partes[1], 10) - 1;
-      const ano = parseInt(partes[2], 10);
-      
-      const dataCot = new Date(ano, mes, dia);
-      if (isNaN(dataCot.getTime())) return 999;
-      
+      if (!dataStr || String(dataStr).toLowerCase() === "não identificada") return 999;
+      const ts = parseDataParaTimestamp(dataStr);
+      if (ts <= 0) return 999;
+      const dataCot = new Date(ts);
       const hoje = new Date();
       hoje.setHours(0, 0, 0, 0);
       dataCot.setHours(0, 0, 0, 0);
-      
       const diffTime = hoje.getTime() - dataCot.getTime();
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       return diffDays >= 0 ? diffDays : 0;
@@ -813,6 +732,17 @@
       return { cls: "bg-slate-700 text-white", icn: "article", tag: "Geral" };
     }
 
+    function getGeoBadge(regiao) {
+      const reg = String(regiao || 'Mundo').trim();
+      if (reg === "Brasil") {
+        return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">🇧🇷 ${escapeHTML(t('region_brazil'))}</span>`;
+      }
+      if (reg === "Estados Unidos") {
+        return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">🇺🇸 ${escapeHTML(t('region_us'))}</span>`;
+      }
+      return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">🌐 ${escapeHTML(t('region_world'))}</span>`;
+    }
+
     function exibirToast(mensagem) {
       const toast = document.getElementById('toast');
       const msgElem = document.getElementById('toast-message');
@@ -826,100 +756,281 @@
     }
 
     // ==========================================================================
-    // EXPORTAÇÃO PARA WHATSAPP
+    // CÁLCULO ROBUSTO DE SEMANA ISO (SEGUNDA A DOMINGO)
     // ==========================================================================
-    function copiarResumoWhatsApp() {
-      if (!bancoDados.resumosSemanais || bancoDados.resumosSemanais.length === 0) return;
-      const resumosOrdenados = [...bancoDados.resumosSemanais].sort((a, b) => b.idSemana.localeCompare(a.idSemana));
-      const semana = resumosOrdenados[indexSemanaSelecionada] || resumosOrdenados[0];
-
-      const rotulo = idiomaAtual === 'en' ? (semana.rotuloVisual_en || semana.rotuloVisual || semana.idSemana) : (semana.rotuloVisual || semana.idSemana);
-      const resumo30s = getTextoTraduzido(semana, 'resumoExecutivo');
-
-      let texto = `🌾 *SorghumIntel - ${idiomaAtual === 'en' ? 'Global Executive Briefing' : 'Briefing Executivo Global'}*\n`;
-      texto += `📅 *${idiomaAtual === 'en' ? 'Period' : 'Período'}:* ${rotulo} (${semana.dataInicial} - ${semana.dataFinal})\n\n`;
-      texto += `⚡ *${t('sec_30s_title').toUpperCase()}:*\n${resumo30s}\n\n`;
-
-      const destaques = semana.destaques || {};
-      for (const cat in destaques) {
-        if (destaques[cat] && destaques[cat].length > 0) {
-          const badgeCat = getBadgeInfo(cat);
-          texto += `━━━━━━━━━━━━━━━━━━━━\n`;
-          texto += `📌 *${badgeCat.tag.toUpperCase()}*\n`;
-          destaques[cat].forEach(d => {
-            const tit = getTextoTraduzido(d, 'titulo');
-            const res = getTextoTraduzido(d, 'resumo');
-            const imp = getTextoTraduzido(d, 'porqueImporta');
-            texto += `\n▪️ *${tit}*\n${res}\n`;
-            if (imp) {
-              texto += `💡 _${t('sec_why_matters')}_ ${imp}\n`;
-            }
-          });
-          texto += `\n`;
-        }
+    function obterInfoSemanaISO(dataObj) {
+      const d = new Date(dataObj.getTime());
+      d.setHours(0, 0, 0, 0);
+      
+      const diaSemana = d.getDay();
+      const distanciaSegunda = diaSemana === 0 ? -6 : 1 - diaSemana;
+      
+      const segunda = new Date(d);
+      segunda.setDate(d.getDate() + distanciaSegunda);
+      
+      const domingo = new Date(segunda);
+      domingo.setDate(segunda.getDate() + 6);
+      
+      const temp = new Date(segunda.getTime());
+      temp.setDate(temp.getDate() + 3);
+      const primeiroDiaAno = new Date(temp.getFullYear(), 0, 4);
+      const numSemana = 1 + Math.round(((temp.getTime() - primeiroDiaAno.getTime()) / 86400000 - 3 + (primeiroDiaAno.getDay() + 6) % 7) / 7);
+      const idSemana = `${temp.getFullYear()}-W${String(numSemana).padStart(2, '0')}`;
+      
+      const mesesAbrevPT = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
+      const mesesAbrevEN = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+      
+      let rotuloVisualPT = "";
+      let rotuloVisualEN = "";
+      if (segunda.getMonth() === domingo.getMonth()) {
+        rotuloVisualPT = `${String(segunda.getDate()).padStart(2, '0')} a ${String(domingo.getDate()).padStart(2, '0')} de ${mesesAbrevPT[segunda.getMonth()]}`;
+        rotuloVisualEN = `${mesesAbrevEN[segunda.getMonth()]} ${String(segunda.getDate()).padStart(2, '0')} - ${String(domingo.getDate()).padStart(2, '0')}`;
+      } else {
+        rotuloVisualPT = `${String(segunda.getDate()).padStart(2, '0')} ${mesesAbrevPT[segunda.getMonth()]} a ${String(domingo.getDate()).padStart(2, '0')} ${mesesAbrevPT[domingo.getMonth()]}`;
+        rotuloVisualEN = `${mesesAbrevEN[segunda.getMonth()]} ${String(segunda.getDate()).padStart(2, '0')} - ${mesesAbrevEN[domingo.getMonth()]} ${String(domingo.getDate()).padStart(2, '0')}`;
       }
 
-      if (bancoDados.precos && bancoDados.precos.length > 0) {
-        texto += `📊 *Monitor SorghumIntel (Preços & Paridade BR)*\n`;
-        bancoDados.precos.forEach(p => {
-          if (p.precoSorgo && p.precoMilho) {
-            const relacaoTexto = p.relacaoMilho ? `${p.relacaoMilho}%` : "—";
-            texto += `• ${p.praca} (${p.uf}): Sorgo R$ ${p.precoSorgo} | Milho R$ ${p.precoMilho} | Paridade: ${relacaoTexto}\n`;
+      return {
+        idSemana: idSemana,
+        segunda: segunda,
+        domingo: domingo,
+        dataInicialBR: formatarDataBR(segunda),
+        dataFinalBR: formatarDataBR(domingo),
+        rotuloVisual: rotuloVisualPT,
+        rotuloVisual_en: rotuloVisualEN
+      };
+    }
+
+    function obterListaSemanasDisponiveis() {
+      const mapaSemanas = new Map();
+      
+      // 1. Extrai semanas das notícias reais da base
+      (bancoDados.noticias || []).forEach(n => {
+        if (!n.titulo) return;
+        const ts = parseDataParaTimestamp(n.data);
+        if (ts > 0) {
+          const info = obterInfoSemanaISO(new Date(ts));
+          if (!mapaSemanas.has(info.idSemana)) {
+            mapaSemanas.set(info.idSemana, info);
           }
-        });
+        }
+      });
+
+      // 2. Extrai semanas dos resumos semanais gravados
+      (bancoDados.resumosSemanais || []).forEach(r => {
+        if (r.idSemana && !mapaSemanas.has(r.idSemana)) {
+          const dataRef = r.dataInicial ? parseDataParaTimestamp(r.dataInicial) : 0;
+          const info = dataRef > 0 ? obterInfoSemanaISO(new Date(dataRef)) : {
+            idSemana: r.idSemana,
+            dataInicialBR: r.dataInicial || "",
+            dataFinalBR: r.dataFinal || "",
+            rotuloVisual: r.rotuloVisual || r.idSemana,
+            rotuloVisual_en: r.rotuloVisual_en || r.idSemana
+          };
+          mapaSemanas.set(r.idSemana, info);
+        }
+      });
+
+      // 3. Fallback: se vazio, adiciona a semana corrente
+      if (mapaSemanas.size === 0) {
+        const atual = obterInfoSemanaISO(new Date());
+        mapaSemanas.set(atual.idSemana, atual);
       }
 
-      texto += `\n🔗 ${idiomaAtual === 'en' ? 'Access full portal:' : 'Acesse o painel completo:'} ${window.location.href}`;
-
-      navigator.clipboard.writeText(texto).then(() => {
-        exibirToast(t('toast_whatsapp_copied'));
-      }).catch(() => {
-        exibirToast("Copiado!");
-      });
+      const semanasOrdenadas = Array.from(mapaSemanas.values()).sort((a, b) => b.idSemana.localeCompare(a.idSemana));
+      return semanasOrdenadas;
     }
 
     // ==========================================================================
-    // RENDERIZADOR 1: RESUMO SEMANAL EXECUTIVO BILÍNGUE
+    // COMPONENTE DO CARD DE NOTÍCIA INDIVIDUAL
     // ==========================================================================
-    function renderizarResumoSemanal() {
-      const container = document.getElementById('news-container');
-      container.className = "flex flex-col gap-6 col-span-full max-w-4xl mx-auto w-full";
+    function renderizarCardNoticia(item) {
+      const catTexto = item.categoria || "Comercial";
+      const badge = getBadgeInfo(catTexto);
+      const geoBadge = getGeoBadge(item.regiao);
+      const dataExibicao = formatarDataVisual(item.data) || item.data || '';
+
+      const tit = getTextoTraduzido(item, 'titulo');
+      const res = getTextoTraduzido(item, 'resumo');
+      const imp = getTextoTraduzido(item, 'porqueImporta');
+
+      const boxPorqueImporta = (imp && typeof imp === 'string' && imp.trim().length > 10) ? `
+        <div class="bg-slate-50 dark:bg-slate-900 border-l-2 border-brand-800 dark:border-emerald-500 p-3 rounded-r-lg mb-4 text-xs text-slate-700 dark:text-slate-300">
+          <strong class="text-brand-900 dark:text-emerald-300 block text-[11px] uppercase tracking-wider mb-1 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[13px]">insights</span> ${escapeHTML(t('sec_market_impact'))}
+          </strong>
+          ${escapeHTML(imp)}
+        </div>
+      ` : '';
+
+      const urlMateria = safeExternalURL(item.url);
+
+      return `
+        <article class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between h-full">
+          <div>
+            <div class="flex justify-between items-center mb-3 gap-2 flex-wrap">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${badge.cls}">${escapeHTML(badge.tag)}</span>
+                ${geoBadge}
+              </div>
+              <div class="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-xs font-medium">
+                <span class="material-symbols-outlined text-[15px]">calendar_today</span>
+                <span>${escapeHTML(dataExibicao)}</span>
+              </div>
+            </div>
+
+            <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2 leading-snug hover:text-brand-800 dark:hover:text-emerald-400 transition-colors">
+              <a href="${urlMateria}" target="_blank" rel="noopener noreferrer">${escapeHTML(tit)}</a>
+            </h2>
+
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mb-3 flex items-center gap-1.5 uppercase">
+              <span class="material-symbols-outlined text-[15px] text-slate-400">${badge.icn}</span>
+              <span>${escapeHTML(t('source_label'))} ${escapeHTML(item.fonte || 'Notícias')}</span>
+            </div>
+
+            <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-3">${escapeHTML(res)}</p>
+            ${boxPorqueImporta}
+          </div>
+
+          <div>
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs font-bold">
+              <a href="${urlMateria}" target="_blank" rel="noopener noreferrer" class="text-brand-800 dark:text-emerald-400 hover:underline flex items-center gap-1">
+                <span>${escapeHTML(t('read_original_article'))}</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    // ==========================================================================
+    // RENDERIZADOR 1: NOTÍCIAS DA SEMANA (ESTRUTURA PRINCIPAL)
+    // ==========================================================================
+    function renderizarAbaNoticiasSemana() {
+      const container = document.getElementById('main-content-container');
       container.innerHTML = '';
 
-      if (!bancoDados.resumosSemanais || bancoDados.resumosSemanais.length === 0) {
-        container.innerHTML = `
-          <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
-            <span class="material-symbols-outlined text-4xl text-brand-700 dark:text-emerald-400 mb-2">auto_stories</span>
-            <h2 class="text-slate-900 dark:text-white font-bold text-base mb-1">${escapeHTML(t('briefing_processing_title'))}</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">${escapeHTML(t('briefing_processing_desc'))}</p>
-          </div>
-        `;
-        return;
-      }
-
-      const resumosOrdenados = [...bancoDados.resumosSemanais].sort((a, b) => b.idSemana.localeCompare(a.idSemana));
-      
-      if (indexSemanaSelecionada >= resumosOrdenados.length) indexSemanaSelecionada = 0;
+      const semanas = obterListaSemanasDisponiveis();
+      if (indexSemanaSelecionada >= semanas.length) indexSemanaSelecionada = 0;
       if (indexSemanaSelecionada < 0) indexSemanaSelecionada = 0;
 
-      const semana = resumosOrdenados[indexSemanaSelecionada];
-      const temAnterior = indexSemanaSelecionada < resumosOrdenados.length - 1;
+      const semanaAtualObj = semanas[indexSemanaSelecionada];
+      const temAnterior = indexSemanaSelecionada < semanas.length - 1;
       const temProxima = indexSemanaSelecionada > 0;
 
-      const statusTag = semana.status === "EM_ANDAMENTO" 
-        ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> ${escapeHTML(t('status_in_progress'))}</span>`
-        : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> ${escapeHTML(t('status_completed'))}</span>`;
+      // 1. Notícias pertencentes a esta semana
+      const noticiasDestaSemana = (bancoDados.noticias || []).filter(n => {
+        if (!n.titulo) return false;
+        const ts = parseDataParaTimestamp(n.data);
+        if (ts <= 0) return false;
+        const info = obterInfoSemanaISO(new Date(ts));
+        return info.idSemana === semanaAtualObj.idSemana;
+      });
 
-      let opcoesSemanas = resumosOrdenados.map((s, idx) => {
+      // 2. Busca resumo semanal executivo (se houver e se for texto válido)
+      const resumoSemanalObj = (bancoDados.resumosSemanais || []).find(r => r.idSemana === semanaAtualObj.idSemana);
+      let resumoExecutivoValido = null;
+      if (resumoSemanalObj) {
+        const rawResumo = getTextoTraduzido(resumoSemanalObj, 'resumoExecutivo');
+        if (rawResumo && typeof rawResumo === 'string' && rawResumo.trim().length > 30) {
+          const limpo = rawResumo.trim();
+          const pareceBase64 = limpo.includes("==") || (/^[a-zA-Z0-9+\/]+={0,2}$/.test(limpo) && limpo.length < 60);
+          if (!pareceBase64) {
+            resumoExecutivoValido = limpo;
+          }
+        }
+      }
+
+      // 3. Contadores dinâmicos para filtros internos da semana
+      const totalSemana = noticiasDestaSemana.length;
+      
+      const contagemCategoriasSemana = {
+        all: 0,
+        Mercado: 0,
+        Comercial: 0,
+        'Regulatório': 0,
+        'Ciência/Técnico': 0
+      };
+
+      const contagemRegioesSemana = {
+        all: 0,
+        Brasil: 0,
+        'Estados Unidos': 0,
+        Mundo: 0
+      };
+
+      noticiasDestaSemana.forEach(n => {
+        const reg = n.regiao || 'Mundo';
+        const cat = (n.categoria || 'Comercial');
+        
+        // Contagem de categorias respeitando a região selecionada (se houver)
+        if (filtroRegiaoSemanal === 'all' || reg === filtroRegiaoSemanal) {
+          contagemCategoriasSemana.all++;
+          if (cat.toLowerCase().includes('mercado')) contagemCategoriasSemana.Mercado++;
+          else if (cat.toLowerCase().includes('comercial')) contagemCategoriasSemana.Comercial++;
+          else if (cat.toLowerCase().includes('regulatório') || cat.toLowerCase().includes('regulatorio')) contagemCategoriasSemana['Regulatório']++;
+          else if (cat.toLowerCase().includes('ciência') || cat.toLowerCase().includes('ciencia') || cat.toLowerCase().includes('técnico') || cat.toLowerCase().includes('tecnico')) contagemCategoriasSemana['Ciência/Técnico']++;
+        }
+
+        // Contagem de regiões respeitando a categoria selecionada (se houver)
+        let catMatch = true;
+        if (filtroCategoriaSemanal !== 'all') {
+          const termoCat = filtroCategoriaSemanal.toLowerCase().split('/')[0];
+          catMatch = cat.toLowerCase().includes(termoCat);
+        }
+
+        if (catMatch) {
+          contagemRegioesSemana.all++;
+          if (reg === 'Brasil') contagemRegioesSemana.Brasil++;
+          else if (reg === 'Estados Unidos') contagemRegioesSemana['Estados Unidos']++;
+          else contagemRegioesSemana.Mundo++;
+        }
+      });
+
+      // 4. Filtragem final para renderização dos cards
+      const inputBusca = document.getElementById('search-input');
+      const termoBusca = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
+
+      let noticiasParaExibir = noticiasDestaSemana.filter(n => {
+        // Filtro de Categoria
+        if (filtroCategoriaSemanal !== 'all') {
+          const termoCat = filtroCategoriaSemanal.toLowerCase().split('/')[0];
+          if (!(n.categoria || '').toLowerCase().includes(termoCat)) return false;
+        }
+
+        // Filtro de Região
+        if (filtroRegiaoSemanal !== 'all') {
+          const reg = n.regiao || 'Mundo';
+          if (reg !== filtroRegiaoSemanal) return false;
+        }
+
+        // Filtro de Busca
+        if (termoBusca) {
+          const tit = (getTextoTraduzido(n, 'titulo') || "").toLowerCase();
+          const res = (getTextoTraduzido(n, 'resumo') || "").toLowerCase();
+          const imp = (getTextoTraduzido(n, 'porqueImporta') || "").toLowerCase();
+          const fon = (n.fonte || "").toLowerCase();
+          if (!tit.includes(termoBusca) && !res.includes(termoBusca) && !imp.includes(termoBusca) && !fon.includes(termoBusca)) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      // Ordenar da mais recente para a mais antiga
+      noticiasParaExibir.sort((a, b) => parseDataParaTimestamp(b.data) - parseDataParaTimestamp(a.data));
+
+      // 5. Montagem do HTML da Barra de Controle da Semana
+      let opcoesSemanas = semanas.map((s, idx) => {
         const rotulo = idiomaAtual === 'en' ? (s.rotuloVisual_en || s.rotuloVisual || s.idSemana) : (s.rotuloVisual || s.idSemana);
-        return `<option value="${idx}" ${idx === indexSemanaSelecionada ? 'selected' : ''}>${escapeHTML(rotulo)} (${escapeHTML(s.dataInicial)} - ${escapeHTML(s.dataFinal)})</option>`;
+        return `<option value="${idx}" ${idx === indexSemanaSelecionada ? 'selected' : ''}>${escapeHTML(rotulo)} (${escapeHTML(s.dataInicialBR)} - ${escapeHTML(s.dataFinalBR)})</option>`;
       }).join('');
 
-      const resumo30s = getTextoTraduzido(semana, 'resumoExecutivo');
-
-      let html = `
-        <!-- Barra de Controle Semanal e Ações -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-3.5 px-5 rounded-2xl shadow-sm">
+      let htmlControle = `
+        <!-- Barra de Navegação Entre Semanas -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-3.5 px-5 rounded-2xl shadow-sm mb-6">
           <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
             <button onclick="mudarSemana(1)" ${!temAnterior ? 'disabled class="opacity-30 cursor-not-allowed flex items-center text-xs font-semibold text-slate-400 p-2 rounded-lg"' : 'class="flex items-center text-xs font-semibold text-brand-800 dark:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-700 p-2 rounded-lg transition-colors"'}>
               <span class="material-symbols-outlined text-[18px] mr-1">arrow_back</span> ${escapeHTML(t('btn_prev'))}
@@ -935,222 +1046,309 @@
           </div>
 
           <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100 dark:border-slate-700">
-            <div>${statusTag}</div>
-            <button onclick="copiarResumoWhatsApp()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition-colors" title="Compartilhar briefing formatado">
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${totalSemana} notícias</span>
+            <button onclick="copiarResumoWhatsApp()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition-colors" title="Compartilhar resumo no WhatsApp">
               <span class="material-symbols-outlined text-[16px]">share</span>
               <span>${escapeHTML(t('btn_whatsapp'))}</span>
             </button>
           </div>
         </div>
-
-        <!-- Síntese Executiva de 30 Segundos -->
-        <section class="bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 p-6 rounded-2xl shadow-sm">
-          <div class="flex items-center gap-2 mb-2.5">
-            <div class="w-7 h-7 rounded-lg bg-brand-800 text-white flex items-center justify-center">
-              <span class="material-symbols-outlined text-[18px]">timer</span>
-            </div>
-            <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-900 dark:text-emerald-300">${escapeHTML(t('sec_30s_title'))}</h3>
-          </div>
-          <p class="text-sm sm:text-base leading-relaxed text-slate-800 dark:text-slate-200 font-medium">
-            ${escapeHTML(resumo30s || 'Síntese executiva dos principais acontecimentos estruturados da semana no mercado global de sorgo.')}
-          </p>
-        </section>
       `;
 
-      // Destaques por Categoria
-      const categoriasOrdem = ["Mercado", "Comercial", "Regulatório", "Ciência/Técnico", "Eventos"];
-      const destaquesObj = semana.destaques || {};
-
-      let encontrouAlgumDestaque = false;
-
-      categoriasOrdem.forEach(cat => {
-        const lista = destaquesObj[cat] || [];
-
-        if (lista.length > 0) {
-          encontrouAlgumDestaque = true;
-          const badge = getBadgeInfo(cat);
-
-          html += `
-            <section class="space-y-4 mt-2">
-              <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2.5">
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-brand-800 dark:text-emerald-400 text-[20px]">${badge.icn}</span>
-                  <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">${escapeHTML(badge.tag)}</h3>
-                </div>
-                <span class="text-xs text-slate-500 dark:text-slate-400 font-medium bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full">${lista.length} ${escapeHTML(t('highlights_count'))}</span>
-              </div>
-
-              <div class="grid grid-cols-1 gap-4">
-          `;
-
-          lista.forEach(item => {
-            const tit = getTextoTraduzido(item, 'titulo');
-            const res = getTextoTraduzido(item, 'resumo');
-            const imp = getTextoTraduzido(item, 'porqueImporta');
-
-            const badgeFontes = (item.fontesRelacionadas && item.fontesRelacionadas > 1)
-              ? `<span class="text-[10px] bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full font-semibold">${item.fontesRelacionadas} ${escapeHTML(t('related_sources'))}</span>`
-              : '';
-
-            const boxPorqueImporta = (imp && typeof imp === 'string' && imp.trim().length > 10) ? `
-              <div class="bg-brand-50/80 dark:bg-emerald-950/50 border-l-4 border-brand-800 dark:border-emerald-500 p-3.5 rounded-r-xl mb-3">
-                <span class="text-[11px] font-bold text-brand-900 dark:text-emerald-300 block mb-1 uppercase tracking-wide flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[14px]">psychology</span> ${escapeHTML(t('sec_why_matters'))}
-                </span>
-                <p class="text-xs text-slate-800 dark:text-emerald-100 leading-relaxed font-medium">${escapeHTML(imp)}</p>
-              </div>
-            ` : '';
-
-            const urlMateria = safeExternalURL(item.url);
-
-            html += `
-              <article class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
-                <div class="flex justify-between items-start gap-2 mb-2">
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    ${badgeFontes}
-                  </div>
-                  <span class="text-[10px] font-semibold text-slate-400">${escapeHTML(formatarDataVisual(item.data) || item.data)}</span>
-                </div>
-
-                <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug mb-2">
-                  <a href="${urlMateria}" target="_blank" rel="noopener noreferrer" class="hover:text-brand-800 dark:hover:text-emerald-400 transition-colors">
-                    ${escapeHTML(tit)}
-                  </a>
-                </h4>
-
-                <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-3">${escapeHTML(res)}</p>
-                ${boxPorqueImporta}
-
-                <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-slate-700/60 text-xs">
-                  <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-medium">
-                    <span class="uppercase text-[10px] font-bold text-slate-700 dark:text-slate-300">${escapeHTML(t('source_label'))} ${escapeHTML(item.fonte || 'Notícias')}</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <a href="${urlMateria}" target="_blank" rel="noopener noreferrer" class="text-brand-800 dark:text-emerald-400 hover:underline flex items-center gap-1 font-bold text-xs">
-                      <span>${escapeHTML(t('read_original_article'))}</span>
-                      <span class="material-symbols-outlined text-[13px]">arrow_outward</span>
-                    </a>
-                  </div>
-                </div>
-              </article>
-            `;
-          });
-
-          html += `
-              </div>
-            </section>
-          `;
-        }
-      });
-
-      if (!encontrouAlgumDestaque) {
-        html += `
-          <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-500 dark:text-slate-400 text-sm">
-            ${escapeHTML(t('no_highlights_period'))}
+      // 6. Bloco Opcional do Resumo Executivo da Semana
+      let htmlResumoBox = "";
+      if (resumoExecutivoValido) {
+        htmlResumoBox = `
+          <div class="bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 p-5 rounded-2xl shadow-sm mb-6">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="material-symbols-outlined text-brand-800 dark:text-emerald-400 text-lg">auto_stories</span>
+              <h3 class="text-xs font-extrabold uppercase tracking-widest text-brand-900 dark:text-emerald-300">${escapeHTML(t('weekly_summary_label'))}</h3>
+            </div>
+            <p class="text-xs sm:text-sm leading-relaxed text-slate-800 dark:text-slate-200 font-medium">
+              ${escapeHTML(resumoExecutivoValido)}
+            </p>
           </div>
         `;
       }
 
-      container.innerHTML = html;
+      // 7. Filtros Secundários de Categoria e Região
+      let htmlFiltros = `
+        <div class="bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700/80 p-4 rounded-2xl shadow-sm mb-6 space-y-3">
+          
+          <!-- Linha 1: Filtro de Categoria -->
+          <div class="flex flex-wrap items-center gap-1.5">
+            <span class="text-xs font-bold text-slate-400 mr-2 uppercase tracking-wider">${escapeHTML(t('filter_category_label'))}</span>
+            
+            <button onclick="filtrarCategoriaSemanal('all')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroCategoriaSemanal === 'all' ? 'bg-brand-800 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              ${escapeHTML(t('filter_all_categories'))} <span class="ml-1 text-[10px] opacity-80">${contagemCategoriasSemana.all}</span>
+            </button>
+
+            <button onclick="filtrarCategoriaSemanal('Mercado')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroCategoriaSemanal === 'Mercado' ? 'bg-brand-800 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              ${escapeHTML(t('tab_market'))} <span class="ml-1 text-[10px] opacity-80">${contagemCategoriasSemana.Mercado}</span>
+            </button>
+
+            <button onclick="filtrarCategoriaSemanal('Comercial')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroCategoriaSemanal === 'Comercial' ? 'bg-brand-800 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              ${escapeHTML(t('tab_commercial'))} <span class="ml-1 text-[10px] opacity-80">${contagemCategoriasSemana.Comercial}</span>
+            </button>
+
+            <button onclick="filtrarCategoriaSemanal('Regulatório')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroCategoriaSemanal === 'Regulatório' ? 'bg-brand-800 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              ${escapeHTML(t('tab_regulatory'))} <span class="ml-1 text-[10px] opacity-80">${contagemCategoriasSemana['Regulatório']}</span>
+            </button>
+
+            <button onclick="filtrarCategoriaSemanal('Ciência/Técnico')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroCategoriaSemanal === 'Ciência/Técnico' ? 'bg-brand-800 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              ${escapeHTML(t('tab_science'))} <span class="ml-1 text-[10px] opacity-80">${contagemCategoriasSemana['Ciência/Técnico']}</span>
+            </button>
+          </div>
+
+          <!-- Linha 2: Filtro de Região -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-750">
+            <span class="text-xs font-bold text-slate-400 mr-2 uppercase tracking-wider">${escapeHTML(t('region_label'))}</span>
+            
+            <button onclick="filtrarRegiaoSemanal('all')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroRegiaoSemanal === 'all' ? 'bg-slate-800 dark:bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              ${escapeHTML(t('region_all'))} <span class="ml-1 text-[10px] opacity-80">${contagemRegioesSemana.all}</span>
+            </button>
+
+            <button onclick="filtrarRegiaoSemanal('Brasil')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroRegiaoSemanal === 'Brasil' ? 'bg-emerald-700 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              🇧🇷 ${escapeHTML(t('region_brazil'))} <span class="ml-1 text-[10px] opacity-80">${contagemRegioesSemana.Brasil}</span>
+            </button>
+
+            <button onclick="filtrarRegiaoSemanal('Estados Unidos')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroRegiaoSemanal === 'Estados Unidos' ? 'bg-blue-700 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              🇺🇸 ${escapeHTML(t('region_us'))} <span class="ml-1 text-[10px] opacity-80">${contagemRegioesSemana['Estados Unidos']}</span>
+            </button>
+
+            <button onclick="filtrarRegiaoSemanal('Mundo')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroRegiaoSemanal === 'Mundo' ? 'bg-slate-700 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              🌐 ${escapeHTML(t('region_world'))} <span class="ml-1 text-[10px] opacity-80">${contagemRegioesSemana.Mundo}</span>
+            </button>
+          </div>
+
+        </div>
+      `;
+
+      // 8. Grid de Notícias
+      let htmlGrid = "";
+      if (noticiasParaExibir.length === 0) {
+        htmlGrid = `
+          <div class="col-span-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
+            <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">filter_alt_off</span>
+            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">${escapeHTML(t('no_news_for_filters'))}</p>
+          </div>
+        `;
+      } else {
+        htmlGrid = `
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${noticiasParaExibir.map(n => renderizarCardNoticia(n)).join('')}
+          </div>
+        `;
+      }
+
+      container.innerHTML = htmlControle + htmlResumoBox + htmlFiltros + htmlGrid;
     }
 
     function mudarSemana(delta) {
       indexSemanaSelecionada += delta;
-      renderizarResumoSemanal();
+      renderizarAbaNoticiasSemana();
+      atualizarContadoresAbas();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function selecionarSemanaPorIndex(index) {
       indexSemanaSelecionada = parseInt(index, 10) || 0;
-      renderizarResumoSemanal();
+      renderizarAbaNoticiasSemana();
+      atualizarContadoresAbas();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function filtrarCategoriaSemanal(categoria) {
+      filtroCategoriaSemanal = categoria;
+      renderizarAbaNoticiasSemana();
+    }
+
+    function filtrarRegiaoSemanal(regiao) {
+      filtroRegiaoSemanal = regiao;
+      renderizarAbaNoticiasSemana();
+    }
+
     // ==========================================================================
-    // RENDERIZADOR 2: FEED GLOBAL DE NOTÍCIAS & EVENTOS
+    // RENDERIZADOR 2: ABAS HISTÓRICAS DE CATEGORIAS (MERCADO, COMERCIAL, ETC.)
     // ==========================================================================
-    function renderizarCards(itens) {
-      const container = document.getElementById('news-container');
-      container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 col-span-full";
-      container.innerHTML = ''; 
-      
-      if (!itens || itens.length === 0) {
+    function renderizarAbaHistorica(categoriaNome) {
+      const container = document.getElementById('main-content-container');
+      container.innerHTML = '';
+
+      const termoBuscaAba = categoriaNome.toLowerCase().split('/')[0].trim();
+      const todasDaCategoria = (bancoDados.noticias || []).filter(n => {
+        if (!n.titulo) return false;
+        return (n.categoria || '').toLowerCase().includes(termoBuscaAba);
+      });
+
+      // Contagem de regiões para o histórico
+      const contagemRegiao = {
+        all: todasDaCategoria.length,
+        Brasil: 0,
+        'Estados Unidos': 0,
+        Mundo: 0
+      };
+
+      todasDaCategoria.forEach(n => {
+        const reg = n.regiao || 'Mundo';
+        if (reg === 'Brasil') contagemRegiao.Brasil++;
+        else if (reg === 'Estados Unidos') contagemRegiao['Estados Unidos']++;
+        else contagemRegiao.Mundo++;
+      });
+
+      // Filtragem por região selecionada e busca
+      const inputBusca = document.getElementById('search-input');
+      const termoBusca = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
+
+      let listaExibir = todasDaCategoria.filter(n => {
+        if (filtroRegiaoHistorico !== 'all') {
+          const reg = n.regiao || 'Mundo';
+          if (reg !== filtroRegiaoHistorico) return false;
+        }
+
+        if (termoBusca) {
+          const tit = (getTextoTraduzido(n, 'titulo') || "").toLowerCase();
+          const res = (getTextoTraduzido(n, 'resumo') || "").toLowerCase();
+          const imp = (getTextoTraduzido(n, 'porqueImporta') || "").toLowerCase();
+          const fon = (n.fonte || "").toLowerCase();
+          if (!tit.includes(termoBusca) && !res.includes(termoBusca) && !imp.includes(termoBusca) && !fon.includes(termoBusca)) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      // Ordenar da mais recente para a mais antiga
+      listaExibir.sort((a, b) => parseDataParaTimestamp(b.data) - parseDataParaTimestamp(a.data));
+
+      const badgeCat = getBadgeInfo(categoriaNome);
+
+      let htmlHeader = `
+        <!-- Cabeçalho da Aba Histórica -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-4 px-6 rounded-2xl shadow-sm mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center ${badgeCat.cls}">
+              <span class="material-symbols-outlined text-[22px]">${badgeCat.icn}</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">${escapeHTML(badgeCat.tag)}</h2>
+                <span class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2.5 py-0.5 rounded-full">${listaExibir.length} notícias</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="history_subtitle">${escapeHTML(t('history_subtitle'))}</p>
+            </div>
+          </div>
+
+          <!-- Filtro Regional do Histórico -->
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-xs font-bold text-slate-400 mr-1 uppercase tracking-wider">${escapeHTML(t('region_label'))}</span>
+            
+            <button onclick="filtrarRegiaoHistorico('all')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroRegiaoHistorico === 'all' ? 'bg-slate-800 dark:bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              ${escapeHTML(t('region_all'))} <span class="ml-1 text-[10px] opacity-80">${contagemRegiao.all}</span>
+            </button>
+
+            <button onclick="filtrarRegiaoHistorico('Brasil')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroRegiaoHistorico === 'Brasil' ? 'bg-emerald-700 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              🇧🇷 ${escapeHTML(t('region_brazil'))} <span class="ml-1 text-[10px] opacity-80">${contagemRegiao.Brasil}</span>
+            </button>
+
+            <button onclick="filtrarRegiaoHistorico('Estados Unidos')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroRegiaoHistorico === 'Estados Unidos' ? 'bg-blue-700 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              🇺🇸 ${escapeHTML(t('region_us'))} <span class="ml-1 text-[10px] opacity-80">${contagemRegiao['Estados Unidos']}</span>
+            </button>
+
+            <button onclick="filtrarRegiaoHistorico('Mundo')" class="px-3 py-1 rounded-full text-xs font-bold transition-all ${filtroRegiaoHistorico === 'Mundo' ? 'bg-slate-700 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-750 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              🌐 ${escapeHTML(t('region_world'))} <span class="ml-1 text-[10px] opacity-80">${contagemRegiao.Mundo}</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      let htmlGrid = "";
+      if (listaExibir.length === 0) {
+        htmlGrid = `
+          <div class="col-span-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
+            <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">filter_alt_off</span>
+            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">${escapeHTML(t('no_news_for_filters'))}</p>
+          </div>
+        `;
+      } else {
+        htmlGrid = `
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${listaExibir.map(n => renderizarCardNoticia(n)).join('')}
+          </div>
+        `;
+      }
+
+      container.innerHTML = htmlHeader + htmlGrid;
+    }
+
+    function filtrarRegiaoHistorico(regiao) {
+      filtroRegiaoHistorico = regiao;
+      renderizarAbaHistorica(abaAtual);
+      atualizarContadoresAbas();
+    }
+
+    // ==========================================================================
+    // RENDERIZADOR 3: EVENTOS
+    // ==========================================================================
+    function renderizarEventos() {
+      const container = document.getElementById('main-content-container');
+      container.innerHTML = '';
+
+      const mapUnicos = new Map();
+      (bancoDados.eventos || []).forEach(e => {
+        if (e.url) mapUnicos.set(e.url, e);
+        else mapUnicos.set(e.titulo, e);
+      });
+
+      (bancoDados.noticias || []).forEach(n => {
+        const cat = (n.categoria || "").toLowerCase();
+        const tit = (n.titulo || "").toLowerCase();
+        if (cat.includes("evento") || cat.includes("campo") || cat.includes("event") || tit.includes("dia de campo") || tit.includes("conference") || tit.includes("seminário") || tit.includes("encontro")) {
+          const chave = n.url || n.titulo;
+          if (!mapUnicos.has(chave)) {
+            mapUnicos.set(chave, { ...n, categoria: "Eventos" });
+          }
+        }
+      });
+
+      let listaEventos = Array.from(mapUnicos.values());
+
+      const inputBusca = document.getElementById('search-input');
+      const termo = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
+      if (termo) {
+        listaEventos = listaEventos.filter(e => {
+          const tit = (getTextoTraduzido(e, 'titulo') || "").toLowerCase();
+          const res = (getTextoTraduzido(e, 'resumo') || "").toLowerCase();
+          const fon = (e.fonte || "").toLowerCase();
+          return tit.includes(termo) || res.includes(termo) || fon.includes(termo);
+        });
+      }
+
+      listaEventos.sort((a, b) => parseDataParaTimestamp(b.data) - parseDataParaTimestamp(a.data));
+
+      if (listaEventos.length === 0) {
         container.innerHTML = `
           <div class="col-span-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
-            <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">search_off</span>
-            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">${escapeHTML(t('no_news_found_title'))}</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">${escapeHTML(t('no_news_found_desc'))}</p>
+            <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">event_busy</span>
+            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">Nenhum evento localizado</p>
           </div>
         `;
         return;
       }
 
-      const ordenados = [...itens].sort((a, b) => parseDataParaTimestamp(b.data) - parseDataParaTimestamp(a.data));
-
-      ordenados.forEach((item) => {
-        const catTexto = item.categoria || "";
-        const badge = getBadgeInfo(catTexto);
-        const dataExibicao = formatarDataVisual(item.data) || item.data || '';
-
-        const tit = getTextoTraduzido(item, 'titulo');
-        const res = getTextoTraduzido(item, 'resumo');
-        const imp = getTextoTraduzido(item, 'porqueImporta');
-
-        const boxPorqueImporta = (imp && typeof imp === 'string' && imp.trim().length > 10) ? `
-          <div class="bg-slate-50 dark:bg-slate-900 border-l-2 border-brand-800 dark:border-emerald-500 p-3 rounded-r-lg mb-4 text-xs text-slate-700 dark:text-slate-300">
-            <strong class="text-brand-900 dark:text-emerald-300 block text-[11px] uppercase tracking-wider mb-1 flex items-center gap-1">
-              <span class="material-symbols-outlined text-[13px]">insights</span> ${escapeHTML(t('sec_market_impact'))}
-            </strong>
-            ${escapeHTML(imp)}
-          </div>
-        ` : '';
-
-        const urlMateria = safeExternalURL(item.url);
-
-        const cardHTML = `
-          <article class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between h-full">
-            <div>
-              <div class="flex justify-between items-center mb-3">
-                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${badge.cls}">${escapeHTML(badge.tag)}</span>
-                <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-xs font-medium">
-                  <span class="material-symbols-outlined text-[16px]">calendar_today</span>
-                  <span>${escapeHTML(dataExibicao)}</span>
-                </div>
-              </div>
-
-              <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2 leading-snug hover:text-brand-800 dark:hover:text-emerald-400 transition-colors">
-                <a href="${urlMateria}" target="_blank" rel="noopener noreferrer">${escapeHTML(tit)}</a>
-              </h2>
-
-              <div class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mb-3 flex items-center gap-1.5 uppercase">
-                <span class="material-symbols-outlined text-[15px] text-slate-400">${badge.icn}</span>
-                <span>${escapeHTML(t('source_label'))} ${escapeHTML(item.fonte || 'Notícias')}</span>
-              </div>
-
-              <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-3">${escapeHTML(res)}</p>
-              ${boxPorqueImporta}
-            </div>
-
-            <div>
-              <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs font-bold">
-                <a href="${urlMateria}" target="_blank" rel="noopener noreferrer" class="text-brand-800 dark:text-emerald-400 hover:underline flex items-center gap-1">
-                  <span>${escapeHTML(t('read_original_article'))}</span>
-                  <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
-                </a>
-              </div>
-            </div>
-          </article>
-        `;
-        container.innerHTML += cardHTML;
-      });
+      container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          ${listaEventos.map(e => renderizarCardNoticia(e)).join('')}
+        </div>
+      `;
     }
 
     // ==========================================================================
-    // RENDERIZADOR 3: MONITOR DE COTAÇÕES E METADADOS INDEPENDENTES
+    // RENDERIZADOR 4: MONITOR DE COTAÇÕES E METADADOS INDEPENDENTES
     // ==========================================================================
     function renderizarTabelaPrecos(precos) {
-      const container = document.getElementById('news-container');
-      container.className = "flex flex-col gap-6 col-span-full max-w-5xl mx-auto w-full";
+      const container = document.getElementById('main-content-container');
       container.innerHTML = '';
 
       const listaNormalizada = (precos || []).map(normalizarRegistroPreco);
@@ -1179,7 +1377,7 @@
       }
 
       let htmlPrecos = `
-        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm max-w-5xl mx-auto w-full">
           
           <!-- Cabeçalho da Tabela e Filtros -->
           <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
@@ -1197,7 +1395,7 @@
             </div>
           </div>
 
-          <!-- Tabela de Cotações com Metadados Transparentes e Separados -->
+          <!-- Tabela de Cotações -->
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
               <thead>
@@ -1213,7 +1411,7 @@
       `;
 
       precosFiltrados.forEach(p => {
-        // 1. Bloco de Sorgo (Preço + Data + Status de Atualidade)
+        // 1. Sorgo
         let sorgoHTML = `<span class="text-xs text-slate-400 italic">${escapeHTML(t('no_quote'))}</span>`;
         if (p.precoSorgo !== null && p.precoSorgo > 0) {
           const precoFormatado = formatarMoedaBR(p.precoSorgo);
@@ -1230,7 +1428,7 @@
           `;
         }
 
-        // 2. Bloco de Milho (Preço + Data + Status de Atualidade)
+        // 2. Milho
         let milhoHTML = `<span class="text-xs text-slate-400 italic">${escapeHTML(t('no_quote'))}</span>`;
         if (p.precoMilho !== null && p.precoMilho > 0) {
           const precoFormatado = formatarMoedaBR(p.precoMilho);
@@ -1247,14 +1445,14 @@
           `;
         }
 
-        // 3. Relação Sorgo/Milho (Calculada estritamente quando houver paridade de data e praça canônica)
+        // 3. Relação Sorgo/Milho
         let relacaoHTML = `<span class="text-xs text-slate-400" title="Exige cotações verificadas na mesma data e mesma praça">—</span>`;
         if (p.relacaoMilho !== null && p.relacaoMilho > 0) {
           const relacaoBR = p.relacaoMilho.toFixed(1).replace('.', ',');
           relacaoHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-750 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">${escapeHTML(relacaoBR)}%</span>`;
         }
 
-        // 4. Fonte da Cotação (Tratamento estrito: não inventa fontes)
+        // 4. Fonte da Cotação
         let fonteHTML = `<span class="text-xs text-slate-400 italic">${escapeHTML(t('awaiting_source'))}</span>`;
         const temSorgoFonte = Boolean(p.fonteSorgo);
         const temMilhoFonte = Boolean(p.fonteMilho);
@@ -1320,70 +1518,85 @@
     }
 
     // ==========================================================================
-    // CONTROLADOR DE NAVEGAÇÃO E BUSCA
+    // ATUALIZAÇÃO DOS CONTADORES DISCRETOS DAS ABAS
     // ==========================================================================
-    async function aplicarFiltro(nomeAba) {
-      abaAtual = nomeAba;
-      const inputBusca = document.getElementById('search-input');
-      const termo = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
+    function atualizarContadoresAbas() {
+      // 1. Notícias da Semana Selecionada
+      const semanas = obterListaSemanasDisponiveis();
+      const semanaAtualObj = semanas[indexSemanaSelecionada] || semanas[0];
+      const countSemana = (bancoDados.noticias || []).filter(n => {
+        if (!n.titulo) return false;
+        const ts = parseDataParaTimestamp(n.data);
+        if (ts <= 0) return false;
+        return obterInfoSemanaISO(new Date(ts)).idSemana === semanaAtualObj.idSemana;
+      }).length;
 
-      if (abaAtual === "ResumoSemanal") {
-        renderizarResumoSemanal();
-        return;
-      }
+      const elSemana = document.getElementById('tab-count-NoticiasSemana');
+      if (elSemana) elSemana.innerText = countSemana;
 
-      if (abaAtual === "Cotacao") {
-        let lista = bancoDados.precos || [];
-        if (termo) {
-          lista = lista.filter(p => 
-            (p.praca && p.praca.toLowerCase().includes(termo)) ||
-            (p.uf && p.uf.toLowerCase().includes(termo)) ||
-            (p.fonte && p.fonte.toLowerCase().includes(termo))
-          );
-        }
-        renderizarTabelaPrecos(lista);
-        return;
-      }
-
-      let listaOrigem = [];
-      
-      if (abaAtual === "Eventos") {
-        const mapUnicos = new Map();
-        (bancoDados.eventos || []).forEach(e => {
-          if (e.url) mapUnicos.set(e.url, e);
-          else mapUnicos.set(e.titulo, e);
-        });
-
-        (bancoDados.noticias || []).forEach(n => {
-          const cat = (n.categoria || "").toLowerCase();
-          const tit = (n.titulo || "").toLowerCase();
-          if (cat.includes("evento") || cat.includes("campo") || cat.includes("event") || tit.includes("dia de campo") || tit.includes("conference") || tit.includes("seminário") || tit.includes("encontro")) {
-            const chave = n.url || n.titulo;
-            if (!mapUnicos.has(chave)) {
-              mapUnicos.set(chave, { ...n, categoria: "Eventos" });
-            }
+      // 2. Categorias Históricas
+      const contarCat = (catNome) => {
+        const termo = catNome.toLowerCase().split('/')[0];
+        return (bancoDados.noticias || []).filter(n => {
+          if (!n.titulo) return false;
+          const matchCat = (n.categoria || '').toLowerCase().includes(termo);
+          if (abaAtual === catNome && filtroRegiaoHistorico !== 'all') {
+            return matchCat && (n.regiao || 'Mundo') === filtroRegiaoHistorico;
           }
-        });
-        listaOrigem = Array.from(mapUnicos.values());
-      } else if (abaAtual === "Tudo") {
-        listaOrigem = [...(bancoDados.noticias || []), ...(bancoDados.eventos || [])];
+          return matchCat;
+        }).length;
+      };
+
+      const elMercado = document.getElementById('tab-count-Mercado');
+      if (elMercado) elMercado.innerText = contarCat('Mercado');
+
+      const elComercial = document.getElementById('tab-count-Comercial');
+      if (elComercial) elComercial.innerText = contarCat('Comercial');
+
+      const elReg = document.getElementById('tab-count-Regulatório');
+      if (elReg) elReg.innerText = contarCat('Regulatório');
+
+      const elCiencia = document.getElementById('tab-count-Ciência');
+      if (elCiencia) elCiencia.innerText = contarCat('Ciência/Técnico');
+
+      // 3. Eventos
+      const elEventos = document.getElementById('tab-count-Eventos');
+      if (elEventos) {
+        const totalEv = (bancoDados.eventos || []).length;
+        elEventos.innerText = totalEv;
+      }
+    }
+
+    // ==========================================================================
+    // CONTROLADOR DE NAVEGAÇÃO E APLICAÇÃO DE FILTROS
+    // ==========================================================================
+    function aplicarFiltro(nomeAba) {
+      abaAtual = nomeAba;
+
+      // Atualiza estilo dos botões das abas
+      const botoes = document.querySelectorAll('#tabs-container button');
+      botoes.forEach(b => {
+        const tName = b.getAttribute('data-tab');
+        if (tName === abaAtual) {
+          b.className = "tab-button active px-4 py-2 bg-brand-800 text-white font-bold rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors";
+        } else if (tName === 'Cotacao') {
+          b.className = "tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-600/70 text-emerald-800 dark:text-emerald-400 font-bold rounded-full text-xs sm:text-sm flex items-center gap-1 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors";
+        } else {
+          b.className = "tab-button px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs sm:text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors flex items-center gap-1.5";
+        }
+      });
+
+      if (abaAtual === "NoticiasSemana") {
+        renderizarAbaNoticiasSemana();
+      } else if (abaAtual === "Cotacao") {
+        renderizarTabelaPrecos(bancoDados.precos);
+      } else if (abaAtual === "Eventos") {
+        renderizarEventos();
       } else {
-        const termoBuscaAba = abaAtual.toLowerCase().split('/')[0].trim();
-        listaOrigem = (bancoDados.noticias || []).filter(n => (n.categoria || "").toLowerCase().includes(termoBuscaAba));
+        renderizarAbaHistorica(abaAtual);
       }
 
-      // Filtrar por Termo de Busca
-      if (termo) {
-        listaOrigem = listaOrigem.filter(n => {
-          const tit = (getTextoTraduzido(n, 'titulo') || "").toLowerCase();
-          const res = (getTextoTraduzido(n, 'resumo') || "").toLowerCase();
-          const imp = (getTextoTraduzido(n, 'porqueImporta') || "").toLowerCase();
-          const fon = (n.fonte || "").toLowerCase();
-          return tit.includes(termo) || res.includes(termo) || imp.includes(termo) || fon.includes(termo);
-        });
-      }
-
-      renderizarCards(listaOrigem);
+      atualizarContadoresAbas();
     }
 
     function limparBusca() {
@@ -1394,11 +1607,71 @@
     }
 
     // ==========================================================================
+    // EXPORTAÇÃO PARA WHATSAPP
+    // ==========================================================================
+    function copiarResumoWhatsApp() {
+      const semanas = obterListaSemanasDisponiveis();
+      const semana = semanas[indexSemanaSelecionada] || semanas[0];
+
+      const rotulo = idiomaAtual === 'en' ? (semana.rotuloVisual_en || semana.rotuloVisual || semana.idSemana) : (semana.rotuloVisual || semana.idSemana);
+
+      // Notícias da semana
+      const noticiasSemana = (bancoDados.noticias || []).filter(n => {
+        if (!n.titulo) return false;
+        const ts = parseDataParaTimestamp(n.data);
+        return ts > 0 && obterInfoSemanaISO(new Date(ts)).idSemana === semana.idSemana;
+      });
+
+      let texto = `🌾 *SorghumIntel - ${idiomaAtual === 'en' ? 'Weekly Intelligence Briefing' : 'Inteligência Semanal de Sorgo'}*
+`;
+      texto += `📅 *${idiomaAtual === 'en' ? 'Period' : 'Período'}:* ${rotulo} (${semana.dataInicialBR} - ${semana.dataFinalBR})
+
+`;
+
+      if (noticiasSemana.length > 0) {
+        texto += `📌 *${idiomaAtual === 'en' ? 'HIGHLIGHTS OF THE WEEK' : 'DESTAQUES DA SEMANA'}:*
+`;
+        noticiasSemana.forEach(n => {
+          const tit = getTextoTraduzido(n, 'titulo');
+          const reg = n.regiao === 'Brasil' ? '🇧🇷 Brasil' : (n.regiao === 'Estados Unidos' ? '🇺🇸 EUA' : '🌐 Mundo');
+          texto += `
+▪️ [${reg}] *${tit}*
+`;
+          const res = getTextoTraduzido(n, 'resumo');
+          if (res) texto += `${res.substring(0, 180)}...
+`;
+        });
+        texto += `
+`;
+      }
+
+      if (bancoDados.precos && bancoDados.precos.length > 0) {
+        texto += `📊 *Monitor SorghumIntel (Preços & Paridade BR)*
+`;
+        bancoDados.precos.forEach(p => {
+          if (p.precoSorgo && p.precoMilho) {
+            const relacaoTexto = p.relacaoMilho ? `${p.relacaoMilho}%` : "—";
+            texto += `• ${p.praca} (${p.uf}): Sorgo R$ ${p.precoSorgo} | Milho R$ ${p.precoMilho} | Paridade: ${relacaoTexto}
+`;
+          }
+        });
+      }
+
+      texto += `
+🔗 ${idiomaAtual === 'en' ? 'Access full portal:' : 'Acesse o painel completo:'} ${window.location.href}`;
+
+      navigator.clipboard.writeText(texto).then(() => {
+        exibirToast(t('toast_whatsapp_copied'));
+      }).catch(() => {
+        exibirToast("Copiado!");
+      });
+    }
+
+    // ==========================================================================
     // CARREGAMENTO DE DADOS COM SKELETON
     // ==========================================================================
     function exibirSkeletonLoader() {
-      const container = document.getElementById('news-container');
-      container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 col-span-full";
+      const container = document.getElementById('main-content-container');
       
       let skeletonCards = '';
       for (let i = 0; i < 6; i++) {
@@ -1421,7 +1694,7 @@
           </div>
         `;
       }
-      container.innerHTML = skeletonCards;
+      container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${skeletonCards}</div>`;
     }
 
     function atualizarMetricasGerais() {
@@ -1495,24 +1768,11 @@
         if (sorgoValido) { sorgoValidosCount++; sorgoVals.push(p.precoSorgo); }
         if (milhoValido) { milhoValidosCount++; milhoVals.push(p.precoMilho); }
         if (relValida) { relacaoValidasCount++; relacaoVals.push(p.relacaoMilho); }
-
-        console.log(`\n${p.praca} (${p.uf})`);
-        console.log(`  Sorgo: ${p.precoSorgo !== null ? 'R$ ' + p.precoSorgo.toFixed(2) : '—'} | Data: ${p.dataSorgo || '—'} | Status: ${p.statusAtualidadeSorgo} (Dias: ${p.diasDesdeAtualizacaoSorgo}) | Incluído Média: ${sorgoValido ? 'SIM' : 'NÃO'}`);
-        console.log(`  Milho: ${p.precoMilho !== null ? 'R$ ' + p.precoMilho.toFixed(2) : '—'} | Data: ${p.dataMilho || '—'} | Status: ${p.statusAtualidadeMilho} (Dias: ${p.diasDesdeAtualizacaoMilho}) | Incluído Média: ${milhoValido ? 'SIM' : 'NÃO'}`);
-        console.log(`  Relação: ${p.relacaoMilho !== null ? p.relacaoMilho.toFixed(1) + '%' : '—'} | Incluída Média: ${relValida ? 'SIM' : 'NÃO'}`);
       });
 
       const mediaSorgo = sorgoVals.length > 0 ? (sorgoVals.reduce((a, b) => a + b, 0) / sorgoVals.length).toFixed(2) : "—";
       const mediaMilho = milhoVals.length > 0 ? (milhoVals.reduce((a, b) => a + b, 0) / milhoVals.length).toFixed(2) : "—";
       const mediaRel = relacaoVals.length > 0 ? (relacaoVals.reduce((a, b) => a + b, 0) / relacaoVals.length).toFixed(1) + '%' : "—";
-
-      console.log("\n=== RESUMO FINAL ===");
-      console.log(`Sorgo válidos: ${sorgoValidosCount}`);
-      console.log(`Milho válidos: ${milhoValidosCount}`);
-      console.log(`Relações válidas: ${relacaoValidasCount}`);
-      console.log(`Média Sorgo: ${mediaSorgo !== '—' ? 'R$ ' + mediaSorgo.replace('.', ',') : '—'}`);
-      console.log(`Média Milho: ${mediaMilho !== '—' ? 'R$ ' + mediaMilho.replace('.', ',') : '—'}`);
-      console.log(`Média Relação: ${mediaRel}`);
 
       return {
         sorgoValidos: sorgoValidosCount,
@@ -1573,7 +1833,11 @@
         const dados = await resposta.json();
 
         if (dados && typeof dados === 'object' && dados.status === 'ok') {
-          bancoDados.noticias = dados.noticias || [];
+          // Normaliza notícias garantindo campo regiao
+          bancoDados.noticias = (dados.noticias || []).map(n => ({
+            ...n,
+            regiao: n.regiao || 'Mundo'
+          }));
           bancoDados.eventos = dados.eventos || [];
           bancoDados.precos = (dados.precos || []).map(normalizarRegistroPreco);
           bancoDados.resumosSemanais = dados.resumosSemanais || [];
@@ -1584,7 +1848,7 @@
           };
 
           // Salva no cache local seguro
-          localStorage.setItem('sorghum_intel_cache_data', JSON.stringify(bancoDados));
+          localStorage.setItem('sorghum_intel_cache_data_v5', JSON.stringify(bancoDados));
           localStorage.setItem('sorghum_intel_cache_timestamp', new Date().toISOString());
 
           statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
@@ -1602,13 +1866,17 @@
       } catch (erro) {
         console.warn("[API] Falha ao conectar à API Apps Script:", erro);
 
-        // Verifica se há cache local seguro previamente salvo
-        const cacheDataStr = localStorage.getItem('sorghum_intel_cache_data');
+        // Verifica cache local seguro
+        const cacheDataStr = localStorage.getItem('sorghum_intel_cache_data_v5') || localStorage.getItem('sorghum_intel_cache_data');
         const cacheTimestamp = localStorage.getItem('sorghum_intel_cache_timestamp');
 
         if (cacheDataStr && cacheTimestamp) {
           try {
             bancoDados = JSON.parse(cacheDataStr);
+            bancoDados.noticias = (bancoDados.noticias || []).map(n => ({
+              ...n,
+              regiao: n.regiao || 'Mundo'
+            }));
             bancoDados.precos = (bancoDados.precos || []).map(normalizarRegistroPreco);
             statusDot.className = "w-2 h-2 rounded-full bg-amber-500";
             statusText.innerText = t('status_offline_cache');
@@ -1629,23 +1897,13 @@
           }
         }
         
-        if (DEMO_MODE) {
-          bancoDados = { ...DEMO_DATA };
-          statusDot.className = "w-2 h-2 rounded-full bg-blue-500";
-          statusText.innerText = t('status_demo');
-          bannerCache.classList.add('hidden');
-          atualizarMetricasGerais();
-          aplicarFiltro(abaAtual);
-          return { sucesso: false, origem: "demo", timestamp: new Date().toISOString() };
-        } else {
-          bancoDados = { noticias: [], eventos: [], precos: [], resumosSemanais: [], metricas: { totalNoticias: 0, totalEventos: 0, totalInteligencias: 0 } };
-          statusDot.className = "w-2 h-2 rounded-full bg-red-500";
-          statusText.innerText = t('status_offline_unavailable');
-          bannerCache.classList.add('hidden');
-          atualizarMetricasGerais();
-          aplicarFiltro(abaAtual);
-          return { sucesso: false, origem: "indisponivel" };
-        }
+        bancoDados = { noticias: [], eventos: [], precos: [], resumosSemanais: [], metricas: { totalNoticias: 0, totalEventos: 0, totalInteligencias: 0 } };
+        statusDot.className = "w-2 h-2 rounded-full bg-red-500";
+        statusText.innerText = t('status_offline_unavailable');
+        bannerCache.classList.add('hidden');
+        atualizarMetricasGerais();
+        aplicarFiltro(abaAtual);
+        return { sucesso: false, origem: "indisponivel" };
       }
     }
 
@@ -1656,13 +1914,6 @@
       const botoes = document.querySelectorAll('#tabs-container button');
       botoes.forEach(botao => {
         botao.addEventListener('click', () => {
-          botoes.forEach(b => {
-            b.classList.remove('bg-brand-800', 'text-white', 'font-bold');
-            b.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300', 'font-medium');
-          });
-          botao.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300', 'font-medium');
-          botao.classList.add('bg-brand-800', 'text-white', 'font-bold');
-          
           const tab = botao.getAttribute('data-tab');
           aplicarFiltro(tab);
         });
