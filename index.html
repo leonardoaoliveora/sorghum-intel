@@ -391,7 +391,19 @@
         awaiting_source: "Aguardando",
         filter_uf_label: "Filtrar UF:",
         cache_notice: "Exibindo dados armazenados em cache.",
-        last_sync: "Última sincronização:"
+        last_sync: "Última sincronização:",
+        news_count_suffix: "notícias",
+        news_count_singular: "notícia",
+        events_not_found: "Nenhum evento localizado",
+        events_not_found_desc: "Não há eventos ou dias de campo registrados no momento.",
+        eight_official_hubs: "8 Polos Oficiais",
+        no_quotes_found: "Nenhuma cotação verificável foi encontrada no momento.",
+        tag_updated: "(Atualizada)",
+        tag_days_ago: "(Há {dias} dias)",
+        tag_outdated: "(Desatualizado)",
+        tag_unidentified_date: "Data não identificada",
+        tag_no_quote_verified: "Sem cotação verificada",
+        badge_general: "Geral"
       },
       en: {
         app_title: "SorghumIntel - Global Sorghum Market Intelligence",
@@ -455,7 +467,19 @@
         awaiting_source: "Awaiting",
         filter_uf_label: "Filter State:",
         cache_notice: "Displaying cached data.",
-        last_sync: "Last sync:"
+        last_sync: "Last sync:",
+        news_count_suffix: "news",
+        news_count_singular: "article",
+        events_not_found: "No events found",
+        events_not_found_desc: "No events or field days registered at this time.",
+        eight_official_hubs: "8 Official Hubs",
+        no_quotes_found: "No verified quotes found at this time.",
+        tag_updated: "(Updated)",
+        tag_days_ago: "({dias} days ago)",
+        tag_outdated: "(Outdated)",
+        tag_unidentified_date: "Unidentified date",
+        tag_no_quote_verified: "No verified quote",
+        badge_general: "General"
       }
     };
 
@@ -468,38 +492,92 @@
     // MAPA DE TRADUÇÃO DE ALTA PRECISÃO (LATÊNCIA ZERO)
     // ==========================================================================
     const TRANSLATION_MAP = {
-      "A validação do selo sustentável agrega valor ao sorgo, impulsionando a demanda nas indústrias de ração e etanol. O movimento estimula o mercado de sementes de alta tecnologia, amplia a oferta da cultura e melhora o preço relativo do cereal frente ao milho.": "Validation of the sustainable seal adds value to sorghum, boosting demand across animal feed and ethanol industries. The initiative drives the high-tech seed market, expands national crop supply, and improves the grain's relative pricing against corn.",
-      "O estudo abre nova demanda industrial ESG para o cultivo, impulsionando o mercado de sementes específicas. A longo prazo, recuperar solos marginais expande a oferta de área agricultável, ajudando a estabilizar preços e garantindo mais matéria-prima para a indústria de ração.": "The study creates new industrial ESG demand for sorghum, boosting specialized seed markets. Long term, restoring marginal soils expands arable acreage, stabilizing market prices and securing raw feedstocks for feed manufacturing.",
-      "Estimativa do 11º levantamento aponta alta de 2,4% sobre o ciclo anterior, com avanço de área e destaque para soja, milho e sorgo.\nO post Conab eleva projeção da safra 2025/26 de grãos para 360,75 mil...": "Official 11th survey estimates a 2.4% increase over the previous cycle, with expanded acreage led by soybeans, corn, and grain sorghum.",
-      "A cooperativa Coopama abriu estrutura para recebimento de sorgo, milho e trigo, garantindo opção de originação e comercialização para os produtores.": "Agricultural cooperative Coopama opened receiving facilities for sorghum, corn, and wheat, securing grain origination and commercialization channels for local growers.",
-      "Avanço da produção de etanol impulsiona consumo e espaço do sorgo": "Expansion in Grain Ethanol Production Drives Sorghum Consumption and Acreage",
-      "A abertura de rota comercial pela Cofco expande o mercado consumidor do sorgo brasileiro, aumentando a demanda internacional e oferecendo novas oportunidades de liquidez aos produtores.": "The opening of a new export channel by Cofco expands consumer markets for Brazilian sorghum, increasing international demand and providing new liquidity opportunities for grain producers.",
+      // 1. Títulos de Notícias
+      "Embrapa abre editais para programas de Milho e Sorgo Baixo Carbono": "Embrapa Launches Calls for Low-Carbon Corn and Sorghum Programs",
+      "MAPA estabelece calendário de plantio para o sorgo forrageiro em MS": "MAPA Establishes Sowing Calendar for Forage Sorghum in Mato Grosso do Sul",
+      "Produtores de sorgo dos EUA pressionam Senado por liberação do E15 e aprovação da Farm Bill": "US Sorghum Producers Pressure Senate to Allow E15 and Pass Farm Bill",
       "Coopama inicia recebimento de sorgo para a safrinha": "Coopama Cooperative Begins Receiving Sorghum for Second Crop (Safrinha)",
-      "Exportação brasileira de sorgo ganha ritmo em agosto impulsionada pela demanda chinesa": "Brazilian Sorghum Exports Gain Momentum in August Driven by Chinese Demand",
-      "O sorgo expande sua área plantada em MS como alternativa de menor custo e maior tolerância à seca para a segunda safra, otimizando a rentabilidade dos produtores.": "Sorghum expands acreage in Mato Grosso do Sul as a lower-cost, drought-tolerant second crop alternative, maximizing producer profit margins.",
       "Cofco inicia exportação de sorgo brasileiro em grande escala para a China": "Cofco Initiates Large-Scale Brazilian Sorghum Exports to China",
-      "A aprovação permanente do E15 consolida a demanda industrial por etanol nos EUA, elevando os preços do sorgo. Isso restringe a oferta destinada à ração animal, encarece as exportações e estimula maior investimento em sementes e área plantada na próxima safra.": "Permanent E15 approval consolidates industrial ethanol demand in the US, strengthening milo prices. This tightens feed availability, lifts export values, and incentivizes higher hybrid seed investments and acreage next season.",
-      "O crescimento do etanol de cereais estimula a demanda por sorgo, fortalecendo a cultura como matéria-prima complementar e alternativa estratégica para as usinas.": "Growth in cereal ethanol drives industrial sorghum demand, reinforcing the crop as a strategic feedstock and complementary alternative for grain biorefineries.",
-      "A certificação atrai a indústria de ração e exportadores focados em ESG, gerando prêmio de preço ao produtor. O movimento impulsiona a demanda por sementes de alta tecnologia e eleva a oferta do cereal como substituto sustentável do milho.": "Certification attracts ESG-focused feed millers and exporters, yielding price premiums for growers. The movement drives high-tech seed demand and enhances sorghum's standing as a sustainable corn alternative.",
+      "Avanço da produção de etanol impulsiona consumo e espaço do sorgo": "Expansion in Grain Ethanol Production Drives Sorghum Consumption and Acreage",
+      "Exportação brasileira de sorgo ganha ritmo em agosto impulsionada pela demanda chinesa": "Brazilian Sorghum Exports Gain Momentum in August Driven by Chinese Demand",
       "Fitorremediação de solos contaminados por óleo com uso de sorgo e biochar": "Phytoremediation of Oil-Contaminated Soils Using Sorghum and Biochar",
+      "Conab eleva projeção da safra 2025/26 de grãos para 360,75 mil toneladas": "Conab Raises 2025/26 Grain Crop Forecast to 360.75M Tons with Sorghum Growth",
+      "Conab eleva projeção da safra 2025/26 de grãos para 360,75 mil...": "Conab Raises 2025/26 Grain Crop Forecast to 360.75M Tons with Sorghum Growth",
+      "China amplia compras de sorgo dos Estados Unidos": "China Expands US Sorghum Purchases Amid Livestock Demand",
+      "Colheita de sorgo avança em Goiás com produtividade recorde": "Sorghum Harvest Advances in Goiás with Record Yields",
+      "Usinas de etanol de milho e sorgo ampliam capacidade no Centro-Oeste": "Corn and Sorghum Ethanol Biorefineries Expand Midwest Capacity",
+
+      // 2. Resumos de Notícias
+      "A Embrapa abriu chamada pública para parceria no desenvolvimento e validação das marcas-conceito, impulsionando a sustentabilidade e agregação de valor ao sorgo.": "Embrapa has opened a public call for partnerships in developing and validating concept brands, driving sustainability and value addition for sorghum.",
+      "O Ministério da Agricultura definiu as janelas oficiais de semeadura do sorgo forrageiro em Mato Grosso do Sul, medida essencial para mitigação de riscos climáticos e enquadramento em seguro e crédito agrícola.": "The Ministry of Agriculture defined official planting windows for forage sorghum in Mato Grosso do Sul, essential for climate risk mitigation and compliance with agricultural credit and insurance.",
+      "A National Sorghum Producers solicita a liberação permanente da mistura E15 e o avanço da Lei Agrícola, medida essencial para sustentar a demanda de biocombustíveis e assegurar políticas de apoio à cultura.": "National Sorghum Producers requests permanent approval of the E15 blend and progress on the Farm Bill, essential to sustain biofuel demand and secure policy support for the crop.",
+      "A cooperativa Coopama abriu estrutura para recebimento de sorgo, milho e trigo, garantindo opção de originação e comercialização para os produtores.": "Agricultural cooperative Coopama opened receiving facilities for sorghum, corn, and wheat, securing grain origination and commercialization channels for local growers.",
+      "A abertura de rota comercial pela Cofco expande o mercado consumidor do sorgo brasileiro, aumentando a demanda internacional e oferecendo novas oportunidades de liquidez aos produtores.": "The opening of a new export channel by Cofco expands consumer markets for Brazilian sorghum, increasing international demand and providing new liquidity opportunities for grain producers.",
+      "O crescimento do etanol de cereais estimula a demanda por sorgo, fortalecendo a cultura como matéria-prima complementar e alternativa estratégica para as usinas.": "Growth in cereal ethanol drives industrial sorghum demand, reinforcing the crop as a strategic feedstock and complementary alternative for grain biorefineries.",
+      "O sorgo expande sua área plantada em MS como alternativa de menor custo e maior tolerância à seca para a segunda safra, otimizando a rentabilidade dos produtores.": "Sorghum expands acreage in Mato Grosso do Sul as a lower-cost, drought-tolerant second crop alternative, maximizing producer profit margins.",
+      "Estimativa do 11º levantamento aponta alta de 2,4% sobre o ciclo anterior, com avanço de área e destaque para soja, milho e sorgo.": "Official 11th survey estimates a 2.4% increase over the previous cycle, with expanded acreage led by soybeans, corn, and grain sorghum.",
+      "Estimativa do 11º levantamento aponta alta de 2,4% sobre o ciclo anterior, com avanço de área e destaque para soja, milho e sorgo.\nO post Conab eleva projeção da safra 2025/26 de grãos para 360,75 mil...": "Official 11th survey estimates a 2.4% increase over the previous cycle, with expanded acreage led by soybeans, corn, and grain sorghum.",
+      "O estudo abre nova demanda industrial ESG para o cultivo, impulsionando o mercado de sementes específicas. A longo prazo, recuperar solos marginais expande a oferta de área agricultável, ajudando a estabilizar preços e garantindo mais matéria-prima para a indústria de ração.": "The study creates new industrial ESG demand for sorghum, boosting specialized seed markets. Long term, restoring marginal soils expands arable acreage, stabilizing market prices and securing raw feedstocks for feed manufacturing.",
+
+      // 3. Impactos Práticos no Mercado / Porque Importa
+      "A validação do selo sustentável agrega valor ao sorgo, impulsionando a demanda nas indústrias de ração e etanol. O movimento estimula o mercado de sementes de alta tecnologia, amplia a oferta da cultura e melhora o preço relativo do cereal frente ao milho.": "Validation of the sustainable seal adds value to sorghum, boosting demand across animal feed and ethanol industries. The initiative drives the high-tech seed market, expands national crop supply, and improves the grain's relative pricing against corn.",
+      "A regulamentação condiciona o acesso a crédito e seguro no MS, reduzindo o risco de quebra de safra. A medida organiza a demanda por sementes e garante previsibilidade na oferta de forragem, favorecendo a estabilização dos custos de nutrição na pecuária.": "The regulation links access to credit and insurance in MS, mitigating crop failure risks. The measure structures seed demand and provides predictability in forage supply, supporting feed cost stabilization in livestock.",
+      "A aprovação permanente do E15 consolida a demanda industrial por etanol nos EUA, elevando os preços do sorgo. Isso restringe a oferta destinada à ração animal, encarece as exportações e estimula maior investimento em sementes e área plantada na próxima safra.": "Permanent E15 approval consolidates industrial ethanol demand in the US, strengthening milo prices. This tightens feed availability, lifts export values, and incentivizes higher hybrid seed investments and acreage next season.",
+      "A certificação atrai a indústria de ração e exportadores focados em ESG, gerando prêmio de preço ao produtor. O movimento impulsiona a demanda por sementes de alta tecnologia e eleva a oferta do cereal como substituto sustentável do milho.": "Certification attracts ESG-focused feed millers and exporters, yielding price premiums for growers. The movement drives high-tech seed demand and enhances sorghum's standing as a sustainable corn alternative.",
       "Os contratos trazem transparência de preços e mitigação de riscos operacionais para exportadores e fabricantes de ração. Essa previsibilidade melhora o planejamento do produtor e fortalece a competitividade do sorgo como substituto estratégico do milho na nutrição animal e biocombustíveis.": "Futures contracts deliver price transparency and risk management for exporters and feed manufacturers. This predictability enhances farmer planning and reinforces sorghum's competitiveness as a strategic corn substitute."
     };
 
-    function getTextoTraduzido(obj, campoBase) {
-      if (!obj) return "";
-      if (idiomaAtual === 'en') {
-        const campoEn = campoBase + '_en';
-        if (obj[campoEn] && String(obj[campoEn]).trim().length > 0) {
-          return obj[campoEn];
-        }
-        const textoOriginal = obj[campoBase] || "";
-        if (TRANSLATION_MAP[textoOriginal]) {
-          return TRANSLATION_MAP[textoOriginal];
-        }
-      }
-      return obj[campoBase] || "";
+    function ehTextoIngles(texto) {
+      if (!texto || typeof texto !== 'string') return false;
+      const str = texto.toLowerCase();
+      const sinaisPT = ['ção', 'ções', 'para', 'com', 'não', 'pelo', 'pela', 'sobre', 'safra', 'milho', 'plantio', 'forrageiro', 'editais', 'demanda', 'preço', 'setor', 'abriu', 'solicita', 'definiu'];
+      const sinaisEN = ['the', 'and', 'for', 'with', 'sorghum', 'corn', 'crop', 'market', 'producers', 'planting', 'launches', 'establishes', 'yield', 'feed', 'validation', 'sustainable'];
+      let scorePT = 0;
+      let scoreEN = 0;
+      sinaisPT.forEach(w => { if (str.includes(w)) scorePT++; });
+      sinaisEN.forEach(w => { if (str.includes(w)) scoreEN++; });
+      return scoreEN > scorePT;
     }
 
+    function getTextoTraduzido(obj, campoBase) {
+      if (!obj) return "";
+      const valPt = String(obj[campoBase] || "").trim();
+      if (idiomaAtual !== 'en') {
+        return valPt;
+      }
+
+      const campoEn = campoBase + '_en';
+      const valEn = String(obj[campoEn] || "").trim();
+
+      // 1. Se tiver campo _en preenchido e com conteúdo em inglês válido
+      if (valEn && valEn !== valPt && (ehTextoIngles(valEn) || !ehTextoIngles(valPt))) {
+        return valEn;
+      }
+
+      // 2. Busca exata no dicionário pelo texto PT
+      if (TRANSLATION_MAP[valPt]) {
+        return TRANSLATION_MAP[valPt];
+      }
+
+      // 3. Busca exata no dicionário pelo valEn
+      if (valEn && TRANSLATION_MAP[valEn]) {
+        return TRANSLATION_MAP[valEn];
+      }
+
+      // 4. Busca por prefixo/aproximação
+      for (const [ptK, enV] of Object.entries(TRANSLATION_MAP)) {
+        if (ptK.length > 25 && (valPt.startsWith(ptK.substring(0, 30)) || ptK.startsWith(valPt.substring(0, 30)))) {
+          return enV;
+        }
+      }
+
+      // 5. Se valEn for não-vazio e diferente de valPt
+      if (valEn && valEn.length > 0 && valEn !== valPt) {
+        return valEn;
+      }
+
+      return valPt;
+    }
     function definirIdioma(novoIdioma) {
       idiomaAtual = novoIdioma;
       localStorage.setItem('sorghum_intel_lang', novoIdioma);
@@ -709,18 +787,19 @@
 
     function formatarTagStatus(status, dias) {
       if (status === "ATUALIZADA") {
-        return `<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">(Atualizada)</span>`;
+        return `<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">${escapeHTML(t('tag_updated'))}</span>`;
       }
       if (status === "ATENCAO_DEFASAGEM") {
-        return `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">(Há ${escapeHTML(dias)} dias)</span>`;
+        const txt = t('tag_days_ago').replace('{dias}', dias);
+        return `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">${escapeHTML(txt)}</span>`;
       }
       if (status === "COTACAO_DESATUALIZADA") {
-        return `<span class="text-[10px] text-red-500 font-semibold">(Desatualizado)</span>`;
+        return `<span class="text-[10px] text-red-500 font-semibold">${escapeHTML(t('tag_outdated'))}</span>`;
       }
       if (status === "DATA_NAO_IDENTIFICADA") {
-        return `<span class="text-[10px] text-slate-400 italic">Data não identificada</span>`;
+        return `<span class="text-[10px] text-slate-400 italic">${escapeHTML(t('tag_unidentified_date'))}</span>`;
       }
-      return `<span class="text-[10px] text-slate-400 italic">Sem cotação verificada</span>`;
+      return `<span class="text-[10px] text-slate-400 italic">${escapeHTML(t('tag_no_quote_verified'))}</span>`;
     }
 
     function getBadgeInfo(categoria) {
@@ -743,7 +822,7 @@
         return { cls: "badge-evento", icn: "event", tag: t('tab_events') };
       }
 
-      return { cls: "bg-slate-700 text-white", icn: "article", tag: "Geral" };
+      return { cls: "bg-slate-700 text-white", icn: "article", tag: t('badge_general') };
     }
 
     function getGeoBadge(regiao) {
@@ -1056,7 +1135,7 @@
           </div>
 
           <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100 dark:border-slate-700">
-            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${totalSemana} notícias</span>
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${totalSemana} ${totalSemana === 1 ? escapeHTML(t("news_count_singular")) : escapeHTML(t("news_count_suffix"))}</span>
             <button onclick="copiarResumoWhatsApp()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition-colors" title="Compartilhar resumo no WhatsApp">
               <span class="material-symbols-outlined text-[16px]">share</span>
               <span>${escapeHTML(t('btn_whatsapp'))}</span>
@@ -1244,7 +1323,7 @@
             <div>
               <div class="flex items-center gap-2">
                 <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">${escapeHTML(badgeCat.tag)}</h2>
-                <span class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2.5 py-0.5 rounded-full">${listaExibir.length} notícias</span>
+                <span class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2.5 py-0.5 rounded-full">${listaExibir.length} ${listaExibir.length === 1 ? escapeHTML(t("news_count_singular")) : escapeHTML(t("news_count_suffix"))}</span>
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="history_subtitle">${escapeHTML(t('history_subtitle'))}</p>
             </div>
@@ -1368,7 +1447,7 @@
           <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
             <span class="material-symbols-outlined text-4xl text-brand-700 dark:text-emerald-400 mb-2">payments</span>
             <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">${escapeHTML(t('quotes_table_title'))}</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">Nenhuma cotação verificável foi encontrada no momento.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">${escapeHTML(t("no_quotes_found"))}</p>
           </div>
         `;
         return;
@@ -1394,7 +1473,7 @@
             <div>
               <div class="flex items-center gap-2">
                 <h2 class="text-lg font-bold text-slate-900 dark:text-white">${escapeHTML(t('quotes_table_title'))}</h2>
-                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">8 Polos Oficiais</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">${escapeHTML(t("eight_official_hubs"))}</span>
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHTML(t('quotes_table_subtitle'))}</p>
             </div>
