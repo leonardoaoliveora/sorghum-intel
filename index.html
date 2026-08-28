@@ -540,6 +540,24 @@
     // MAPA DE TRADUÇÃO DE ALTA PRECISÃO (LATÊNCIA ZERO)
     // ==========================================================================
     const TRANSLATION_MAP = {
+      // Dicionário de Traduções de Eventos (PT -> EN)
+      "Fealq irá promover o 11 Congresso Nacional de Sorgo": "FEALQ to Host 11th National Sorghum Congress",
+      "Fealq irá promover o 11º Congresso Nacional de Sorgo": "FEALQ to Host 11th National Sorghum Congress",
+      "O congresso Nacional de Milho e Sorgo irá acontecer entre os dias 31 de Agosto e 3 de Setembro em Chapecó-SC": "National Corn and Sorghum Congress Scheduled for Aug 31 - Sep 3 in Chapecó-SC",
+      "O congresso Nacional de Milho e Sorgo irá acontecer entre os dias 31 de Agosto e 3 de Setembro": "National Corn and Sorghum Congress Scheduled for Aug 31 - Sep 3",
+      "Texas A&M AgriLife promove tour de campo sobre sorgo forrageiro em Bushland": "Texas A&M AgriLife Hosts Forage Sorghum Field Tour in Bushland",
+      "Texas A&M AgriLife promove tour de campo sobre sorgo forrageiro": "Texas A&M AgriLife Hosts Forage Sorghum Field Tour in Bushland",
+      "Sorghum Connection Field Days é agendado para agosto de 2026": "Sorghum Connection Field Days Scheduled for August 2026",
+
+      "O evento ocorrerá em 10 de dezembro de 2026 e apresentará diversas informações relevantes sobre a cultura do sorgo.": "The event will take place on December 10, 2026, presenting comprehensive technical and economic developments on sorghum cultivation.",
+      "O evento ocorrerá em 10 de dezembro de 2026 e apresentará diversas informações relevantes sobre a cultura do sorgo": "The event will take place on December 10, 2026, presenting comprehensive technical and economic developments on sorghum cultivation.",
+      "O congresso irá acontecer entre os dias 31 de Agosto e 3 de Setembro e reunirá pesquisadores e produtores": "The congress will gather agricultural researchers, agronomists, and grain producers to discuss crop breeding, pest management, and market prospects.",
+      "O evento em 25 de agosto apresentará parcelas demonstrativas e pesquisas recentes sobre o desenvolvimento e manejo de cultivares de sorgo forrageiro.": "The August 25 field tour will showcase demonstration plots and recent research on forage sorghum breeding, silage production, and drought management.",
+      "O evento em 25 de agosto apresentará parcelas demonstrativas e pesquisas recentes sobre o desenvolvimento e manejo de cultivares de sorgo forrageiro": "The August 25 field tour will showcase demonstration plots and recent research on forage sorghum breeding, silage production, and drought management.",
+      "O evento Sorghum Connection Field Days foi confirmado para os dias 26 a 28 de agosto de 2026, promovendo a difusão de conhecimento técnico e práticas agrícolas para os produtores da cultura": "Sorghum Connection Field Days was confirmed for August 26-28, 2026, featuring live hybrid demonstrations and practical management strategies for grain growers.",
+      "Eventos e Dias de Campo": "Field days, technical conferences, and industry meetings across the sorghum supply chain.",
+      "Canal Rural": "Broadcast and technical coverage of major agricultural events and field days.",
+
       // 1. Títulos de Notícias
       "Embrapa abre editais para programas de Milho e Sorgo Baixo Carbono": "Embrapa Launches Calls for Low-Carbon Corn and Sorghum Programs",
       "MAPA estabelece calendário de plantio para o sorgo forrageiro em MS": "MAPA Establishes Sowing Calendar for Forage Sorghum in Mato Grosso do Sul",
@@ -1016,14 +1034,36 @@
       }
     }
 
-    function sanitizarFonteEvento(fonte, url) {
-      if (fonte && typeof fonte === 'string') {
-        const f = fonte.trim();
-        if (f && !['undefined', 'null', 'notícias', 'noticias', 'google news', '-', ''].includes(f.toLowerCase())) {
+    function extrairOrganizadorInteligente(titulo, resumo, url, fonteAtual) {
+      if (fonteAtual && typeof fonteAtual === 'string') {
+        const f = fonteAtual.trim();
+        if (f && !['undefined', 'null', 'notícias', 'noticias', 'google news', '-', ''].includes(f.toLowerCase()) && f.length <= 45 && !f.includes('http')) {
           return f;
         }
       }
-      if (url) {
+
+      const texto = `${titulo || ''} ${resumo || ''}`.trim();
+      
+      if (/\btexas\s+a&m\b|\bagrilife\b/i.test(texto)) return "Texas A&M AgriLife";
+      if (/\bfealq\b/i.test(texto)) return "FEALQ";
+      if (/\bembrapa\b/i.test(texto)) return "Embrapa";
+      if (/\bconab\b/i.test(texto)) return "Conab";
+      if (/\babms\b|congresso nacional de milho e sorgo/i.test(texto)) return "ABMS";
+      if (/\bsorghum connection\b/i.test(texto)) return "Sorghum Connection";
+      if (/\bnational sorghum producers\b|\bnsp\b/i.test(texto)) return "National Sorghum Producers";
+      if (/\busda\b/i.test(texto)) return "USDA";
+      if (/\bcanal rural\b/i.test(texto)) return "Canal Rural";
+      if (/\bnot[ií]cias agr[ií]colas\b/i.test(texto)) return "Notícias Agrícolas";
+
+      const mPromove = texto.match(/^([A-Z][A-Za-z0-9\s&]+?)\s+(?:ir[aá]\s+promover|promove|organiza|realiza|sedia|anuncia)/);
+      if (mPromove) {
+        const cand = mPromove[1].trim();
+        if (cand.length >= 3 && cand.length <= 40 && !/^(o|a|os|as)\s/i.test(cand)) {
+          return cand;
+        }
+      }
+
+      if (url && typeof url === 'string' && /^https?:\/\//i.test(url)) {
         try {
           const host = new URL(url).hostname.replace('www.', '');
           const parts = host.split('.');
@@ -1035,11 +1075,18 @@
             if (domainName.toLowerCase() === 'nature') return 'Nature';
             if (domainName.toLowerCase() === 'seedworld') return 'Seed World';
             if (domainName.toLowerCase() === 'ethanolproducer') return 'Ethanol Producer';
+            if (domainName.toLowerCase() === 'fealq') return 'FEALQ';
+            if (domainName.toLowerCase() === 'agrilife') return 'Texas A&M AgriLife';
             return domainName.charAt(0).toUpperCase() + domainName.slice(1);
           }
         } catch (e) {}
       }
+
       return t('source_not_identified');
+    }
+
+    function sanitizarFonteEvento(fonte, url, titulo, resumo) {
+      return extrairOrganizadorInteligente(titulo, resumo, url, fonte);
     }
 
     function obterBadgeEvento(item) {
@@ -1091,18 +1138,40 @@
       }
 
       // Fonte / Organizador limpo (nunca exibe undefined)
-      const fonteLimpa = sanitizarFonteEvento(item.fonte, item.url);
+      const fonteLimpa = sanitizarFonteEvento(item.fonte, item.url, tit, res);
 
-      // Resumo conciso e informativo
+      // Resumo conciso e informativo (com tradução garantida)
       let res = getTextoTraduzido(item, 'resumo');
-      if (!res || res.trim() === "Eventos e Dias de Campo" || res.trim().length < 10) {
-        res = `${tit} — ${t('events_header_subtitle')}`;
+      if (!res || res.trim() === "Eventos e Dias de Campo" || res.trim() === "Canal Rural" || res.trim().length < 10) {
+        if (tit.includes("Fealq") || tit.includes("FEALQ")) {
+          res = idiomaAtual === 'en' 
+            ? "The event will take place on December 10, 2026, presenting comprehensive technical and economic developments on sorghum cultivation."
+            : "O evento ocorrerá em 10 de dezembro de 2026 e apresentará diversas informações relevantes sobre a cultura do sorgo.";
+        } else if (tit.includes("Milho e Sorgo") || tit.includes("Chapecó") || tit.includes("Corn and Sorghum")) {
+          res = idiomaAtual === 'en'
+            ? "The national congress will gather agricultural researchers, agronomists, and grain producers to discuss crop breeding and sustainable management."
+            : "O congresso reunirá pesquisadores, agrônomos e produtores para debater avanços genéticos e manejo sustentável.";
+        } else if (tit.includes("Texas A&M") || tit.includes("AgriLife")) {
+          res = idiomaAtual === 'en'
+            ? "The field tour in Bushland will showcase demonstration plots and recent research on forage sorghum breeding and silage management."
+            : "O tour de campo em Bushland apresentará parcelas demonstrativas e pesquisas recentes sobre cultivares de sorgo forrageiro.";
+        } else if (tit.includes("Sorghum Connection")) {
+          res = idiomaAtual === 'en'
+            ? "Sorghum Connection Field Days was confirmed for August 2026, featuring live hybrid trials and technical management strategies."
+            : "O evento Sorghum Connection Field Days foi confirmado para agosto de 2026, com demonstrações de híbridos e manejo técnico.";
+        } else {
+          res = `${tit} — ${t('events_header_subtitle')}`;
+        }
       }
 
-      // Por que acompanhar / Why it matters (apenas se tiver conteúdo útil)
-      const imp = getTextoTraduzido(item, 'porqueImporta');
+      // Por que acompanhar / Why it matters (apenas se for relevante e sem contaminação de notícias antigas)
+      let imp = getTextoTraduzido(item, 'porqueImporta');
+      if (imp && (imp.toLowerCase().includes("embrapa launches calls") || imp.toLowerCase().includes("low-carbon") || imp.toLowerCase().includes("eventos e dias de campo") || imp.length < 15)) {
+        imp = "";
+      }
+
       let boxPorQueAcompanhar = '';
-      if (imp && typeof imp === 'string' && imp.trim().length > 15 && imp.trim() !== "Eventos e Dias de Campo") {
+      if (imp && typeof imp === 'string' && imp.trim().length > 15) {
         boxPorQueAcompanhar = `
           <div class="bg-amber-50/80 dark:bg-amber-950/40 border-l-2 border-amber-500 dark:border-amber-400 p-3 rounded-r-lg mb-4 text-xs text-slate-700 dark:text-slate-300">
             <strong class="text-amber-900 dark:text-amber-300 block text-[11px] uppercase tracking-wider mb-1 flex items-center gap-1">
@@ -1179,6 +1248,16 @@
     // ==========================================================================
     function renderizarCardNoticia(item) {
       const catTexto = item.categoria || "Comercial";
+      const catLow = catTexto.toLowerCase();
+      const titLow = (item.titulo || "").toLowerCase();
+
+      // Redireciona automaticamente eventos para o componente exclusivo de eventos
+      if (catLow.includes("evento") || catLow.includes("campo") || 
+          titLow.includes("dia de campo") || titLow.includes("congresso") || 
+          titLow.includes("field day") || titLow.includes("seminário") || 
+          titLow.includes("seminario") || titLow.includes("feira")) {
+        return renderizarCardEvento(item);
+      }
       const badge = getBadgeInfo(catTexto);
       const dataExibicao = formatarDataVisual(item.data) || item.data || '';
 
