@@ -403,7 +403,31 @@
         tag_outdated: "(Desatualizado)",
         tag_unidentified_date: "Data não identificada",
         tag_no_quote_verified: "Sem cotação verificada",
-        badge_general: "Geral"
+        badge_general: "Geral",
+
+        // I18N Específico de Eventos
+        events_header_title: "Agenda & Eventos",
+        events_header_subtitle: "Agenda, dias de campo, congressos e oportunidades técnicas para o setor de sorgo.",
+        event_organizer_label: "Organizador / Fonte",
+        sec_why_follow_event: "Por que acompanhar:",
+        btn_view_event: "Acessar Evento",
+        event_singular: "evento",
+        event_plural: "eventos",
+        source_not_identified: "Fonte não identificada",
+        location_label: "Local",
+        format_label: "Formato",
+        format_online: "Online",
+        format_in_person: "Presencial",
+        format_hybrid: "Híbrido",
+        badge_field_day: "Dia de Campo",
+        badge_congress: "Congresso",
+        badge_webinar: "Webinar",
+        badge_seminar: "Seminário",
+        badge_trade_fair: "Feira",
+        badge_conference: "Conferência",
+        badge_workshop: "Workshop",
+        badge_meeting: "Encontro",
+        badge_event: "Evento"
       },
       en: {
         app_title: "SorghumIntel - Global Sorghum Market Intelligence",
@@ -479,7 +503,31 @@
         tag_outdated: "(Outdated)",
         tag_unidentified_date: "Unidentified date",
         tag_no_quote_verified: "No verified quote",
-        badge_general: "General"
+        badge_general: "General",
+
+        // I18N Specific for Events
+        events_header_title: "Events & Agenda",
+        events_header_subtitle: "Relevant agenda, meetings, field days and technical opportunities across the global sorghum ecosystem.",
+        event_organizer_label: "Organizer / Source",
+        sec_why_follow_event: "Why it matters:",
+        btn_view_event: "View Event",
+        event_singular: "event",
+        event_plural: "events",
+        source_not_identified: "Source not identified",
+        location_label: "Location",
+        format_label: "Format",
+        format_online: "Online",
+        format_in_person: "In-person",
+        format_hybrid: "Hybrid",
+        badge_field_day: "Field Day",
+        badge_congress: "Congress",
+        badge_webinar: "Webinar",
+        badge_seminar: "Seminar",
+        badge_trade_fair: "Trade Fair",
+        badge_conference: "Conference",
+        badge_workshop: "Workshop",
+        badge_meeting: "Meeting",
+        badge_event: "Event"
       }
     };
 
@@ -934,6 +982,198 @@
       return semanasOrdenadas;
     }
 
+    
+    // ==========================================================================
+    // UTILITÁRIOS E SANITIZAÇÃO DE DADOS DE EVENTOS
+    // ==========================================================================
+    function tituloPareceUrl(titulo) {
+      if (!titulo || typeof titulo !== 'string') return true;
+      const t = titulo.trim().toLowerCase();
+      if (t.length < 5) return true;
+      if (t.startsWith("http://") || t.startsWith("https://") || t.startsWith("www.")) return true;
+      if (/^https?:\/\/[^\s]+$/i.test(t)) return true;
+      if (t.includes(".com/") || t.includes(".org/") || t.includes(".gov/") || t.includes(".edu/") || t.includes(".com.br/")) return true;
+      return false;
+    }
+
+    function extrairSlugComoTitulo(url) {
+      if (!url) return t('badge_event');
+      try {
+        const parsed = new URL(url);
+        const path = parsed.pathname.replace(/\/+$/, '');
+        const segments = path.split('/').filter(Boolean);
+        if (segments.length > 0) {
+          let last = segments[segments.length - 1];
+          last = last.replace(/\.(html|php|aspx|shtml)$/i, '');
+          const words = last.split(/[-_]/).filter(w => w.length > 1 && !/^\d+$/.test(w));
+          if (words.length >= 3) {
+            return words.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+          }
+        }
+        return parsed.hostname.replace('www.', '').split('.')[0].toUpperCase() + ' - ' + t('badge_event');
+      } catch (e) {
+        return t('badge_event') + " Sorgo";
+      }
+    }
+
+    function sanitizarFonteEvento(fonte, url) {
+      if (fonte && typeof fonte === 'string') {
+        const f = fonte.trim();
+        if (f && !['undefined', 'null', 'notícias', 'noticias', 'google news', '-', ''].includes(f.toLowerCase())) {
+          return f;
+        }
+      }
+      if (url) {
+        try {
+          const host = new URL(url).hostname.replace('www.', '');
+          const parts = host.split('.');
+          if (parts.length >= 2) {
+            const domainName = parts[0];
+            if (domainName.toLowerCase() === 'embrapa') return 'Embrapa';
+            if (domainName.toLowerCase() === 'canalrural') return 'Canal Rural';
+            if (domainName.toLowerCase() === 'noticiasagricolas') return 'Notícias Agrícolas';
+            if (domainName.toLowerCase() === 'nature') return 'Nature';
+            if (domainName.toLowerCase() === 'seedworld') return 'Seed World';
+            if (domainName.toLowerCase() === 'ethanolproducer') return 'Ethanol Producer';
+            return domainName.charAt(0).toUpperCase() + domainName.slice(1);
+          }
+        } catch (e) {}
+      }
+      return t('source_not_identified');
+    }
+
+    function obterBadgeEvento(item) {
+      const tit = (item.titulo || "").toLowerCase();
+      const res = (item.resumo || "").toLowerCase();
+      const tipo = (item.tipoEvento || "").toLowerCase();
+      const tags = Array.isArray(item.tags) ? item.tags.join(" ").toLowerCase() : "";
+      const texto = `${tipo} ${tit} ${res} ${tags}`;
+
+      if (texto.includes("dia de campo") || texto.includes("field day") || texto.includes("dias de campo")) {
+        return { cls: "bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800", icn: "agriculture", tag: t('badge_field_day') };
+      }
+      if (texto.includes("congresso") || texto.includes("congress")) {
+        return { cls: "bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800", icn: "groups", tag: t('badge_congress') };
+      }
+      if (texto.includes("webinar") || texto.includes("online") || texto.includes("live") || texto.includes("webconferência")) {
+        return { cls: "bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800", icn: "laptop_chromebook", tag: t('badge_webinar') };
+      }
+      if (texto.includes("seminário") || texto.includes("seminario") || texto.includes("seminar") || texto.includes("simpósio") || texto.includes("simposio")) {
+        return { cls: "bg-indigo-100 dark:bg-indigo-950/80 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800", icn: "school", tag: t('badge_seminar') };
+      }
+      if (texto.includes("feira") || texto.includes("trade fair") || texto.includes("expo") || texto.includes("exposição") || texto.includes("agrishow")) {
+        return { cls: "bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800", icn: "storefront", tag: t('badge_trade_fair') };
+      }
+      if (texto.includes("conferência") || texto.includes("conferencia") || texto.includes("conference") || texto.includes("forum") || texto.includes("fórum")) {
+        return { cls: "bg-teal-100 dark:bg-teal-950/80 text-teal-800 dark:text-teal-300 border border-teal-200 dark:border-teal-800", icn: "forum", tag: t('badge_conference') };
+      }
+      if (texto.includes("workshop") || texto.includes("curso") || texto.includes("capacitação") || texto.includes("treinamento")) {
+        return { cls: "bg-cyan-100 dark:bg-cyan-950/80 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800", icn: "construction", tag: t('badge_workshop') };
+      }
+      if (texto.includes("encontro") || texto.includes("meeting") || texto.includes("reunião") || texto.includes("painel")) {
+        return { cls: "bg-sky-100 dark:bg-sky-950/80 text-sky-800 dark:text-sky-300 border border-sky-200 dark:border-sky-800", icn: "handshake", tag: t('badge_meeting') };
+      }
+
+      return { cls: "bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800", icn: "event", tag: t('badge_event') };
+    }
+
+    // ==========================================================================
+    // COMPONENTE EXCLUSIVO DO CARD DE EVENTO (renderizarCardEvento)
+    // ==========================================================================
+    function renderizarCardEvento(item) {
+      const badge = obterBadgeEvento(item);
+      const dataExibicao = formatarDataVisual(item.dataEvento || item.data) || item.data || '';
+      
+      // Título higienizado (nunca exibe URL)
+      let tit = getTextoTraduzido(item, 'titulo');
+      if (tituloPareceUrl(tit)) {
+        tit = extrairSlugComoTitulo(item.url);
+      }
+
+      // Fonte / Organizador limpo (nunca exibe undefined)
+      const fonteLimpa = sanitizarFonteEvento(item.fonte, item.url);
+
+      // Resumo conciso e informativo
+      let res = getTextoTraduzido(item, 'resumo');
+      if (!res || res.trim() === "Eventos e Dias de Campo" || res.trim().length < 10) {
+        res = `${tit} — ${t('events_header_subtitle')}`;
+      }
+
+      // Por que acompanhar / Why it matters (apenas se tiver conteúdo útil)
+      const imp = getTextoTraduzido(item, 'porqueImporta');
+      let boxPorQueAcompanhar = '';
+      if (imp && typeof imp === 'string' && imp.trim().length > 15 && imp.trim() !== "Eventos e Dias de Campo") {
+        boxPorQueAcompanhar = `
+          <div class="bg-amber-50/80 dark:bg-amber-950/40 border-l-2 border-amber-500 dark:border-amber-400 p-3 rounded-r-lg mb-4 text-xs text-slate-700 dark:text-slate-300">
+            <strong class="text-amber-900 dark:text-amber-300 block text-[11px] uppercase tracking-wider mb-1 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[13px]">lightbulb</span> ${escapeHTML(t('sec_why_follow_event'))}
+            </strong>
+            ${escapeHTML(imp)}
+          </div>
+        `;
+      }
+
+      // Metadados adicionais opcionais (Local e Formato)
+      let infoExtra = '';
+      const localVal = item.localEvento || item.regiao;
+      const modalidadeVal = item.modalidade;
+      if (localVal || modalidadeVal) {
+        infoExtra = `
+          <div class="flex flex-wrap items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400 mb-3 pt-1 border-t border-slate-100 dark:border-slate-700/60 font-medium">
+            ${localVal ? `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-slate-400">location_on</span> ${escapeHTML(localVal)}</span>` : ''}
+            ${modalidadeVal ? `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-slate-400">devices</span> ${escapeHTML(modalidadeVal)}</span>` : ''}
+          </div>
+        `;
+      }
+
+      const urlEvento = safeExternalURL(item.url);
+
+      return `
+        <article class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between h-full group">
+          <div>
+            <!-- Cabeçalho do Card: Badge do Tipo e Data -->
+            <div class="flex justify-between items-center mb-3 gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${badge.cls} flex items-center gap-1">
+                <span class="material-symbols-outlined text-[12px]">${badge.icn}</span>
+                ${escapeHTML(badge.tag)}
+              </span>
+              <div class="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-xs font-medium">
+                <span class="material-symbols-outlined text-[15px]">event</span>
+                <span>${escapeHTML(dataExibicao)}</span>
+              </div>
+            </div>
+
+            <!-- Título Limpo do Evento -->
+            <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2 leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+              <a href="${urlEvento}" target="_blank" rel="noopener noreferrer">${escapeHTML(tit)}</a>
+            </h2>
+
+            <!-- Organizador / Fonte do Evento -->
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mb-3 flex items-center gap-1.5 uppercase">
+              <span class="material-symbols-outlined text-[15px] text-slate-400">corporate_fare</span>
+              <span>${escapeHTML(t('event_organizer_label'))}: ${escapeHTML(fonteLimpa)}</span>
+            </div>
+
+            <!-- Resumo do Evento -->
+            <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-3 font-normal">${escapeHTML(res)}</p>
+
+            ${boxPorQueAcompanhar}
+            ${infoExtra}
+          </div>
+
+          <!-- Rodapé do Card com CTA Claro -->
+          <div>
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs font-bold">
+              <a href="${urlEvento}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 border border-amber-200 dark:border-amber-800/80 rounded-xl transition-colors">
+                <span>${escapeHTML(t('btn_view_event'))}</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
     // ==========================================================================
     // COMPONENTE DO CARD DE NOTÍCIA INDIVIDUAL
     // ==========================================================================
@@ -1384,18 +1624,29 @@
       const container = document.getElementById('main-content-container');
       container.innerHTML = '';
 
+      // 1. Consolidação e Deduplicação Inteligente de Eventos
       const mapUnicos = new Map();
+      const normalizarChave = (url, tit) => {
+        if (url && typeof url === 'string' && url.length > 5 && !url.includes("news.google.com")) {
+          return url.toLowerCase().split('#')[0].replace(/\/+$/, '');
+        }
+        return (tit || '').toLowerCase().replace(/[^a-z0-9]/gi, '').substring(0, 40);
+      };
+
       (bancoDados.eventos || []).forEach(e => {
-        if (e.url) mapUnicos.set(e.url, e);
-        else mapUnicos.set(e.titulo, e);
+        const chave = normalizarChave(e.url, e.titulo);
+        if (chave) mapUnicos.set(chave, e);
       });
 
       (bancoDados.noticias || []).forEach(n => {
         const cat = (n.categoria || "").toLowerCase();
         const tit = (n.titulo || "").toLowerCase();
-        if (cat.includes("evento") || cat.includes("campo") || cat.includes("event") || tit.includes("dia de campo") || tit.includes("conference") || tit.includes("seminário") || tit.includes("encontro")) {
-          const chave = n.url || n.titulo;
-          if (!mapUnicos.has(chave)) {
+        if (cat.includes("evento") || cat.includes("campo") || cat.includes("event") || 
+            tit.includes("dia de campo") || tit.includes("field day") || tit.includes("conference") || 
+            tit.includes("seminário") || tit.includes("seminario") || tit.includes("encontro") || 
+            tit.includes("congresso") || tit.includes("workshop") || tit.includes("feira")) {
+          const chave = normalizarChave(n.url, n.titulo);
+          if (chave && !mapUnicos.has(chave)) {
             mapUnicos.set(chave, { ...n, categoria: "Eventos" });
           }
         }
@@ -1403,34 +1654,65 @@
 
       let listaEventos = Array.from(mapUnicos.values());
 
+      // 2. Filtro de Busca Global
       const inputBusca = document.getElementById('search-input');
       const termo = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
       if (termo) {
         listaEventos = listaEventos.filter(e => {
           const tit = (getTextoTraduzido(e, 'titulo') || "").toLowerCase();
           const res = (getTextoTraduzido(e, 'resumo') || "").toLowerCase();
+          const imp = (getTextoTraduzido(e, 'porqueImporta') || "").toLowerCase();
           const fon = (e.fonte || "").toLowerCase();
-          return tit.includes(termo) || res.includes(termo) || fon.includes(termo);
+          const loc = (e.localEvento || "").toLowerCase();
+          const tip = (e.tipoEvento || "").toLowerCase();
+          return tit.includes(termo) || res.includes(termo) || imp.includes(termo) || fon.includes(termo) || loc.includes(termo) || tip.includes(termo);
         });
       }
 
-      listaEventos.sort((a, b) => parseDataParaTimestamp(b.data) - parseDataParaTimestamp(a.data));
+      // 3. Ordenação Cronológica (Mais recente / mais próximo primeiro)
+      listaEventos.sort((a, b) => {
+        const tsA = parseDataParaTimestamp(a.dataEvento || a.data);
+        const tsB = parseDataParaTimestamp(b.dataEvento || b.data);
+        return tsB - tsA;
+      });
 
-      if (listaEventos.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
-            <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">event_busy</span>
-            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1">Nenhum evento localizado</p>
+      // 4. Cabeçalho Especializado da Aba de Eventos
+      let htmlHeader = `
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-4 px-6 rounded-2xl shadow-sm mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
+              <span class="material-symbols-outlined text-[22px]">calendar_month</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white" data-i18n="events_header_title">${escapeHTML(t('events_header_title'))}</h2>
+                <span class="text-xs font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-200 dark:border-amber-800/80">${listaEventos.length} ${listaEventos.length === 1 ? escapeHTML(t("event_singular")) : escapeHTML(t("event_plural"))}</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="events_header_subtitle">${escapeHTML(t('events_header_subtitle'))}</p>
+            </div>
           </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          ${listaEventos.map(e => renderizarCardNoticia(e)).join('')}
         </div>
       `;
+
+      // 5. Grid com Componente Especializado renderizarCardEvento
+      let htmlGrid = "";
+      if (listaEventos.length === 0) {
+        htmlGrid = `
+          <div class="col-span-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
+            <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">event_busy</span>
+            <p class="text-slate-800 dark:text-slate-200 font-bold text-base mb-1" data-i18n="events_not_found">${escapeHTML(t('events_not_found'))}</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="events_not_found_desc">${escapeHTML(t('events_not_found_desc'))}</p>
+          </div>
+        `;
+      } else {
+        htmlGrid = `
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${listaEventos.map(e => renderizarCardEvento(e)).join('')}
+          </div>
+        `;
+      }
+
+      container.innerHTML = htmlHeader + htmlGrid;
     }
 
     // ==========================================================================
