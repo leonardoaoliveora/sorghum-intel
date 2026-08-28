@@ -599,12 +599,28 @@
     };
 
     // ==========================================================================
-    // UTILITÁRIOS DE FORMATAÇÃO
+    // UTILITÁRIOS DE FORMATAÇÃO E NORMALIZAÇÃO DE PREÇOS
     // ==========================================================================
+    function parseNumeroCotacao(valor) {
+      if (valor === null || valor === undefined || valor === "" || valor === "null" || valor === "—") return null;
+      if (typeof valor === 'number') return Number.isFinite(valor) ? valor : null;
+      
+      let s = String(valor).trim().replace('R$', '').replace('%', '').trim();
+      if (!s) return null;
+      
+      if (s.includes(',') && s.includes('.')) {
+        s = s.replace(/\./g, '').replace(',', '.');
+      } else if (s.includes(',')) {
+        s = s.replace(',', '.');
+      }
+      
+      const num = Number(s);
+      return (Number.isFinite(num) && !isNaN(num)) ? num : null;
+    }
+
     function formatarMoedaBR(valor) {
-      if (valor === null || valor === undefined || valor === "") return null;
-      const num = typeof valor === 'number' ? valor : parseFloat(String(valor).replace(',', '.'));
-      if (isNaN(num)) return null;
+      const num = parseNumeroCotacao(valor);
+      if (num === null) return null;
       return "R$ " + num.toFixed(2).replace('.', ',');
     }
 
@@ -649,6 +665,129 @@
         if (partes.length === 3) return new Date(parseInt(partes[2], 10), parseInt(partes[1], 10) - 1, parseInt(partes[0], 10)).getTime();
       }
       return new Date(dataStr).getTime() || 0;
+    }
+
+    function calcularDiasDesdeAtualizacaoData(dataStr) {
+      if (!dataStr || String(dataStr).toLowerCase() === "não identificada" || dataStr === "null") return 999;
+      const dataVis = formatarDataVisual(dataStr);
+      if (!dataVis || !dataVis.includes('/')) return 999;
+      
+      const partes = dataVis.split('/');
+      if (partes.length !== 3) return 999;
+      
+      const dia = parseInt(partes[0], 10);
+      const mes = parseInt(partes[1], 10) - 1;
+      const ano = parseInt(partes[2], 10);
+      
+      const dataCot = new Date(ano, mes, dia);
+      if (isNaN(dataCot.getTime())) return 999;
+      
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      dataCot.setHours(0, 0, 0, 0);
+      
+      const diffTime = hoje.getTime() - dataCot.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays >= 0 ? diffDays : 0;
+    }
+
+    function obterStatusAtualidadeEfetivo(statusBackend, diasBackend, dataCotacao) {
+      const statusConhecidos = [
+        "ATUALIZADA",
+        "ATENCAO_DEFASAGEM",
+        "COTACAO_DESATUALIZADA",
+        "DATA_NAO_IDENTIFICADA",
+        "SEM_COTACAO_VERIFICADA"
+      ];
+      
+      if (statusBackend && statusConhecidos.includes(String(statusBackend).trim())) {
+        return String(statusBackend).trim();
+      }
+      
+      let dias = null;
+      if (diasBackend !== null && diasBackend !== undefined && diasBackend !== "null" && !isNaN(parseInt(diasBackend, 10))) {
+        dias = parseInt(diasBackend, 10);
+      } else if (dataCotacao) {
+        dias = calcularDiasDesdeAtualizacaoData(dataCotacao);
+      }
+      
+      if (dias !== null && dias !== 999) {
+        if (dias <= 2) return "ATUALIZADA";
+        if (dias <= 5) return "ATENCAO_DEFASAGEM";
+        return "COTACAO_DESATUALIZADA";
+      }
+      
+      if (!dataCotacao || String(dataCotacao).toLowerCase() === "não identificada" || dataCotacao === "null") {
+        return "DATA_NAO_IDENTIFICADA";
+      }
+      
+      return "DATA_NAO_IDENTIFICADA";
+    }
+
+    function normalizarRegistroPreco(p) {
+      if (!p || typeof p !== 'object') return {};
+      
+      const precoSorgo = parseNumeroCotacao(p.precoSorgo);
+      const precoMilho = parseNumeroCotacao(p.precoMilho);
+      const relacaoMilho = parseNumeroCotacao(p.relacaoMilho);
+      
+      const dataSorgo = (p.dataSorgo && p.dataSorgo !== "null") ? p.dataSorgo : null;
+      const dataMilho = (p.dataMilho && p.dataMilho !== "null") ? p.dataMilho : null;
+      
+      let diasSorgo = (p.diasDesdeAtualizacaoSorgo !== null && p.diasDesdeAtualizacaoSorgo !== undefined && p.diasDesdeAtualizacaoSorgo !== "null") 
+        ? parseInt(p.diasDesdeAtualizacaoSorgo, 10) 
+        : (dataSorgo ? calcularDiasDesdeAtualizacaoData(dataSorgo) : 999);
+      if (isNaN(diasSorgo)) diasSorgo = 999;
+      
+      let diasMilho = (p.diasDesdeAtualizacaoMilho !== null && p.diasDesdeAtualizacaoMilho !== undefined && p.diasDesdeAtualizacaoMilho !== "null")
+        ? parseInt(p.diasDesdeAtualizacaoMilho, 10)
+        : (dataMilho ? calcularDiasDesdeAtualizacaoData(dataMilho) : 999);
+      if (isNaN(diasMilho)) diasMilho = 999;
+      
+      let statusSorgo = obterStatusAtualidadeEfetivo(p.statusAtualidadeSorgo, diasSorgo, dataSorgo);
+      let statusMilho = obterStatusAtualidadeEfetivo(p.statusAtualidadeMilho, diasMilho, dataMilho);
+      
+      if (precoSorgo === null) statusSorgo = "SEM_COTACAO_VERIFICADA";
+      if (precoMilho === null) statusMilho = "SEM_COTACAO_VERIFICADA";
+      
+      return {
+        ...p,
+        praca: p.praca || "",
+        uf: p.uf || "",
+        precoSorgo: precoSorgo,
+        precoMilho: precoMilho,
+        relacaoMilho: relacaoMilho,
+        dataSorgo: dataSorgo,
+        dataMilho: dataMilho,
+        diasDesdeAtualizacaoSorgo: diasSorgo,
+        diasDesdeAtualizacaoMilho: diasMilho,
+        statusAtualidadeSorgo: statusSorgo,
+        statusAtualidadeMilho: statusMilho,
+        fonteSorgo: p.fonteSorgo || null,
+        fonteMilho: p.fonteMilho || null,
+        urlFonteSorgo: p.urlFonteSorgo || null,
+        urlFonteMilho: p.urlFonteMilho || null
+      };
+    }
+
+    function cotacaoEhValidaParaMedia(status) {
+      return status === "ATUALIZADA" || status === "ATENCAO_DEFASAGEM";
+    }
+
+    function formatarTagStatus(status, dias) {
+      if (status === "ATUALIZADA") {
+        return `<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">(Atualizada)</span>`;
+      }
+      if (status === "ATENCAO_DEFASAGEM") {
+        return `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">(Há ${escapeHTML(dias)} dias)</span>`;
+      }
+      if (status === "COTACAO_DESATUALIZADA") {
+        return `<span class="text-[10px] text-red-500 font-semibold">(Desatualizado)</span>`;
+      }
+      if (status === "DATA_NAO_IDENTIFICADA") {
+        return `<span class="text-[10px] text-slate-400 italic">Data não identificada</span>`;
+      }
+      return `<span class="text-[10px] text-slate-400 italic">Sem cotação verificada</span>`;
     }
 
     function getBadgeInfo(categoria) {
@@ -1014,7 +1153,9 @@
       container.className = "flex flex-col gap-6 col-span-full max-w-5xl mx-auto w-full";
       container.innerHTML = '';
 
-      if (!precos || precos.length === 0) {
+      const listaNormalizada = (precos || []).map(normalizarRegistroPreco);
+
+      if (!listaNormalizada || listaNormalizada.length === 0) {
         container.innerHTML = `
           <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center shadow-sm">
             <span class="material-symbols-outlined text-4xl text-brand-700 dark:text-emerald-400 mb-2">payments</span>
@@ -1025,16 +1166,16 @@
         return;
       }
 
-      const ufsDisponiveis = ["TODOS", ...new Set(precos.map(p => p.uf).filter(Boolean))];
+      const ufsDisponiveis = ["TODOS", ...new Set(listaNormalizada.map(p => p.uf).filter(Boolean))];
       let pillsUF = ufsDisponiveis.map(uf => `
         <button onclick="filtrarPrecosPorUF('${escapeHTML(uf)}')" class="px-3 py-1 rounded-lg text-xs font-bold transition-colors ${filtroEstadoAtual === uf ? 'bg-brand-800 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">
           ${escapeHTML(uf)}
         </button>
       `).join('');
 
-      let precosFiltrados = precos;
+      let precosFiltrados = listaNormalizada;
       if (filtroEstadoAtual !== "TODOS") {
-        precosFiltrados = precos.filter(p => p.uf === filtroEstadoAtual);
+        precosFiltrados = listaNormalizada.filter(p => p.uf === filtroEstadoAtual);
       }
 
       let htmlPrecos = `
@@ -1074,22 +1215,10 @@
       precosFiltrados.forEach(p => {
         // 1. Bloco de Sorgo (Preço + Data + Status de Atualidade)
         let sorgoHTML = `<span class="text-xs text-slate-400 italic">${escapeHTML(t('no_quote'))}</span>`;
-        if (p.precoSorgo && p.precoSorgo !== "null") {
+        if (p.precoSorgo !== null && p.precoSorgo > 0) {
           const precoFormatado = formatarMoedaBR(p.precoSorgo);
           const dataSorgoVis = p.dataSorgo ? formatarDataVisual(p.dataSorgo) : null;
-          
-          let tagStatusSorgo = "";
-          if (dataSorgoVis) {
-            if (p.statusAtualidadeSorgo === "ATENCAO_DEFASAGEM") {
-              tagStatusSorgo = `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">(Há ${escapeHTML(p.diasDesdeAtualizacaoSorgo)} dias)</span>`;
-            } else if (p.statusAtualidadeSorgo === "COTACAO_DESATUALIZADA") {
-              tagStatusSorgo = `<span class="text-[10px] text-red-500 font-semibold">(Desatualizado)</span>`;
-            } else {
-              tagStatusSorgo = `<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">(Atualizada)</span>`;
-            }
-          } else {
-            tagStatusSorgo = `<span class="text-[10px] text-slate-400 italic">Data não identificada</span>`;
-          }
+          const tagStatusSorgo = formatarTagStatus(p.statusAtualidadeSorgo, p.diasDesdeAtualizacaoSorgo);
 
           sorgoHTML = `
             <div class="flex flex-col items-end">
@@ -1103,22 +1232,10 @@
 
         // 2. Bloco de Milho (Preço + Data + Status de Atualidade)
         let milhoHTML = `<span class="text-xs text-slate-400 italic">${escapeHTML(t('no_quote'))}</span>`;
-        if (p.precoMilho && p.precoMilho !== "null") {
+        if (p.precoMilho !== null && p.precoMilho > 0) {
           const precoFormatado = formatarMoedaBR(p.precoMilho);
           const dataMilhoVis = p.dataMilho ? formatarDataVisual(p.dataMilho) : null;
-          
-          let tagStatusMilho = "";
-          if (dataMilhoVis) {
-            if (p.statusAtualidadeMilho === "ATENCAO_DEFASAGEM") {
-              tagStatusMilho = `<span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">(Há ${escapeHTML(p.diasDesdeAtualizacaoMilho)} dias)</span>`;
-            } else if (p.statusAtualidadeMilho === "COTACAO_DESATUALIZADA") {
-              tagStatusMilho = `<span class="text-[10px] text-red-500 font-semibold">(Desatualizado)</span>`;
-            } else {
-              tagStatusMilho = `<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">(Atualizada)</span>`;
-            }
-          } else {
-            tagStatusMilho = `<span class="text-[10px] text-slate-400 italic">Data não identificada</span>`;
-          }
+          const tagStatusMilho = formatarTagStatus(p.statusAtualidadeMilho, p.diasDesdeAtualizacaoMilho);
 
           milhoHTML = `
             <div class="flex flex-col items-end">
@@ -1132,8 +1249,8 @@
 
         // 3. Relação Sorgo/Milho (Calculada estritamente quando houver paridade de data e praça canônica)
         let relacaoHTML = `<span class="text-xs text-slate-400" title="Exige cotações verificadas na mesma data e mesma praça">—</span>`;
-        if (p.relacaoMilho && p.relacaoMilho !== "null" && p.relacaoMilho !== "—") {
-          const relacaoBR = String(p.relacaoMilho).replace('.', ',');
+        if (p.relacaoMilho !== null && p.relacaoMilho > 0) {
+          const relacaoBR = p.relacaoMilho.toFixed(1).replace('.', ',');
           relacaoHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-750 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">${escapeHTML(relacaoBR)}%</span>`;
         }
 
@@ -1308,32 +1425,26 @@
     }
 
     function atualizarMetricasGerais() {
-      const precos = bancoDados.precos || [];
-      const statusValidos = ["ATUALIZADA", "ATENCAO_DEFASAGEM"];
+      const precos = (bancoDados.precos || []).map(normalizarRegistroPreco);
       
-      // 1. Sorgo Médio (exclui desatualizados > 5 dias e sem data)
+      // 1. Sorgo Médio (Polos BR elegíveis)
       const precosSorgoValidos = precos
-        .filter(p => statusValidos.includes(p.statusAtualidadeSorgo))
-        .map(p => parseFloat(p.precoSorgo))
-        .filter(v => !isNaN(v) && v > 0);
+        .filter(p => p.precoSorgo !== null && p.precoSorgo > 0 && cotacaoEhValidaParaMedia(p.statusAtualidadeSorgo))
+        .map(p => p.precoSorgo);
 
-      // 2. Milho Médio (exclui desatualizados > 5 dias e sem data)
+      // 2. Milho Médio (Polos BR elegíveis)
       const precosMilhoValidos = precos
-        .filter(p => statusValidos.includes(p.statusAtualidadeMilho))
-        .map(p => parseFloat(p.precoMilho))
-        .filter(v => !isNaN(v) && v > 0);
+        .filter(p => p.precoMilho !== null && p.precoMilho > 0 && cotacaoEhValidaParaMedia(p.statusAtualidadeMilho))
+        .map(p => p.precoMilho);
 
-      // 3. Relação Sorgo/Milho Média (whitelist explícita: ambas as culturas devem ser atualizadas/atenção)
+      // 3. Relação Sorgo/Milho Média (Polos BR elegíveis com ambas as culturas válidas)
       const relacoesValidas = precos
         .filter(p => 
-          statusValidos.includes(p.statusAtualidadeSorgo) &&
-          statusValidos.includes(p.statusAtualidadeMilho) &&
-          p.relacaoMilho &&
-          p.relacaoMilho !== "null" &&
-          p.relacaoMilho !== "—"
+          p.relacaoMilho !== null && p.relacaoMilho > 0 &&
+          cotacaoEhValidaParaMedia(p.statusAtualidadeSorgo) &&
+          cotacaoEhValidaParaMedia(p.statusAtualidadeMilho)
         )
-        .map(p => parseFloat(p.relacaoMilho))
-        .filter(v => !isNaN(v) && v > 0);
+        .map(p => p.relacaoMilho);
 
       if (precosSorgoValidos.length > 0) {
         const mediaSorgo = precosSorgoValidos.reduce((a, b) => a + b, 0) / precosSorgoValidos.length;
@@ -1363,6 +1474,56 @@
       
       document.getElementById('metric-total-noticias').innerText = totalInteligencias > 0 ? totalInteligencias : "—";
     }
+
+    function diagnosticarMetricasPrecos() {
+      const precos = (bancoDados.precos || []).map(normalizarRegistroPreco);
+      console.log("=== DIAGNÓSTICO DE MÉTRICAS ===");
+      
+      let sorgoValidosCount = 0;
+      let milhoValidosCount = 0;
+      let relacaoValidasCount = 0;
+      
+      const sorgoVals = [];
+      const milhoVals = [];
+      const relacaoVals = [];
+
+      precos.forEach(p => {
+        const sorgoValido = p.precoSorgo !== null && p.precoSorgo > 0 && cotacaoEhValidaParaMedia(p.statusAtualidadeSorgo);
+        const milhoValido = p.precoMilho !== null && p.precoMilho > 0 && cotacaoEhValidaParaMedia(p.statusAtualidadeMilho);
+        const relValida = p.relacaoMilho !== null && p.relacaoMilho > 0 && sorgoValido && milhoValido;
+
+        if (sorgoValido) { sorgoValidosCount++; sorgoVals.push(p.precoSorgo); }
+        if (milhoValido) { milhoValidosCount++; milhoVals.push(p.precoMilho); }
+        if (relValida) { relacaoValidasCount++; relacaoVals.push(p.relacaoMilho); }
+
+        console.log(`\n${p.praca} (${p.uf})`);
+        console.log(`  Sorgo: ${p.precoSorgo !== null ? 'R$ ' + p.precoSorgo.toFixed(2) : '—'} | Data: ${p.dataSorgo || '—'} | Status: ${p.statusAtualidadeSorgo} (Dias: ${p.diasDesdeAtualizacaoSorgo}) | Incluído Média: ${sorgoValido ? 'SIM' : 'NÃO'}`);
+        console.log(`  Milho: ${p.precoMilho !== null ? 'R$ ' + p.precoMilho.toFixed(2) : '—'} | Data: ${p.dataMilho || '—'} | Status: ${p.statusAtualidadeMilho} (Dias: ${p.diasDesdeAtualizacaoMilho}) | Incluído Média: ${milhoValido ? 'SIM' : 'NÃO'}`);
+        console.log(`  Relação: ${p.relacaoMilho !== null ? p.relacaoMilho.toFixed(1) + '%' : '—'} | Incluída Média: ${relValida ? 'SIM' : 'NÃO'}`);
+      });
+
+      const mediaSorgo = sorgoVals.length > 0 ? (sorgoVals.reduce((a, b) => a + b, 0) / sorgoVals.length).toFixed(2) : "—";
+      const mediaMilho = milhoVals.length > 0 ? (milhoVals.reduce((a, b) => a + b, 0) / milhoVals.length).toFixed(2) : "—";
+      const mediaRel = relacaoVals.length > 0 ? (relacaoVals.reduce((a, b) => a + b, 0) / relacaoVals.length).toFixed(1) + '%' : "—";
+
+      console.log("\n=== RESUMO FINAL ===");
+      console.log(`Sorgo válidos: ${sorgoValidosCount}`);
+      console.log(`Milho válidos: ${milhoValidosCount}`);
+      console.log(`Relações válidas: ${relacaoValidasCount}`);
+      console.log(`Média Sorgo: ${mediaSorgo !== '—' ? 'R$ ' + mediaSorgo.replace('.', ',') : '—'}`);
+      console.log(`Média Milho: ${mediaMilho !== '—' ? 'R$ ' + mediaMilho.replace('.', ',') : '—'}`);
+      console.log(`Média Relação: ${mediaRel}`);
+
+      return {
+        sorgoValidos: sorgoValidosCount,
+        milhoValidos: milhoValidosCount,
+        relacoesValidas: relacaoValidasCount,
+        mediaSorgo: mediaSorgo !== '—' ? 'R$ ' + mediaSorgo.replace('.', ',') : '—',
+        mediaMilho: mediaMilho !== '—' ? 'R$ ' + mediaMilho.replace('.', ',') : '—',
+        mediaRelacao: mediaRel
+      };
+    }
+    window.diagnosticarMetricasPrecos = diagnosticarMetricasPrecos;
 
     // ==========================================================================
     // RECARREGAR DADOS DA API COM FEEDBACK VISUAL TRANSPARENTE
@@ -1414,7 +1575,7 @@
         if (dados && typeof dados === 'object' && dados.status === 'ok') {
           bancoDados.noticias = dados.noticias || [];
           bancoDados.eventos = dados.eventos || [];
-          bancoDados.precos = dados.precos || [];
+          bancoDados.precos = (dados.precos || []).map(normalizarRegistroPreco);
           bancoDados.resumosSemanais = dados.resumosSemanais || [];
           bancoDados.metricas = dados.metricas || {
             totalNoticias: bancoDados.noticias.length,
@@ -1448,6 +1609,7 @@
         if (cacheDataStr && cacheTimestamp) {
           try {
             bancoDados = JSON.parse(cacheDataStr);
+            bancoDados.precos = (bancoDados.precos || []).map(normalizarRegistroPreco);
             statusDot.className = "w-2 h-2 rounded-full bg-amber-500";
             statusText.innerText = t('status_offline_cache');
 
