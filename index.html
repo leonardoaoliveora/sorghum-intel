@@ -544,7 +544,21 @@
       str = str.replace(/^R\$\s*/i, '').replace(/%$/, '').trim();
       if (!str || str === "—" || str === "-" || str.toLowerCase() === "null") return null;
       
-      str = str.replace(/\./g, '').replace(',', '.');
+      // Tratamento inteligente de separadores decimal e de milhar
+      if (str.includes('.') && str.includes(',')) {
+        if (str.lastIndexOf(',') > str.lastIndexOf('.')) {
+          // Padrão brasileiro: "1.250,50" -> remove ponto de milhar e converte vírgula
+          str = str.replace(/\./g, '').replace(',', '.');
+        } else {
+          // Padrão americano: "1,250.50" -> remove vírgula de milhar
+          str = str.replace(/,/g, '');
+        }
+      } else if (str.includes(',')) {
+        // Apenas vírgula: "51,00" ou "89,5" -> converte vírgula em ponto
+        str = str.replace(',', '.');
+      }
+      // Se contiver apenas ponto ("51.00", "57.00", "89.5"), preserva o ponto decimal original!
+      
       const num = parseFloat(str);
       return isNaN(num) ? null : num;
     }
