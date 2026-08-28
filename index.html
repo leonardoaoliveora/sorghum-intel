@@ -2383,4 +2383,27 @@
       } else {
         html.classList.add('dark');
         themeIcon.innerText = 'light_mode';
-        lo
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    function carregarTemaSalvo() {
+      const savedTheme = localStorage.getItem('theme');
+      const themeIcon = document.getElementById('theme-icon');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        if (themeIcon) themeIcon.innerText = 'light_mode';
+      }
+    }
+
+    // Inicialização ao carregar a página
+    window.onload = async () => {
+      carregarTemaSalvo();
+      definirIdioma(idiomaAtual);
+      configurarBotoesAbas();
+      configurarBusca();
+      await carregarDadosIniciais(false);
+    };
+  </script>
+</body>
+</html>
