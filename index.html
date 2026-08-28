@@ -207,10 +207,10 @@
     <div class="overflow-x-auto no-scrollbar mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
       <div class="flex space-x-2 min-w-max pb-1" id="tabs-container">
         
-        <!-- 1. Notícias da Semana (Aba Padrão ao Abrir) -->
-        <button data-tab="NoticiasSemana" class="tab-button active px-4 py-2 bg-brand-800 text-white font-bold rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors">
+        <!-- 1. Inteligência Semanal (Aba Padrão ao Abrir) -->
+        <button data-tab="NoticiasSemana" aria-label="Inteligência Semanal" title="Consulte a inteligência e as notícias organizadas por semana." class="tab-button active px-4 py-2 bg-brand-800 text-white font-bold rounded-full text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors">
           <span class="material-symbols-outlined text-[18px]">calendar_view_week</span>
-          <span data-i18n="tab_this_week">Notícias da Semana</span>
+          <span data-i18n="tab_weekly_intelligence">Inteligência Semanal</span>
           <span id="tab-count-NoticiasSemana" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-white/20 text-white dark:bg-emerald-950 dark:text-emerald-300">0</span>
         </button>
 
@@ -343,7 +343,9 @@
         metric_noticias_title: "Inteligências Globais",
         metric_noticias_sub: "notícias no mundo inteiro",
         search_placeholder: "Buscar notícias mundiais por títulos, empresas, temas ou regiões...",
-        tab_this_week: "Notícias da Semana",
+        tab_weekly_intelligence: "Inteligência Semanal",
+        tab_this_week: "Inteligência Semanal",
+        tooltip_weekly_intelligence: "Consulte a inteligência e as notícias organizadas por semana.",
         tab_weekly: "Resumo Semanal",
         tab_all: "Tudo",
         tab_market: "Mercado",
@@ -443,7 +445,9 @@
         metric_noticias_title: "Global Intelligence",
         metric_noticias_sub: "news indexed worldwide",
         search_placeholder: "Search global news by title, company, topic or region...",
-        tab_this_week: "This Week",
+        tab_weekly_intelligence: "Weekly Intelligence",
+        tab_this_week: "Weekly Intelligence",
+        tooltip_weekly_intelligence: "Browse intelligence and news organized week by week.",
         tab_weekly: "Weekly Briefing",
         tab_all: "All",
         tab_market: "Market",
@@ -654,6 +658,12 @@
       const searchInput = document.getElementById('search-input');
       if (searchInput) {
         searchInput.placeholder = t('search_placeholder');
+      }
+
+      const tabSemanaBtn = document.querySelector('button[data-tab="NoticiasSemana"]');
+      if (tabSemanaBtn) {
+        tabSemanaBtn.setAttribute('aria-label', t('tab_weekly_intelligence'));
+        tabSemanaBtn.setAttribute('title', t('tooltip_weekly_intelligence'));
       }
 
       const btnPt = document.getElementById('lang-btn-pt');
@@ -2373,27 +2383,4 @@
       } else {
         html.classList.add('dark');
         themeIcon.innerText = 'light_mode';
-        localStorage.setItem('theme', 'dark');
-      }
-    }
-
-    function carregarTemaSalvo() {
-      const savedTheme = localStorage.getItem('theme');
-      const themeIcon = document.getElementById('theme-icon');
-      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-        if (themeIcon) themeIcon.innerText = 'light_mode';
-      }
-    }
-
-    // Inicialização ao carregar a página
-    window.onload = async () => {
-      carregarTemaSalvo();
-      definirIdioma(idiomaAtual);
-      configurarBotoesAbas();
-      configurarBusca();
-      await carregarDadosIniciais(false);
-    };
-  </script>
-</body>
-</html>
+        lo
